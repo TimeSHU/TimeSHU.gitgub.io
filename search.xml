@@ -414,6 +414,7 @@
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfefq6pib1j31c00u01kx.jpg" alt="27"></p>
 <a id="more"></a>
 
+<p>——-girls day狂热粉分界线——-</p>
 <h3 id="0x00-任务介绍"><a href="#0x00-任务介绍" class="headerlink" title="0x00 任务介绍"></a>0x00 任务介绍</h3><p>1、收集网络上各种 sql 注入时使用的 payload 并理解其适用的环境（检测注入、利用注入）</p>
 <p>2、记录 sqlmap 的检测和利用过程中使用的 payload（也算一种 payload 收集方式）</p>
 <p>3、理解以上涉及的 sql 语句的意思，其中会涉及不同的数据库、不同注入场景，可以将学习的过程和收集的方式进行整理形成报告，关于 payload 的理解，其中会涉及之前学习的基础。</p>
