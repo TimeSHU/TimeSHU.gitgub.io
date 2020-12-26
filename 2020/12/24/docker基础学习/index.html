@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    李雷PHP博客程序之初级代码审计 |  Time
+    docker基础学习 |  Time
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -42,7 +42,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-李雷PHP博客程序之初级代码审计" class="article article-type-post" itemscope
+  <article id="post-docker基础学习" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -50,7 +50,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  李雷PHP博客程序之初级代码审计
+  docker基础学习
 </h1>
  
 
@@ -59,12 +59,12 @@
 
     
     <div class="article-meta">
-      <a href="/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="article-date">
-  <time datetime="2020-09-01T06:32:39.000Z" itemprop="datePublished">2020-09-01</time>
+      <a href="/2020/12/24/docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time datetime="2020-12-24T06:22:29.000Z" itemprop="datePublished">2020-12-24</time>
 </a>
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+    <a class="article-category-link" href="/categories/docker%E5%AD%A6%E4%B9%A0/">docker学习</a>
   </div>
 
       
@@ -74,7 +74,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">712</span>
+            <span class="post-count">754</span>
         </span>
     </span>
 
@@ -108,37 +108,85 @@
       
 
       
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib52pcc45j31c00u0e81.jpg" alt=""></p>
+      <p><img src="../img/27.jpg" alt="27"></p>
 <a id="more"></a>
 
-<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00  前言"></a>0x00  前言</h3><p>作为菜鸡做审计，又不想看着大佬们的文章一步一步的跟进漏洞点，所以在CVND找了一套源码，提示在new<em>_sh</em>.php存在注入，然后官网下载一个源码直接开刚。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib7mww1inj30j41bgjw1.jpg" alt="image-20200901160400224"></p>
-<p>作者部分借用了Thinkphp框架，但是大部分都是自己原生写法。。。mdaima_var_inc核心类、配置文件、函数等，mdaima_com_admin后台文件,外置的其他文件为前台文件。</p>
-<h3 id="0x01-news-show文件SQL注入"><a href="#0x01-news-show文件SQL注入" class="headerlink" title="0x01 news_show文件SQL注入"></a>0x01 news_show文件SQL注入</h3><p>根据CVND大佬提示，找到符合提示文件的只有news_show文件，查看代码</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line">$wap_mobile=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; $_SESSION[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>)&#123;</span><br><span class="line">	$wap_mobile=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/news_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//必须先调用获取基本参数</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//此处使用任意方式传参接收</span></span><br><span class="line">$cid=$_REQUEST[<span class="string">"id"</span>];</span><br><span class="line">$page_1=$_REQUEST[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($_SESSION[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; $_REQUEST[<span class="string">'see'</span>]==<span class="string">'true'</span>)&#123;<span class="comment">//为后台预览效果准备</span></span><br><span class="line">	$pass_str=<span class="string">""</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$pass_str=<span class="string">" and pass='1' "</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//此处拼接SQL语句</span></span><br><span class="line">$sql=<span class="string">"select * from lei_news where id='"</span>.$cid.<span class="string">"' "</span>.$pass_str.<span class="string">" limit 1 "</span>;</span><br><span class="line">$result=$mysqli-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($rs=$result-&gt;fetch_assoc())&#123;</span><br><span class="line">	$title=$rs[<span class="string">"title"</span>];</span><br><span class="line">	$indate=$rs[<span class="string">"indate"</span>];</span><br><span class="line">	$laiyuan=$rs[<span class="string">"laiyuan"</span>];</span><br><span class="line">	$guanjianci=$rs[<span class="string">"guanjianci"</span>];</span><br><span class="line">	$simgpaths=$rs[<span class="string">"simgpaths"</span>];</span><br><span class="line">	$hits=$rs[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	$message=$rs[<span class="string">"message"</span>];</span><br><span class="line">	$pass=$rs[<span class="string">"pass"</span>];</span><br><span class="line">	$pinglun=$rs[<span class="string">"pinglun"</span>];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"文章不存在！"</span>;</span><br><span class="line">	$mysqli-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"update lei_news set hits='"</span>.$hits.<span class="string">"' where id='"</span>.$cid.<span class="string">"' limit 1"</span>;<span class="comment">//更新访问人数</span></span><br><span class="line">$mysqli-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以发现上面一段代码是没有做任何过滤的，看了下作者写的安全函数，只对POST传参方式进行了过滤，但是没有对$_REQUERY和$_GET方式及$_COOKIE进行过滤,所以这里就是一点很典型的注入了。。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">漏洞点：http:&#x2F;&#x2F;lilei.com&#x2F;news_show.php?id&#x3D;1&amp;page_1&#x3D;1</span><br></pre></td></tr></table></figure>
-
-<p>开启调试模式，查看程序执行的流程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload:</span><br><span class="line">	http:&#x2F;&#x2F;lilei.com&#x2F;news_show.php?id&#x3D;1%27%20union%20select%201,2,3,4,5,6,7,8,9,10,11,12,13%23&amp;page_1&#x3D;1</span><br></pre></td></tr></table></figure>
-
-<p>获取传递的参数值，并且由于传参方式未做处理，因此将注入语句全部获取</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib9vmubozj315o0u0qa0.jpg" alt="image-20200901172137279"></p>
-<p>完整带入数据库并执行</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1giba058149j31550u0108.jpg" alt="image-20200901172557060"></p>
-<p>爆出数据库、数据库版本、数据库用户</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibabi0p20j31db0u00zp.jpg" alt="image-20200901173652116"></p>
-<p>后续也不在手工，直接sqlmap一把梭了。。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibaizcv0qj31hj0u0hdt.jpg" alt="image-20200901174402867"></p>
-<h3 id="0x01-jingyan-show文件SQL注入"><a href="#0x01-jingyan-show文件SQL注入" class="headerlink" title="0x01 jingyan_show文件SQL注入"></a>0x01 jingyan_show文件SQL注入</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line">$wap_mobile=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; $_SESSION[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>)&#123;</span><br><span class="line">	$wap_mobile=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/jingyan_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//�����ȵ��û�ȡ��������</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line">$cid=$_REQUEST[<span class="string">"id"</span>];</span><br><span class="line">$page_1=$_REQUEST[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($_SESSION[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; $_REQUEST[<span class="string">'see'</span>]==<span class="string">'true'</span>)&#123;<span class="comment">//Ϊ��̨Ԥ��Ч��׼��</span></span><br><span class="line">	$pass_str=<span class="string">""</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$pass_str=<span class="string">" and pass='1' "</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"select * from lei_jingyan where id='"</span>.$cid.<span class="string">"' "</span>.$pass_str.<span class="string">" limit 1 "</span>;</span><br><span class="line">$result=$mysqli-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($rs=$result-&gt;fetch_assoc())&#123;</span><br><span class="line">	$title=$rs[<span class="string">"title"</span>];</span><br><span class="line">	$indate=$rs[<span class="string">"indate"</span>];</span><br><span class="line">	$laiyuan=$rs[<span class="string">"laiyuan"</span>];</span><br><span class="line">	$guanjianci=$rs[<span class="string">"guanjianci"</span>];</span><br><span class="line">	$simgpaths=$rs[<span class="string">"simgpaths"</span>];</span><br><span class="line">	$hits=$rs[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	$message=$rs[<span class="string">"message"</span>];</span><br><span class="line">	$pass=$rs[<span class="string">"pass"</span>];</span><br><span class="line">	$shipin=$rs[<span class="string">"shipin"</span>];</span><br><span class="line">	$pinglun=$rs[<span class="string">"pinglun"</span>];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"���²����ڣ�"</span>;</span><br><span class="line">	$mysqli-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"update lei_jingyan set hits='"</span>.$hits.<span class="string">"' where id='"</span>.$cid.<span class="string">"' limit 1"</span>;<span class="comment">//���·�������</span></span><br><span class="line">$mysqli-&gt;query($sql);</span><br></pre></td></tr></table></figure>
-
-<p>此文件中的漏洞点同news_show文件中的漏洞点一样，还有几个同类型的漏洞点代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="0x00-docker基础命令"><a href="#0x00-docker基础命令" class="headerlink" title="0x00 docker基础命令"></a>0x00 docker基础命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">docker images							查看本地存在的docker镜像</span><br><span class="line"></span><br><span class="line">docker search							搜索docker镜像库</span><br><span class="line"></span><br><span class="line">docker inspect						查看镜像详细信息</span><br><span class="line"></span><br><span class="line">docker rmi image:tag			删除docker镜像</span><br><span class="line"></span><br><span class="line">docker ps 								查看运行的容器</span><br><span class="line"></span><br><span class="line">docker kill	容器ID				 杀死容器进程</span><br><span class="line"></span><br><span class="line">docker rm 容器ID 					 删除容器</span><br><span class="line"></span><br><span class="line">docker stop 容器ID				 暂停运行容器</span><br><span class="line"></span><br><span class="line">docker exec -ti 容器ID &#x2F;bin&#x2F;bash	进入容器</span><br><span class="line"></span><br><span class="line">docker cp 文件 容器ID:路径	宿主机复制到容器</span><br><span class="line"></span><br><span class="line">docker cp 容器ID:文件 路径	容器复制到宿主机</span><br></pre></td></tr></table></figure>
 
 
 
-<p>sendmail    文件读取</p>
+<h3 id="0x01-创建镜像"><a href="#0x01-创建镜像" class="headerlink" title="0x01 创建镜像"></a>0x01 创建镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">命令：</span><br><span class="line"></span><br><span class="line">    docker commit</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line"></span><br><span class="line">    -a , --author : 作者信息</span><br><span class="line"></span><br><span class="line">    -m , --meassage : 提交消息</span><br><span class="line"></span><br><span class="line">    -p , --pause&#x3D;true : 提交时暂停容器运行</span><br></pre></td></tr></table></figure>
+
+<p>基于ubuntu搭建漏洞环境</p>
+<p>![image-20201224235833284](../../../Library/Application Support/typora-user-images/image-20201224235833284.png)</p>
+<p>运行ubuntu并进入容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -ti ubuntu bash</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201225000325731](../../../Library/Application Support/typora-user-images/image-20201225000325731.png)</p>
+<p>复制文件到容器中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp redis-4.0.10.tar.gz 98e5e9d2ee6c:&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201225002719115](../../../Library/Application Support/typora-user-images/image-20201225002719115.png)</p>
+<p>![image-20201225002735723](../../../Library/Application Support/typora-user-images/image-20201225002735723.png)</p>
+<p>redis未授权就是常规流程安装即可。</p>
+<p>打包成镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -a &#39;测试&#39; -m &#39;test.txt&#39; 98e5e9d2ee6c time&#x2F;test</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201225151301946](../../../Library/Application Support/typora-user-images/image-20201225151301946.png)</p>
+<p>上传镜像到存储库(个人),首先使用docker本地登录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login		输入账号密码即可登录</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201225152119976](../../../Library/Application Support/typora-user-images/image-20201225152119976.png)</p>
+<p>上传镜像</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push images名</span><br></pre></td></tr></table></figure>
+
+<p>注意上传不成功，可能是因为tag名字不一致，需要和hub库的名字一致 </p>
+<p>![image-20201225152731831](../../../Library/Application Support/typora-user-images/image-20201225152731831.png)</p>
+<p>修改了名称后开始上传</p>
+<p>成功</p>
+<p>![image-20201225152821679](../../../Library/Application Support/typora-user-images/image-20201225152821679.png)</p>
+<p>![image-20201225152846139](../../../Library/Application Support/typora-user-images/image-20201225152846139.png)</p>
+<h3 id="0x02-构建镜像"><a href="#0x02-构建镜像" class="headerlink" title="0x02 构建镜像"></a>0x02 构建镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build</span><br></pre></td></tr></table></figure>
+
+<p>Dockerfile常用指令</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础镜像信息</td>
+<td>FROM</td>
+</tr>
+<tr>
+<td>维护者信息</td>
+<td>MAINTAINER</td>
+</tr>
+<tr>
+<td>镜像操作指令</td>
+<td>RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等</td>
+</tr>
+<tr>
+<td>容器启动时执行命令</td>
+<td>CMD、ENTRYPOINT</td>
+</tr>
+</tbody></table>
+<p>创建Dockerfile文件,以下命令是安装基于ubuntu安装redis，并映射端口，具体使用方法可参考菜鸟教程中的docker教程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">FROM centos		&#x2F;&#x2F;使用centos版本作为基础镜像</span><br><span class="line">MAINTAINER Time 892732389@qq.com	&#x2F;&#x2F;创建者信息</span><br><span class="line">RUN yum update \		&#x2F;&#x2F;创建后执行命令，更新系统并安装常用系统组件</span><br><span class="line">	&amp;&amp; yum install -y gcc make pcre-devel zlib-devel tar zlib wget</span><br><span class="line">RUN wget http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-4.0.10.tar.gz \  &#x2F;&#x2F;下载redis</span><br><span class="line">	&amp;&amp; tar -zxf redis-4.0.10.tar.gz \	&#x2F;&#x2F;解压</span><br><span class="line">	&amp;&amp; cd redis-4.0.10 \		&#x2F;&#x2F;进入文件夹</span><br><span class="line">	&amp;&amp; make \			&#x2F;&#x2F;编译</span><br><span class="line">	&amp;&amp; make install</span><br><span class="line">EXPOSE 6937		&#x2F;&#x2F;开启外部端口方便镜像端口映射</span><br><span class="line">CMD redis-server		&#x2F;&#x2F;启动redis</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201226005613525](../../../Library/Application Support/typora-user-images/image-20201226005613525.png)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t centos_redis:v1 .	&#x2F;&#x2F;构造镜像命令</span><br></pre></td></tr></table></figure>
+
+<p>构造成功</p>
+<p>![image-20201226010531825](../../../Library/Application Support/typora-user-images/image-20201226010531825.png)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 6379:6379 centos_redis:v1</span><br></pre></td></tr></table></figure>
+
+<p>![image-20201226010730558](../../../Library/Application Support/typora-user-images/image-20201226010730558.png)</p>
+<h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><p>菜鸟教程：<a href="https://m.runoob.com/docker/" target="_blank" rel="noopener">https://m.runoob.com/docker/</a></p>
+<p><a href="https://www.cnblogs.com/jsonhc/p/7767669.html" target="_blank" rel="noopener">https://www.cnblogs.com/jsonhc/p/7767669.html</a></p>
+<p><a href="https://www.cnblogs.com/momoyan/p/12437312.html" target="_blank" rel="noopener">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
 
       
       <!-- reward -->
@@ -203,14 +251,14 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/12/24/docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" rel="tag">审计学习</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li></ul>
 
 
     </footer>
@@ -221,19 +269,10 @@
   
   <nav class="article-nav">
     
-      <a href="/2020/10/16/php%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            PHP反序列化之基础学习
-          
-        </div>
-      </a>
     
-    
-      <a href="/2020/08/18/Image%E5%9B%BE%E7%89%87%E5%BA%93%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/" class="article-nav-link">
+      <a href="/2020/12/24/onethink%E7%BC%93%E5%AD%98%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Image图片库漏洞总结</div>
+        <div class="article-nav-title">onethink缓存漏洞分析</div>
       </a>
     
   </nav>

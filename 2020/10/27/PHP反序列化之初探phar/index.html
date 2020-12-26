@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    李雷PHP博客程序之初级代码审计 |  Time
+    PHP反序列化之初探phar |  Time
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -42,7 +42,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-李雷PHP博客程序之初级代码审计" class="article article-type-post" itemscope
+  <article id="post-PHP反序列化之初探phar" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -50,7 +50,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  李雷PHP博客程序之初级代码审计
+  PHP反序列化之初探phar
 </h1>
  
 
@@ -59,14 +59,10 @@
 
     
     <div class="article-meta">
-      <a href="/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" class="article-date">
-  <time datetime="2020-09-01T06:32:39.000Z" itemprop="datePublished">2020-09-01</time>
+      <a href="/2020/10/27/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B%E5%88%9D%E6%8E%A2phar/" class="article-date">
+  <time datetime="2020-10-27T01:56:43.734Z" itemprop="datePublished">2020-10-27</time>
 </a>
       
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
-  </div>
-
       
       
 <div class="word_count">
@@ -74,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">712</span>
+            <span class="post-count">579</span>
         </span>
     </span>
 
@@ -83,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">3 分钟</span>
+            <span class="post-count">2 分钟</span>
         </span>
     </span>
 </div>
@@ -108,37 +104,40 @@
       
 
       
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib52pcc45j31c00u0e81.jpg" alt=""></p>
+      <p><img src="../img/91.jpg" alt="91"></p>
 <a id="more"></a>
 
-<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00  前言"></a>0x00  前言</h3><p>作为菜鸡做审计，又不想看着大佬们的文章一步一步的跟进漏洞点，所以在CVND找了一套源码，提示在new<em>_sh</em>.php存在注入，然后官网下载一个源码直接开刚。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib7mww1inj30j41bgjw1.jpg" alt="image-20200901160400224"></p>
-<p>作者部分借用了Thinkphp框架，但是大部分都是自己原生写法。。。mdaima_var_inc核心类、配置文件、函数等，mdaima_com_admin后台文件,外置的其他文件为前台文件。</p>
-<h3 id="0x01-news-show文件SQL注入"><a href="#0x01-news-show文件SQL注入" class="headerlink" title="0x01 news_show文件SQL注入"></a>0x01 news_show文件SQL注入</h3><p>根据CVND大佬提示，找到符合提示文件的只有news_show文件，查看代码</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line">$wap_mobile=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; $_SESSION[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>)&#123;</span><br><span class="line">	$wap_mobile=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/news_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//必须先调用获取基本参数</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//此处使用任意方式传参接收</span></span><br><span class="line">$cid=$_REQUEST[<span class="string">"id"</span>];</span><br><span class="line">$page_1=$_REQUEST[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($_SESSION[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; $_REQUEST[<span class="string">'see'</span>]==<span class="string">'true'</span>)&#123;<span class="comment">//为后台预览效果准备</span></span><br><span class="line">	$pass_str=<span class="string">""</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$pass_str=<span class="string">" and pass='1' "</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//此处拼接SQL语句</span></span><br><span class="line">$sql=<span class="string">"select * from lei_news where id='"</span>.$cid.<span class="string">"' "</span>.$pass_str.<span class="string">" limit 1 "</span>;</span><br><span class="line">$result=$mysqli-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($rs=$result-&gt;fetch_assoc())&#123;</span><br><span class="line">	$title=$rs[<span class="string">"title"</span>];</span><br><span class="line">	$indate=$rs[<span class="string">"indate"</span>];</span><br><span class="line">	$laiyuan=$rs[<span class="string">"laiyuan"</span>];</span><br><span class="line">	$guanjianci=$rs[<span class="string">"guanjianci"</span>];</span><br><span class="line">	$simgpaths=$rs[<span class="string">"simgpaths"</span>];</span><br><span class="line">	$hits=$rs[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	$message=$rs[<span class="string">"message"</span>];</span><br><span class="line">	$pass=$rs[<span class="string">"pass"</span>];</span><br><span class="line">	$pinglun=$rs[<span class="string">"pinglun"</span>];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"文章不存在！"</span>;</span><br><span class="line">	$mysqli-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"update lei_news set hits='"</span>.$hits.<span class="string">"' where id='"</span>.$cid.<span class="string">"' limit 1"</span>;<span class="comment">//更新访问人数</span></span><br><span class="line">$mysqli-&gt;query($sql);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="0x00-伪协议"><a href="#0x00-伪协议" class="headerlink" title="0x00 伪协议"></a>0x00 伪协议</h3><p>PHP伪协议大致有如下几种</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file:&#x2F;&#x2F; — 访问本地文件系统</span><br><span class="line">http:&#x2F;&#x2F; — 访问 HTTP(s) 网址</span><br><span class="line">ftp:&#x2F;&#x2F; — 访问 FTP(s) URLs</span><br><span class="line">php:&#x2F;&#x2F; — 访问各个输入&#x2F;输出流（I&#x2F;O streams）</span><br><span class="line">zlib:&#x2F;&#x2F; — 压缩流</span><br><span class="line">data:&#x2F;&#x2F; — 数据（RFC 2397）</span><br><span class="line">glob:&#x2F;&#x2F; — 查找匹配的文件路径模式</span><br><span class="line">phar:&#x2F;&#x2F; — PHP 归档</span><br><span class="line">ssh2:&#x2F;&#x2F; — Secure Shell 2</span><br><span class="line">rar:&#x2F;&#x2F; — RAR</span><br><span class="line">ogg:&#x2F;&#x2F; — 音频流</span><br><span class="line">expect:&#x2F;&#x2F; — 处理交互式的流</span><br></pre></td></tr></table></figure>
 
-<p>可以发现上面一段代码是没有做任何过滤的，看了下作者写的安全函数，只对POST传参方式进行了过滤，但是没有对$_REQUERY和$_GET方式及$_COOKIE进行过滤,所以这里就是一点很典型的注入了。。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">漏洞点：http:&#x2F;&#x2F;lilei.com&#x2F;news_show.php?id&#x3D;1&amp;page_1&#x3D;1</span><br></pre></td></tr></table></figure>
+<p>伪协议了解的较多的是包含文件，利用php://、data://、file://、zlib://等协议特性，包含恶意代码文件，或读取，或下载。</p>
+<p>本次需要了解的是phar伪协议，PHP文档中解释为PHP归档，可解压缩包，也可包含文件，读取文件等操作。而在2018年BlackHat USA大会上，来自Secarma的安全研究员Sam Thomas公布的针对PHP新型攻击技术，利用phar流包装在不使用unserialize函数的情况下触发反序列化漏洞。</p>
+<h3 id="0x01-phar文件格式"><a href="#0x01-phar文件格式" class="headerlink" title="0x01 phar文件格式"></a>0x01 phar文件格式</h3><p>phar文件格式大致有3-4个部分</p>
+<ul>
+<li><p>a stub</p>
+<p>​    stub基本结构：<?php xxx;__HALT_COMPILER();?>，前面内容不限，但是必须以__HALT_COMPILER();?&gt;结尾，否则phar扩展无法将此文件识别为phar文件。</p>
+</li>
+<li><p>manifest describing the contents</p>
+<p>​    phar文件的压缩信息，其中meta-data部分的信息会以序列化的形式存储，而此为漏洞触发关键点。(有序列化就有反序列化)</p>
+<p>![image-20201027171209011](../../../Library/Application Support/typora-user-images/image-20201027171209011.png)</p>
+</li>
+<li><p>the file contents</p>
+<p>​    被压缩的文件内容，无特殊要求下，此文件内容可任意修改。</p>
+</li>
+<li><p>a signature for verifying Phar integrity</p>
+<p>​    签名格式。</p>
+</li>
+</ul>
+<p>根据文件格式构造一个phar文件，php内置phar类处理相关操作。</p>
+<p>demo.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@unlink(<span class="string">"phar.phar"</span>);</span><br><span class="line"></span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">"phar.phar"</span>); <span class="comment">//后缀名必须为phar</span></span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(<span class="string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="comment">//设置stub</span></span><br><span class="line"></span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line"></span><br><span class="line">$phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">$phar-&gt;addFromString(<span class="string">"test.txt"</span>, <span class="string">"test"</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line"><span class="comment">//签名自动计算</span></span><br><span class="line">$phar-&gt;stopBuffering();</span><br></pre></td></tr></table></figure>
 
-<p>开启调试模式，查看程序执行的流程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload:</span><br><span class="line">	http:&#x2F;&#x2F;lilei.com&#x2F;news_show.php?id&#x3D;1%27%20union%20select%201,2,3,4,5,6,7,8,9,10,11,12,13%23&amp;page_1&#x3D;1</span><br></pre></td></tr></table></figure>
-
-<p>获取传递的参数值，并且由于传参方式未做处理，因此将注入语句全部获取</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib9vmubozj315o0u0qa0.jpg" alt="image-20200901172137279"></p>
-<p>完整带入数据库并执行</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1giba058149j31550u0108.jpg" alt="image-20200901172557060"></p>
-<p>爆出数据库、数据库版本、数据库用户</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibabi0p20j31db0u00zp.jpg" alt="image-20200901173652116"></p>
-<p>后续也不在手工，直接sqlmap一把梭了。。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibaizcv0qj31hj0u0hdt.jpg" alt="image-20200901174402867"></p>
-<h3 id="0x01-jingyan-show文件SQL注入"><a href="#0x01-jingyan-show文件SQL注入" class="headerlink" title="0x01 jingyan_show文件SQL注入"></a>0x01 jingyan_show文件SQL注入</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line">$wap_mobile=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; $_SESSION[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>)&#123;</span><br><span class="line">	$wap_mobile=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/jingyan_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//�����ȵ��û�ȡ��������</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line">$cid=$_REQUEST[<span class="string">"id"</span>];</span><br><span class="line">$page_1=$_REQUEST[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($_SESSION[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; $_REQUEST[<span class="string">'see'</span>]==<span class="string">'true'</span>)&#123;<span class="comment">//Ϊ��̨Ԥ��Ч��׼��</span></span><br><span class="line">	$pass_str=<span class="string">""</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	$pass_str=<span class="string">" and pass='1' "</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"select * from lei_jingyan where id='"</span>.$cid.<span class="string">"' "</span>.$pass_str.<span class="string">" limit 1 "</span>;</span><br><span class="line">$result=$mysqli-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($rs=$result-&gt;fetch_assoc())&#123;</span><br><span class="line">	$title=$rs[<span class="string">"title"</span>];</span><br><span class="line">	$indate=$rs[<span class="string">"indate"</span>];</span><br><span class="line">	$laiyuan=$rs[<span class="string">"laiyuan"</span>];</span><br><span class="line">	$guanjianci=$rs[<span class="string">"guanjianci"</span>];</span><br><span class="line">	$simgpaths=$rs[<span class="string">"simgpaths"</span>];</span><br><span class="line">	$hits=$rs[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	$message=$rs[<span class="string">"message"</span>];</span><br><span class="line">	$pass=$rs[<span class="string">"pass"</span>];</span><br><span class="line">	$shipin=$rs[<span class="string">"shipin"</span>];</span><br><span class="line">	$pinglun=$rs[<span class="string">"pinglun"</span>];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"���²����ڣ�"</span>;</span><br><span class="line">	$mysqli-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"update lei_jingyan set hits='"</span>.$hits.<span class="string">"' where id='"</span>.$cid.<span class="string">"' limit 1"</span>;<span class="comment">//���·�������</span></span><br><span class="line">$mysqli-&gt;query($sql);</span><br></pre></td></tr></table></figure>
-
-<p>此文件中的漏洞点同news_show文件中的漏洞点一样，还有几个同类型的漏洞点代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>sendmail    文件读取</p>
+<p>访问demo文件后，会在当前目录生成一个phar.phar文件</p>
+<p>![image-20201027180943383](../../../Library/Application Support/typora-user-images/image-20201027180943383.png)</p>
+<p>可以看见文件格式，中间部分是以序列化格式存储</p>
+<p>![image-20201027181105728](../../../Library/Application Support/typora-user-images/image-20201027181105728.png)</p>
+<h3 id="0x02-漏洞利用"><a href="#0x02-漏洞利用" class="headerlink" title="0x02 漏洞利用"></a>0x02 漏洞利用</h3><p>参考：<a href="https://blog.zsxsoft.com/post/38" target="_blank" rel="noopener">https://blog.zsxsoft.com/post/38</a></p>
+<p><a href="https://xz.aliyun.com/t/2715" target="_blank" rel="noopener">https://xz.aliyun.com/t/2715</a></p>
 
       
       <!-- reward -->
@@ -203,15 +202,13 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/10/27/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B%E5%88%9D%E6%8E%A2phar/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" rel="tag">审计学习</a></li></ul>
-
 
     </footer>
 
@@ -221,19 +218,19 @@
   
   <nav class="article-nav">
     
-      <a href="/2020/10/16/php%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+      <a href="/2020/11/15/%E8%AE%B0%E4%B8%80%E6%AC%A1OneThinkPHP%E7%9A%84%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            PHP反序列化之基础学习
+            记一次OneThinkPHP的审计学习
           
         </div>
       </a>
     
     
-      <a href="/2020/08/18/Image%E5%9B%BE%E7%89%87%E5%BA%93%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/" class="article-nav-link">
+      <a href="/2020/10/16/Typrcho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Image图片库漏洞总结</div>
+        <div class="article-nav-title">Typrcho反序列化漏洞学习</div>
       </a>
     
   </nav>
