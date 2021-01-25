@@ -2856,4 +2856,40 @@
         <tag>docker基础</tag>
       </tags>
   </entry>
+  <entry>
+    <title>xray基本方法</title>
+    <url>/2020/06/14/xray%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs32movp9j31c00u0woy.jpg" alt="30"></p>
+<a id="more"></a>
+
+<h3 id="0x00-常规扫描"><a href="#0x00-常规扫描" class="headerlink" title="0x00 常规扫描"></a>0x00 常规扫描</h3><h4 id="爬虫扫描"><a href="#爬虫扫描" class="headerlink" title="爬虫扫描"></a>爬虫扫描</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">webscan --basic-crawler http:&#x2F;&#x2F;testphp.vulnweb.com&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs3sm3oz2j31360ca7ox.jpg" alt="image-20200614204439998"></p>
+<h4 id="代理模式扫描"><a href="#代理模式扫描" class="headerlink" title="代理模式扫描"></a>代理模式扫描</h4><p>浏览器安装代理插件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">genca 生成证书  &#x2F;&#x2F;工具目录会生成两个文件</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs4nm4dc1j30pg02mdiu.jpg" alt="image-20200614211430435"></p>
+<p>扫描命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">webscan --listen 127.0.0.1:8888 --html-output 1.html</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs4x6y9rhj314k0pkhdt.jpg" alt="image-20200614212342758"></p>
+<p>最后配置浏览器监听端口</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs4y6z8d3j31f20j2acc.jpg" alt="image-20200614212441201"></p>
+<p>会根据在浏览器点击来进行扫描</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs50k4ukvj31ys0q6e81.jpg" alt="image-20200614212656376"></p>
+<h4 id="联动Burp"><a href="#联动Burp" class="headerlink" title="联动Burp"></a>联动Burp</h4><p>在burp配置一下选项即可</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs5omcvmgj313t0u0guu.jpg" alt="image-20200614215004230"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfs5p81t1yj30vg0okdij.jpg" alt="image-20200614215039830"></p>
+<p>burp 被动流量转发插件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;c0ny1&#x2F;passive-scan-client&#x2F;releases</span><br></pre></td></tr></table></figure>
+
+<p>听说可以使用awcs+bp+python脚本(自己写)组合成一个自动化漏洞挖掘工具，暂时不懂方法，留个坑</p>
+]]></content>
+      <categories>
+        <category>web工具</category>
+      </categories>
+      <tags>
+        <tag>被动扫描</tag>
+      </tags>
+  </entry>
 </search>
