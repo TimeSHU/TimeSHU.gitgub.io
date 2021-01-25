@@ -1025,7 +1025,7 @@
 <p><a href="https://blog.csdn.net/weixin_44604541/article/details/108921381" target="_blank" rel="noopener">https://blog.csdn.net/weixin_44604541/article/details/108921381</a></p>
 ]]></content>
       <categories>
-        <category>jwt</category>
+        <category>web</category>
       </categories>
       <tags>
         <tag>会话传递</tag>
@@ -1329,10 +1329,10 @@
 <p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
 ]]></content>
       <categories>
-        <category>业务安全</category>
+        <category>web</category>
       </categories>
       <tags>
-        <tag>web</tag>
+        <tag>业务安全</tag>
       </tags>
   </entry>
   <entry>
@@ -1945,7 +1945,7 @@
 <p><a href="https://www.cnblogs.com/momoyan/p/12437312.html" target="_blank" rel="noopener">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
 ]]></content>
       <categories>
-        <category>docker学习</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>docker</tag>
@@ -1991,8 +1991,11 @@
     <url>/2021/01/23/SMTP%E5%AF%86%E7%A0%81%E9%87%8D%E7%BD%AE%E6%BC%8F%E6%B4%9E%E7%8E%AF%E5%A2%83/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hgdxohhj30zk0m8109.jpg" alt="30"></p>
 ]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
       <tags>
-        <tag>docker环境搭建</tag>
+        <tag>环境搭建</tag>
       </tags>
   </entry>
   <entry>
@@ -2407,7 +2410,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmg75m8vnj315m0u0tpi.jpg" alt="image-20210113224236587"></p>
 ]]></content>
       <categories>
-        <category>docker进阶</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>Compose</tag>
@@ -2561,7 +2564,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmfnddr91j31gr0u0djy.jpg" alt="image-20210113222208024"></p>
 ]]></content>
       <categories>
-        <category>docker入门</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>容器数据卷,Dockerfile</tag>
@@ -2735,7 +2738,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir37mp70j30wm0rsacl.jpg" alt="image-20210110174925513"></p>
 ]]></content>
       <categories>
-        <category>docker进阶</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>Swarm、集群</tag>
@@ -2857,7 +2860,7 @@
 
 ]]></content>
       <categories>
-        <category>docker入门</category>
+        <category>docker</category>
       </categories>
       <tags>
         <tag>docker基础</tag>
