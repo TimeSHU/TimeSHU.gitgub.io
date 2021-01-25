@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    PHP反序列化之初探phar |  Time
+    1 |  Time
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -42,7 +42,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-PHP反序列化之初探phar" class="article article-type-post" itemscope
+  <article id="post-1" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -50,7 +50,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  PHP反序列化之初探phar
+  1
 </h1>
  
 
@@ -59,8 +59,8 @@
 
     
     <div class="article-meta">
-      <a href="/2020/10/27/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B%E5%88%9D%E6%8E%A2phar/" class="article-date">
-  <time datetime="2020-10-27T01:56:43.734Z" itemprop="datePublished">2020-10-27</time>
+      <a href="/2021/01/09/1/" class="article-date">
+  <time datetime="2021-01-09T15:14:30.803Z" itemprop="datePublished">2021-01-09</time>
 </a>
       
       
@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">579</span>
+            <span class="post-count">1.1k</span>
         </span>
     </span>
 
@@ -79,7 +79,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">2 分钟</span>
+            <span class="post-count">4 分钟</span>
         </span>
     </span>
 </div>
@@ -104,40 +104,100 @@
       
 
       
-      <p><img src="../img/91.jpg" alt="91"></p>
+      <p>title: docker进阶学习(一)<br>date: 2021-01-09 23:14:30<br>categories:docker进阶<br>tags:docker网络</p>
+<p>/img/x.jpg</p>
+<p>/img/x.jpg</p>
 <a id="more"></a>
 
-<h3 id="0x00-伪协议"><a href="#0x00-伪协议" class="headerlink" title="0x00 伪协议"></a>0x00 伪协议</h3><p>PHP伪协议大致有如下几种</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">file:&#x2F;&#x2F; — 访问本地文件系统</span><br><span class="line">http:&#x2F;&#x2F; — 访问 HTTP(s) 网址</span><br><span class="line">ftp:&#x2F;&#x2F; — 访问 FTP(s) URLs</span><br><span class="line">php:&#x2F;&#x2F; — 访问各个输入&#x2F;输出流（I&#x2F;O streams）</span><br><span class="line">zlib:&#x2F;&#x2F; — 压缩流</span><br><span class="line">data:&#x2F;&#x2F; — 数据（RFC 2397）</span><br><span class="line">glob:&#x2F;&#x2F; — 查找匹配的文件路径模式</span><br><span class="line">phar:&#x2F;&#x2F; — PHP 归档</span><br><span class="line">ssh2:&#x2F;&#x2F; — Secure Shell 2</span><br><span class="line">rar:&#x2F;&#x2F; — RAR</span><br><span class="line">ogg:&#x2F;&#x2F; — 音频流</span><br><span class="line">expect:&#x2F;&#x2F; — 处理交互式的流</span><br></pre></td></tr></table></figure>
+<!--more-->
 
-<p>伪协议了解的较多的是包含文件，利用php://、data://、file://、zlib://等协议特性，包含恶意代码文件，或读取，或下载。</p>
-<p>本次需要了解的是phar伪协议，PHP文档中解释为PHP归档，可解压缩包，也可包含文件，读取文件等操作。而在2018年BlackHat USA大会上，来自Secarma的安全研究员Sam Thomas公布的针对PHP新型攻击技术，利用phar流包装在不使用unserialize函数的情况下触发反序列化漏洞。</p>
-<h3 id="0x01-phar文件格式"><a href="#0x01-phar文件格式" class="headerlink" title="0x01 phar文件格式"></a>0x01 phar文件格式</h3><p>phar文件格式大致有3-4个部分</p>
-<ul>
-<li><p>a stub</p>
-<p>​    stub基本结构：<?php xxx;__HALT_COMPILER();?>，前面内容不限，但是必须以__HALT_COMPILER();?&gt;结尾，否则phar扩展无法将此文件识别为phar文件。</p>
-</li>
-<li><p>manifest describing the contents</p>
-<p>​    phar文件的压缩信息，其中meta-data部分的信息会以序列化的形式存储，而此为漏洞触发关键点。(有序列化就有反序列化)</p>
-<p>![image-20201027171209011](../../../Library/Application Support/typora-user-images/image-20201027171209011.png)</p>
-</li>
-<li><p>the file contents</p>
-<p>​    被压缩的文件内容，无特殊要求下，此文件内容可任意修改。</p>
-</li>
-<li><p>a signature for verifying Phar integrity</p>
-<p>​    签名格式。</p>
-</li>
-</ul>
-<p>根据文件格式构造一个phar文件，php内置phar类处理相关操作。</p>
-<p>demo.php</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@unlink(<span class="string">"phar.phar"</span>);</span><br><span class="line"></span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">"phar.phar"</span>); <span class="comment">//后缀名必须为phar</span></span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(<span class="string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="comment">//设置stub</span></span><br><span class="line"></span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line"></span><br><span class="line">$phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">$phar-&gt;addFromString(<span class="string">"test.txt"</span>, <span class="string">"test"</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line"><span class="comment">//签名自动计算</span></span><br><span class="line">$phar-&gt;stopBuffering();</span><br></pre></td></tr></table></figure>
+<h1 id="Docker网络"><a href="#Docker网络" class="headerlink" title="Docker网络"></a>Docker网络</h1><h2 id="了解Dcoker0"><a href="#了解Dcoker0" class="headerlink" title="了解Dcoker0"></a>了解Dcoker0</h2><p>启动两个容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -P --name tomcat1 tomcat</span><br><span class="line">docker run -d -P --name tomcat2 tomcat</span><br></pre></td></tr></table></figure>
 
-<p>访问demo文件后，会在当前目录生成一个phar.phar文件</p>
-<p>![image-20201027180943383](../../../Library/Application Support/typora-user-images/image-20201027180943383.png)</p>
-<p>可以看见文件格式，中间部分是以序列化格式存储</p>
-<p>![image-20201027181105728](../../../Library/Application Support/typora-user-images/image-20201027181105728.png)</p>
-<h3 id="0x02-漏洞利用"><a href="#0x02-漏洞利用" class="headerlink" title="0x02 漏洞利用"></a>0x02 漏洞利用</h3><p>参考：<a href="https://blog.zsxsoft.com/post/38" target="_blank" rel="noopener">https://blog.zsxsoft.com/post/38</a></p>
-<p><a href="https://xz.aliyun.com/t/2715" target="_blank" rel="noopener">https://xz.aliyun.com/t/2715</a></p>
+<p>查看tomcat1和tomcat2容器的ip地址</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmeb14nj31he0liak5.jpg" alt="image-20210110001027068"></p>
+<p>查看本地网卡，会多出两个容器的网卡并且是成双成对的出现</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm5idpwj31by0u04c5.jpg" alt="image-20210110000711696"></p>
+<p>而此技术为evth-pair虚拟网络，下图是docker容器之间的网络通讯图，docker在创建容器时会使用evth-pair虚拟出网络接口绑定在容器和docker0上，而所有的docker容器网络之间的访问通过docker0作为路由器进行通讯。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm7b0i2j31a20u0acu.jpg" alt="image-20210109234314754"></p>
+<p>结论：tomcat1和tomcat2 是共用一个路由器 docker0</p>
+<p>所有的容器不指定网络的情况下，都是docker0路由，docker会给我们的容器分配一个默认可以的IP</p>
+<p>而Docker使用的是Linux的桥接，宿主机中Dokcer容器的网桥是Docker0。</p>
+<p>Docker中所有的网络接口使用的都是虚拟的，虚拟转发效率高。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzma199ij31410u00v8.jpg" alt="image-20210109235452716"></p>
+<h2 id="容器互联–link"><a href="#容器互联–link" class="headerlink" title="容器互联–link"></a>容器互联–link</h2><p>常规容器场景中，容器之间互通使用的是IP地址。</p>
+<p>使用tomcat01 ping tomcat02 IP地址可通</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm8jp10j317k0digqf.jpg" alt="image-20210110003041402"></p>
+<p>但使用tomcat01 ping tomcat02容器名则不通</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmaxv3yj310s04awfj.jpg" alt="image-20210110003210850"></p>
+<blockquote>
+<p>容器IP在某些场景会更换，如何在更换IP后，项目不重启的情况下使用容器名(服务)来访问容器？</p>
+</blockquote>
+<p>此处可使用<code>--link</code>绑定容器名进行访问</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">启动新容器并绑定tomcat01</span><br><span class="line">	docker run -d -P --name tomcat03 --link tomcat01 tomcat</span><br></pre></td></tr></table></figure>
+
+<p>使用tomcat03 ping tomcat01 可通</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm9mwcbj311y0cqtd8.jpg" alt="image-20210110003535649"></p>
+<p>但反向ping  tomcat01 ping tomcat03 不通</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmbdcmuj310c042gmr.jpg" alt="image-20210110003615993"></p>
+<p>而此原因是当使用<code>--link</code>时，是将tomcat01和IP写入到了tomcat03的hosts文件中，并进行绑定，当我们<code>ping</code> tomcat01时就是在<code>ping</code> tomcat01的IP地址，而tomcat01的hosts配置文件中未写入tomcat03 配置文件，所以<code>ping</code>不通。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm6pv7jj313w0myn39.jpg" alt="image-20210110003932893"></p>
+<p>结论：<code>--link</code>操作其实就是写入hosts配置文件进行IP绑定。若想tomcat01<code>ping</code>通tomcat03，重新生成容器绑定即可，但此方法效率较低，不推荐使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">查看docker所有网卡信息</span><br><span class="line">	docker netwrok </span><br><span class="line">	</span><br><span class="line">移除docker网络</span><br><span class="line">	docker network rm id</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="容器互联–自定义网络"><a href="#容器互联–自定义网络" class="headerlink" title="容器互联–自定义网络"></a>容器互联–自定义网络</h2><p>网络模式</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bridge			桥接模式(docker默认使用此模式，自定义网络也推荐使用此模式)</span><br><span class="line">none				不配置网络</span><br><span class="line">host				宿主机共享网络</span><br><span class="line">container		容器网络互通(使用较少，局限性大)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">docker0特点： 容器不指定自定义网络，则默认使用。域名不能访问，虽可使用--link，但效率不高</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看docker网卡信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker network</span><br><span class="line">	  connect     Connect a container to a network</span><br><span class="line">  	create      Create a network</span><br><span class="line">  	disconnect  Disconnect a container from a network</span><br><span class="line">    inspect     Display detailed information on one or more networks</span><br><span class="line">    ls          List networks</span><br><span class="line">    prune       Remove all unused networks</span><br><span class="line">    rm          Remove one or more networks</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network ls</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm7o838j30ng05q3zp.jpg" alt="image-20210110010228773"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_8_centos ~]# docker network create --help</span><br><span class="line"></span><br><span class="line">Usage:  docker network create [OPTIONS] NETWORK</span><br><span class="line"></span><br><span class="line">Create a network</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --attachable           Enable manual container attachment</span><br><span class="line">      --aux-address map      Auxiliary IPv4 or IPv6 addresses used by Network driver (default map[])</span><br><span class="line">      --config-from string   The network from which to copy the configuration</span><br><span class="line">      --config-only          Create a configuration only network</span><br><span class="line">  -d, --driver string        Driver to manage the Network (default &quot;bridge&quot;)</span><br><span class="line">      --gateway strings      IPv4 or IPv6 Gateway for the master subnet</span><br><span class="line">      --ingress              Create swarm routing-mesh network</span><br><span class="line">      --internal             Restrict external access to the network</span><br><span class="line">      --ip-range strings     Allocate container ip from a sub-range</span><br><span class="line">      --ipam-driver string   IP Address Management Driver (default &quot;default&quot;)</span><br><span class="line">      --ipam-opt map         Set IPAM driver specific options (default map[])</span><br><span class="line">      --ipv6                 Enable IPv6 networking</span><br><span class="line">      --label list           Set metadata on a network</span><br><span class="line">  -o, --opt map              Set driver specific options (default map[])</span><br><span class="line">      --scope string         Control the network&#39;s scope</span><br><span class="line">      --subnet strings       Subnet in CIDR format that represents a network segment</span><br></pre></td></tr></table></figure>
+
+<p>创建自定义网络</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network create --driver bridge(桥接) mynet(网卡名称[自己定义])  --subnet 192.168.0.0/16(子网掩码) --gateway 192.168.0.1(网关)</span><br></pre></td></tr></table></figure>
+
+<p>创建成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmcc7v4j31ic0caade.jpg" alt="image-20210110011004871"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network inspect mynet  查看自定义网络详细信息</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm84rlnj31420u043e.jpg" alt="image-20210110011102636"></p>
+<p>启动两个容器使用自定义网络,测试是否可使用域名互通</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">启动</span><br><span class="line">  docker run -d -P --name tpomcat-net-01 --net mynet tomcat</span><br><span class="line">  docker run -d -P --name tpomcat-net-02 --net mynet tomcat</span><br><span class="line">  </span><br><span class="line">互ping</span><br><span class="line">	docker exec -it tpomcat-net-01 ping tpomcat-net-02</span><br><span class="line">	docker exec -it tpomcat-net-02 ping tpomcat-net-01</span><br></pre></td></tr></table></figure>
+
+<p>可通</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmdj22uj31bs0nsgud.jpg" alt="image-20210110011630895"></p>
+<p>再次查看mynet 网卡详细信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network inspect mynet</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmahszmj30yd0u013f.jpg" alt="image-20210110011801205"></p>
+<blockquote>
+<p>好处：不同集群使用不同网络，网络之间互相隔离，互不相干！</p>
+</blockquote>
+<h2 id="网络连通"><a href="#网络连通" class="headerlink" title="网络连通"></a>网络连通</h2><blockquote>
+<p>容器跨网段访问，不是将两个网络打通，而是一个容器去访问另外一个网络。(一台服务器双网卡模式)</p>
+</blockquote>
+<p><code>例：docker0网卡下的tomcat01 互通 mynet网卡下所有容器(tomcat-net-01[02])</code></p>
+<p> 常规模式下无法访问</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm90x0hj315403mjsa.jpg" alt="image-20210110013250601"></p>
+<p>我们使用<code>docker network connect docker network connect 网卡名 容器名</code> 命令可将tomcat01 添加到mynet网卡中，实现互通</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker network connect mynet tomcat01</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzm5v2rqj30w60u0k4x.jpg" alt="image-20210110013744291"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmbvz2pj31ly0g8jyw.jpg" alt="image-20210110013818281"></p>
+<blockquote>
+<p>互通测试ok</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmcxy6fj31bz0u0n90.jpg" alt="image-20210110013957776"></p>
+<p>PS：docker学习来自B站狂神说JAVA</p>
 
       
       <!-- reward -->
@@ -202,7 +262,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2020/10/27/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B%E5%88%9D%E6%8E%A2phar/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/01/09/1/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -218,19 +278,19 @@
   
   <nav class="article-nav">
     
-      <a href="/2020/11/15/%E8%AE%B0%E4%B8%80%E6%AC%A1OneThinkPHP%E7%9A%84%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+      <a href="/2021/01/09/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%80)/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            记一次OneThinkPHP的审计学习（暂未更新）
+            docker进阶学习(一)
           
         </div>
       </a>
     
     
-      <a href="/2020/10/16/Typrcho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+      <a href="/2020/12/24/docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Typrcho反序列化漏洞学习</div>
+        <div class="article-nav-title">docker基础学习</div>
       </a>
     
   </nav>
