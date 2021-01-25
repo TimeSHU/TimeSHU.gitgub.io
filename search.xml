@@ -2134,6 +2134,8 @@
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hi0bvxdj31c00u0grz.jpg" alt="26"></p>
 <a id="more"></a>
 
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29807319&auto=1&height=66"></iframe>
+
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近在阅读黑客秘籍-渗透测试实用指南第二版，在准备环境时发已经出了第三版，所以在本博客作为记录，学习一章便更新一篇作为阅后总结。</p>
 <p>本书第三版是以红队视角进行编写，学完本书后希望能对红队有一个完整的了解。</p>
 <p>借用B站狂神说JAVA的一句话：只要学不死就往死里学！</p>
@@ -2408,6 +2410,456 @@
       </categories>
       <tags>
         <tag>Compose</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker入门学习(二)</title>
+    <url>/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hh5xc16j31c00u0k0c.jpg" alt="30"></p>
+<a id="more"></a>
+
+<h1 id="容器数据卷"><a href="#容器数据卷" class="headerlink" title="容器数据卷"></a>容器数据卷</h1><p>容器的持久化和同步操作。容器数据也是可以共享的</p>
+<blockquote>
+<p>方式一：直接使用命令挂载目录  -v </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -it -v 主机目录:容器目录</span><br><span class="line"></span><br><span class="line">docker run -it -v &#x2F;home&#x2F;ceshi:&#x2F;home centos &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+
+<p>通过docker inspect 容器id 查看是否挂载成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul1wjnvj30tr0az75k.jpg" alt="image-20210107211358469"></p>
+<p>测试文件同步</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhuky5dddj30ti0a9gof.jpg" alt="image-20210107211425572"></p>
+<p>使用容器卷后，以后修改只需要在本地进行修改，容器内会自动同步。</p>
+<blockquote>
+<p>实战：安装MySQL</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载容器</span><br><span class="line">	docker pull mysql:5.7</span><br><span class="line"></span><br><span class="line">运行容器（挂载目录）</span><br><span class="line">	docker run -d -p 3310:3306 -v &#x2F;home&#x2F;mysql&#x2F;conf:&#x2F;etc&#x2F;mysql&#x2F;conf.d -v &#x2F;home&#x2F;mysql&#x2F;data:&#x2F;var&#x2F;lib&#x2F;mysql -e MYSQL_ROOT_PASSWORD&#x3D;qihukeji360@123 --name mysql01 mysql:5.7</span><br><span class="line">	</span><br><span class="line">-d  后台运行</span><br><span class="line">-p	端口映射</span><br><span class="line">-v  卷挂载</span><br><span class="line">-e  环境配置</span><br><span class="line">--name  容器名字</span><br></pre></td></tr></table></figure>
+
+<p>容器即使被删除，数据仍在本地，即容器数据持久化功能！</p>
+<blockquote>
+<p>具名挂载和匿名挂载</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d -P --name nginx01 -v &#x2F;etc&#x2F;nginx nginx 匿名挂载(不建议使用)</span><br><span class="line"></span><br><span class="line">docker run -d -P --name nginx01 -v juming:&#x2F;etc&#x2F;nginx nginx 具名挂载</span><br><span class="line"></span><br><span class="line">docker volume 									</span><br><span class="line">docker volume ls								查看卷状态</span><br><span class="line">docker volumre inspect juming		查看具名挂载路径</span><br></pre></td></tr></table></figure>
+
+<p>拓展：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ro		readonly		只读</span><br><span class="line">rw		readwrite		可读可写</span><br><span class="line"></span><br><span class="line">如下挂载为容器被设置的读写权限</span><br><span class="line">docker run -d -P --name nginx01 -v juming:&#x2F;etc&#x2F;nginx:ro nginx</span><br><span class="line">docker run -d -P --name nginx01 -v juming:&#x2F;etc&#x2F;nginx:rw nginx</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Dockerfile 构建docker镜像的构建文件，命令脚本</p>
+</blockquote>
+<p>通过此脚本可生成镜像，一个命令为一层镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM centos		#已centos为基础镜像</span><br><span class="line"></span><br><span class="line">VOLUME [&quot;volume01&quot;,&quot;volume02&quot;]	#挂载目录</span><br><span class="line"></span><br><span class="line">CMD echo &quot;-------end------&quot;	#输出</span><br><span class="line"></span><br><span class="line">CMD &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">构建命令</span><br><span class="line">	docker build -t centos_time:1.0 .</span><br></pre></td></tr></table></figure>
+
+<p>假设构建镜像时候没有挂载卷，要手动镜像挂载 -v 卷名:容器内路径!</p>
+<blockquote>
+<p>镜像容器卷同步</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">启动第一个容器</span><br><span class="line">	docker run -it --name centos01 centos_time:1.0 &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukwnnyxj315w04edh0.jpg" alt="image-20210108192701044"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">启动第二个容器</span><br><span class="line">	docker run -it --name centos02 --volumes-from centos01 centos_time:1.0</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul1dhdrj31fm0lejxa.jpg" alt="image-20210108194944788"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">启动第三个容器</span><br><span class="line">	docker run -it --name centos03 --volumes-from centos01 centos_time:1.0</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukxlfcwj30x00b8770.jpg" alt="image-20210108200102595"></p>
+<blockquote>
+<p>多个MySQL实现数据共享</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">第一个：</span><br><span class="line">	docker run -d -p 3306:3306 -v &#x2F;etc&#x2F;mysql&#x2F;conf.d -v &#x2F;var&#x2F;lib&#x2F;mysql -e MYSQL_ROOT_PASSWORD&#x3D;12345 --name mysql01 mysql:5.7</span><br><span class="line">	</span><br><span class="line">第二个：</span><br><span class="line">	docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD&#x3D;12345 --name mysql02 --volumes-from mysql01 mysql:5.7</span><br></pre></td></tr></table></figure>
+
+<p>容器之间配置信息的传递，数据卷容器的生命周期一直持续到没有容器使用为止</p>
+<p>但是一旦持久化到本地，那么本地的数据是不会被删除的。</p>
+<h1 id="Dockerfile构建"><a href="#Dockerfile构建" class="headerlink" title="Dockerfile构建"></a>Dockerfile构建</h1><p>构建步骤</p>
+<p>1、编写dockerfile文件</p>
+<p>2、docker build 构建成一个镜像</p>
+<p>3、docker run 运行镜像</p>
+<p>4、docker push 发布镜像</p>
+<blockquote>
+<p>Dockerfile命令</p>
+</blockquote>
+<p> <img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul0vsnsj316a0fqdjb.jpg" alt="image-20210109135646067"></p>
+<blockquote>
+<p>构建自己的docker镜像</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM centos													#以centos为基础镜像</span><br><span class="line">MAINTAINER	Time&lt;89273238@qq.com&gt;		#作者信息</span><br><span class="line"></span><br><span class="line">ENV MYPATH &#x2F;usr&#x2F;local								#设置环境</span><br><span class="line">WORKDIR $MYPATH											#获取镜像工作目录</span><br><span class="line">RUN yum -y install vim net-tools 		#安装基础工具</span><br><span class="line">RUN echo &quot;-------end-------&quot;				#输出</span><br><span class="line">EXPOSE 80  													#映射到外部端口</span><br><span class="line">CMD &#x2F;bin&#x2F;bash												#终端</span><br></pre></td></tr></table></figure>
+
+
+
+<p>docker history 镜像id  可查看历史镜像构建的操作</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukw2v48j31b00u018f.jpg" alt="image-20210109150301134"></p>
+<h2 id="CMD-和-ENTRYPOINT区别"><a href="#CMD-和-ENTRYPOINT区别" class="headerlink" title="CMD 和 ENTRYPOINT区别"></a>CMD 和 ENTRYPOINT区别</h2><h3 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM centos</span><br><span class="line">CMD [&#39;ls&#39;,&#39;-la&#39;]</span><br></pre></td></tr></table></figure>
+
+<p>构建后，当我们执行 <code>docker run 32bb736dabe2 ls -la</code> 时命令正常运行</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul0eoguj31040qmn4x.jpg" alt="image-20210109151327484"></p>
+<p>当我们执行<code>docker run 32bb736dabe2 -ll</code>报错</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul2cnpyj31je03ctaf.jpg" alt="image-20210109151414459"></p>
+<p>结论：CMD下会使用<code>-ll</code>替换掉<code>ls -la</code>命令，而不是追加成<code>ls -l-ll</code>命令</p>
+<h3 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM centos</span><br><span class="line">ENTRYPOINT [&quot;ls&quot;,&quot;-a&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>正常运行</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukuz1edj30t20s2ac5.jpg" alt="image-20210109152529188"></p>
+<p>正常运行，使用ENTRYPOINT构建的镜像，会将<code>docker run cc21b9ec59dd -ll</code> 追加到命令中，最后执行的命令就是<code>ls -a -ll</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukz6s9xj30xo0qkwm8.jpg" alt="image-20210109152616451"></p>
+<h2 id="构建Tomcat镜像"><a href="#构建Tomcat镜像" class="headerlink" title="构建Tomcat镜像"></a>构建Tomcat镜像</h2><p>1、准备Tomcat安装包和JDK安装包</p>
+<p>2、构建镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM centos																	#基础镜像</span><br><span class="line">MAINTAINER	Time&lt;xxxx@qq.com&gt;								#作者信息</span><br><span class="line"></span><br><span class="line">ENV MYPATH &#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41&#x2F;webapps								#环境目录</span><br><span class="line">WORKDIR $MYPATH															#镜像工作目录设置</span><br><span class="line"></span><br><span class="line">ADD jdk-linux-x64.tar.gz &#x2F;usr&#x2F;local					#添加jdk包并解压到目录中</span><br><span class="line">ADD apache-tomcat-9.0.41.tar.gz &#x2F;usr&#x2F;local	#添加Tomcat包并解压到目录中</span><br><span class="line"></span><br><span class="line">RUN yum install -y vim net-tools						#安装基础工具</span><br><span class="line"></span><br><span class="line">ENV JAVA_HOME &#x2F;usr&#x2F;local&#x2F;jdk1.8.0_131				#设置java环境</span><br><span class="line">ENV CLASSPATH $JAVA_HOME&#x2F;lib&#x2F;dt.jar:$JAVA_HOME&#x2F;lib&#x2F;tools.jar</span><br><span class="line">ENV CATALINA_HOME &#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41		#设置Tomcat环境</span><br><span class="line">ENV CATALINA_BASH &#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41</span><br><span class="line">ENV PATH $PATH:$JAVA_HOME&#x2F;bin:$CATALINA_HOME&#x2F;lib:CATALINA_HOME&#x2F;bin		#添加到系统环境中</span><br><span class="line"></span><br><span class="line">EXPOSE 8080				#映射端口</span><br><span class="line">CMD &#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41&#x2F;bin&#x2F;startup.sh &amp;&amp; tail -F &#x2F;usr&#x2F;local&#x2F;apache-tomcat-	9.0.41&#x2F;logs&#x2F;catalina.out		#启动tomcat并设置日志</span><br></pre></td></tr></table></figure>
+
+<p>构建镜像命令。注意：tomcat和java需上传到同目录下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker build -t tomcat_time:1.0 .</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul3068dj317r0u0k0w.jpg" alt="image-20210109224359048"></p>
+<p>构建成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukzihvwj31400u0n7b.jpg" alt="image-20210109224205125"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukuglzrj313e0kwwm0.jpg" alt="image-20210109224422646"></p>
+<p>启动环境</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d -p 9090:8080 --name mytomcat -v &#x2F;root&#x2F;1&#x2F;time:&#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41&#x2F;webapps&#x2F;time(挂载网站根目录)  -v &#x2F;root&#x2F;1&#x2F;logs:&#x2F;usr&#x2F;local&#x2F;apache-tomcat-9.0.41&#x2F;logs(挂载日志目录)  tomcat_time:1.0</span><br></pre></td></tr></table></figure>
+
+<p>启动成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhul04ympj31io0ac78b.jpg" alt="image-20210109225951682"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhuktvm3vj31910u0nbn.jpg" alt="image-20210109230011025"></p>
+<p>目录挂载也成功，后续本地目录和容器目录会进行同步</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukyicnpj31fi08c773.jpg" alt="image-20210109230144487"></p>
+<h2 id="发布镜像到docker-hub"><a href="#发布镜像到docker-hub" class="headerlink" title="发布镜像到docker hub"></a>发布镜像到docker hub</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker login -u name   #登录docker hub账户</span><br></pre></td></tr></table></figure>
+
+<p>以下为登录成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhuktdw2lj317s096q56.jpg" alt="image-20210109230609451"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">上传镜像之前需将镜像命令改为如下格式</span><br><span class="line">	docker账号&#x2F;镜像名称</span><br><span class="line"></span><br><span class="line">给镜像生成一个新的tag名称</span><br><span class="line">	docker tag 56b45f5db054 docker账号&#x2F;tomcat_time:1.0</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukvaxqij313y0g844g.jpg" alt="image-20210109230904255"></p>
+<p>上传镜像</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker push docker账号&#x2F;tomcat_time:1.0</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhukszthxj30xy08wgo4.jpg" alt="image-20210109231212802"></p>
+<h2 id="实战搭建s2-061漏洞环境"><a href="#实战搭建s2-061漏洞环境" class="headerlink" title="实战搭建s2-061漏洞环境"></a>实战搭建s2-061漏洞环境</h2><p>Dockerfile</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM tomcat:9</span><br><span class="line"></span><br><span class="line">MAINTAINER  Time</span><br><span class="line"></span><br><span class="line">ENV MYPATH &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps</span><br><span class="line">WORKDIR $MYPATH</span><br><span class="line"></span><br><span class="line">COPY SimpleStruts.war &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;webapps&#x2F;</span><br><span class="line"></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line">CMD [&quot;&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;catalina.sh&quot;,&quot;run&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>构建命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker build -t s2-061_time:1.0 .</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="坑点"><a href="#坑点" class="headerlink" title="坑点"></a>坑点</h3><p>在启动tomcat时踩坑，当时写入以下两种命令时，一直无法启动。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CMD chmod a+x &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;*.sh &amp;&amp; sudo sh &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;startup.sh</span><br><span class="line">和</span><br><span class="line">CMD sudo sh &#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;startup.sh</span><br></pre></td></tr></table></figure>
+
+<p>最后百度一波，官网给出解答，当docker命令无法自启动tomcat时，写入以下命令即可。正确环境在Dockefile中给出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CMD [&quot;&#x2F;usr&#x2F;local&#x2F;tomcat&#x2F;bin&#x2F;catalina.sh&quot;,&quot;run&quot;]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d -P --name s2-061 s2-061_time:1.0</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmfne57gxj31iy0bsn09.jpg" alt="image-20210113222005878"></p>
+<blockquote>
+<p>Payload：SimpleStruts/S2061.action?id=%25%7b8%2a8%7d</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmfnddr91j31gr0u0djy.jpg" alt="image-20210113222208024"></p>
+]]></content>
+      <categories>
+        <category>docker入门</category>
+      </categories>
+      <tags>
+        <tag>容器数据卷,Dockerfile</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker进阶学习(三)</title>
+    <url>/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%89)/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hhfusgsj31c00u0txk.jpg" alt="30"></p>
+<a id="more"></a>
+
+<h1 id="Docker-Swarm"><a href="#Docker-Swarm" class="headerlink" title="Docker Swarm"></a>Docker Swarm</h1><blockquote>
+<p>Swarm是docker 集群模式，主要分为管理者和工作者模式。</p>
+</blockquote>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34cgxcj31ej0u00yh.jpg" alt="image-20210110044017241"></p>
+<p>集群环境中，Manager(管理者)最少为三台，而Manager下管理多台Worker(工作者)</p>
+<h2 id="搭建集群"><a href="#搭建集群" class="headerlink" title="搭建集群"></a>搭建集群</h2><blockquote>
+<p>准备至少四台服务器</p>
+</blockquote>
+<p>查看<code>swarm</code>命令帮助</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@VM_0_8_centos ~]# docker swarm --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm COMMAND</span><br><span class="line"></span><br><span class="line">Manage Swarm</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  ca          Display and rotate the root CA</span><br><span class="line">  init        Initialize a swarm												#初始化一个节点</span><br><span class="line">  join        Join a swarm as a node and&#x2F;or manager			#加入一个节点</span><br><span class="line">  join-token  Manage join tokens												#生成manager节点</span><br><span class="line">  leave       Leave the swarm														#离开集群节点</span><br><span class="line">  unlock      Unlock swarm</span><br><span class="line">  unlock-key  Manage the unlock key</span><br><span class="line">  update      Update the swarm</span><br></pre></td></tr></table></figure>
+
+<p>初始化节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@VM_0_8_centos ~]# docker swarm init --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm init [OPTIONS]</span><br><span class="line"></span><br><span class="line">Initialize a swarm</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --advertise-addr string                  Advertised address (format: &lt;ip|interface&gt;[:port])  # IP地址</span><br><span class="line">      --autolock                               Enable manager autolocking (requiring an unlock</span><br><span class="line">                                               key to start a stopped manager)</span><br><span class="line">      --availability string                    Availability of the node</span><br><span class="line">                                               (&quot;active&quot;|&quot;pause&quot;|&quot;drain&quot;) (default &quot;active&quot;)</span><br><span class="line">      --cert-expiry duration                   Validity period for node certificates</span><br><span class="line">                                               (ns|us|ms|s|m|h) (default 2160h0m0s)</span><br><span class="line">      --data-path-addr string                  Address or interface to use for data path traffic</span><br><span class="line">                                               (format: &lt;ip|interface&gt;)</span><br><span class="line">      --data-path-port uint32                  Port number to use for data path traffic (1024 -</span><br><span class="line">                                               49151). If no value is set or is set to 0, the</span><br><span class="line">                                               default port (4789) is used.</span><br><span class="line">      --default-addr-pool ipNetSlice           default address pool in CIDR format (default [])</span><br><span class="line">      --default-addr-pool-mask-length uint32   default address pool subnet mask length (default 24)</span><br><span class="line">      --dispatcher-heartbeat duration          Dispatcher heartbeat period (ns|us|ms|s|m|h)</span><br><span class="line">                                               (default 5s)</span><br><span class="line">      --external-ca external-ca                Specifications of one or more certificate signing</span><br><span class="line">                                               endpoints</span><br><span class="line">      --force-new-cluster                      Force create a new cluster from current state</span><br><span class="line">      --listen-addr node-addr                  Listen address (format: &lt;ip|interface&gt;[:port])</span><br><span class="line">                                               (default 0.0.0.0:2377)</span><br><span class="line">      --max-snapshots uint                     Number of additional Raft snapshots to retain</span><br><span class="line">      --snapshot-interval uint                 Number of log entries between Raft snapshots</span><br><span class="line">                                               (default 10000)</span><br><span class="line">      --task-history-limit int                 Task history retention limit (default 5)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>初始化节点时需要加入本机地址，以便于其他主机加入节点。地址分为两种：公网、私网</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker swarm init --advertise-addr string 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>初始化节点成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk0064lj31i60cs787.jpg" alt="image-20210110045224188"></p>
+<p>生成节点地址，其他主机直接运行一下命令，即可成功加入集群中。使用以下命令加入节点后，主机为Worker(工作者)，若要变成manager(管理者)需生成新的管理节点</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker swarm join --token SWMTKN-1-2kj60xtr2zqts2rekblm9trm4s1uuh0nomvvjuevegwi27t6e0-dydelmr2tbrm4q3fwsc950d2i 127.0.0.1:2377</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjx5gidj31iu04o76g.jpg" alt="image-20210110045655232"></p>
+<p>加入成功，并显示为worker。</p>
+<p>查看swarm所有集群主机</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker node ls   #下图中显示leader的为管理节点</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk0etpyj31y6068416.jpg" alt="image-20210110045825964"></p>
+<blockquote>
+<p>生成节点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">manager节点</span><br><span class="line">	docker swarm join-token manager </span><br><span class="line">  </span><br><span class="line">worker节点</span><br><span class="line">	docker swarm join-token worker</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成管理者节点</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjxnnjej321y072jtc.jpg" alt="image-20210110050202237"></p>
+<p><strong>生成工作者节点</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjvaowzj320s0720uo.jpg" alt="image-20210110050512979"></p>
+<blockquote>
+<p>主机添加完成后，使用docker node ls 查看所有</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjwpu7nj31wm0a0dk3.jpg" alt="image-20210110050621922"></p>
+<p>两台<code>manager</code>，三台<code>worker</code></p>
+<p>至此，集群搭建完毕！</p>
+<h2 id="Raft协议"><a href="#Raft协议" class="headerlink" title="Raft协议"></a>Raft协议</h2><blockquote>
+<p>双主三从：当一个主节点挂了，其他节点无法使用。</p>
+<p>Raft协议：保证大多数节点存活才可以用，只要&gt;1，即集群最少大于3台</p>
+</blockquote>
+<p><strong>将另外一台主节点停止，另外一个主节点无法使用</strong></p>
+<ol>
+<li><p>另外一台主节点使用命令<code>docker node ls</code> 可用。(worker无法使用<code>docker node ls</code>)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk2q798j325y09igpc.jpg" alt="image-20210110052237936"></p>
+</li>
+</ol>
+<ol start="2">
+<li>将<code>MANAGER STATUS</code>为<code>leader</code>的主节点停止，然后在<code>Reachable</code>主节点上面再次运行<code>docker node ls</code>命令时发现无法执行。</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir385jzbj325u0bq79r.jpg" alt="image-20210110052747774"></p>
+<ol start="3">
+<li>重新启动docker服务后，<code>leader</code>和<code>Reachable</code>主机状态替换</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjvt38vj31za0jigub.jpg" alt="image-20210110053036570"></p>
+<blockquote>
+<p>将其中一台worker主机离开当前集群</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker swarm leave</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk1gbq7j310403yt9m.jpg" alt="image-20210110053338719"></p>
+<p>离开成功，再次查看集群节点时会发现其中一台worker节点状态为down，表示已不再集群节点中</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34rydnj31vq0ao0xw.jpg" alt="image-20210110053505325"></p>
+<blockquote>
+<p>将此主机添加成主节点(管理者)</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">生成管理节点</span><br><span class="line">	docker swarm join-token manager</span><br></pre></td></tr></table></figure>
+
+<p>主节点变为三台主机</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjyge1rj31j007qadx.jpg" alt="image-20210110053748782"></p>
+<blockquote>
+<p>停止其中一台主节点，其他两台主节点可正常使用。</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjudjgdj324c07y434.jpg" alt="image-20210110054021277"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir358y7sj31k8080wi5.jpg" alt="image-20210110054041341"></p>
+<h2 id="实战：-弹性、扩缩容、集群！"><a href="#实战：-弹性、扩缩容、集群！" class="headerlink" title="实战： 弹性、扩缩容、集群！"></a>实战： 弹性、扩缩容、集群！</h2><blockquote>
+<p>集群：Swarm        </p>
+<p>启动服务：docker service</p>
+<p>容器 =&gt; 服务 =&gt; 副本</p>
+</blockquote>
+<p>启动一个环境，使用集群可随时扩缩容多个副本(多个服务),可理解为负载均衡！</p>
+<p><strong>docker service 帮助命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">root@iZe9n1hdljjk4fZ:~# docker service --help</span><br><span class="line"></span><br><span class="line">Usage:  docker service COMMAND</span><br><span class="line"></span><br><span class="line">Manage services</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a new service																		#创建一个服务(容器)</span><br><span class="line">  inspect     Display detailed information on one or more services		#查看服务详细信息</span><br><span class="line">  logs        Fetch the logs of a service or task											#查看服务日志</span><br><span class="line">  ls          List services																					</span><br><span class="line">  ps          List the tasks of one or more services									#查看运行服务</span><br><span class="line">  rm          Remove one or more services															#删除服务</span><br><span class="line">  rollback    Revert changes to a service&#39;s configuration							#回滚操作</span><br><span class="line">  scale       Scale one or multiple replicated services								#创建多个副本	</span><br><span class="line">  update      Update a service																				#更新多个副本</span><br><span class="line">			--replicas uint   </span><br><span class="line">Run &#39;docker service COMMAND --help&#39; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p><code>docker service</code>和<code>docker run</code>类似</p>
+<blockquote>
+<p>启动tomcat环境</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker service create -p 8080:80 --name mynginx nginx</span><br></pre></td></tr></table></figure>
+
+<p>表示当前运行副本为一台主机上面，且是随机分布的其他集群节点上</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjz0xy0j315a0680u7.jpg" alt="image-20210110062750024"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjusa10j31ic06qjtj.jpg" alt="image-20210110062738599"></p>
+<blockquote>
+<p>查看运行服务</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker service ps mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir3766nej31i407egn5.jpg" alt="image-20210110062838809"></p>
+<blockquote>
+<p>update 创建多个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker service update --replicas 4 mynginx</span><br></pre></td></tr></table></figure>
+
+<p>部署了四个副本，并全部运行成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk1un0fj311g0ak75r.jpg" alt="image-20210110063013066"></p>
+<p>查看其他节点运行状态</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjwbhn8j31ia07k40o.jpg" alt="image-20210110063038249"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir35zur4j31iw0aitco.jpg" alt="image-20210110063057598"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjziitaj31ii07wwge.jpg" alt="image-20210110063109766"></p>
+<p>共四个服务运行，此时不管这三台服务器中的那个ip都可访问到此服务</p>
+<blockquote>
+<p>回滚操作，将数字修改为1，就会只运行一个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker service update --replicas 1 mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir36rqq3j313q05yjsz.jpg" alt="image-20210110063714332"></p>
+<blockquote>
+<p>scale：创建多个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">创建多个副本</span><br><span class="line">	docker service scale mynginx&#x3D;5</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjju1as9j30wm0ai0uf.jpg" alt="image-20210110063822794"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">同理，回滚一个副本</span><br><span class="line">	docker service scale mynginx&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34kzauj317g074tai.jpg" alt="image-20210110063850750"></p>
+<blockquote>
+<p>移除服务</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker service rm mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk2bn6xj30tc04aaan.jpg" alt="image-20210110064039794"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>Swarm：集群的管理和编排。docker可以初始化一个swarm集群，其他节点可以加入。(管理、工作者)</p>
+</blockquote>
+<blockquote>
+<p>Node：docker节点，多个节点组成了集群网络。</p>
+</blockquote>
+<blockquote>
+<p>Service：任务，可以在管理节点或者工作节点运行。核心。用户可访问</p>
+</blockquote>
+<blockquote>
+<p>Task：容器内的命令，细节任务！</p>
+<p>​        -    命令 -&gt; 管理 -&gt; API -&gt; 调度- &gt; 工作节点(创建Task容器维护！)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir37mp70j30wm0rsacl.jpg" alt="image-20210110174925513"></p>
+]]></content>
+      <categories>
+        <category>docker进阶</category>
+      </categories>
+      <tags>
+        <tag>Swarm、集群</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker入门学习(一)</title>
+    <url>/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%B8%80)/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hh0ugg7j31c00u0k07.jpg" alt="30"></p>
+<a id="more"></a>
+
+<p>卸载旧版本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum remove docker \</span><br><span class="line">                  docker-client \</span><br><span class="line">                  docker-client-latest \</span><br><span class="line">                  docker-common \</span><br><span class="line">                  docker-latest \</span><br><span class="line">                  docker-latest-logrotate \</span><br><span class="line">                  docker-logrotate \</span><br><span class="line">                  docker-engine</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查看服务器版本信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;etc&#x2F;os-release</span><br></pre></td></tr></table></figure>
+
+<p>配置阿里云镜像地址 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum-config-manager --add-repo	http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;centos&#x2F;docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<p>更新yum软件包索引</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum makecache fast</span><br></pre></td></tr></table></figure>
+
+<p>配置阿里云加速器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;etc&#x2F;docker</span><br><span class="line">vim daemon.json</span><br><span class="line">	&#123;</span><br><span class="line">  		&quot;registry-mirrors&quot;: [&quot;https:&#x2F;&#x2F;lan0m8lu.mirror.aliyuncs.com&quot;]</span><br><span class="line">	&#125;</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;etc&#x2F;docker</span><br><span class="line">sudo tee &#x2F;etc&#x2F;docker&#x2F;daemon.json &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https:&#x2F;&#x2F;lan0m8lu.mirror.aliyuncs.com&quot;]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+
+
+<p>安装docker</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+<p>启动docker</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>卸载依赖</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum remove docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+<p>删除资源</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br></pre></td></tr></table></figure>
+
+
+
+<p>docker辅助命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker version					显示docker的版本信息</span><br><span class="line">docker info							系统信息，包括镜像和容器的详细信息</span><br><span class="line">docker 命令	--help			 帮助命令</span><br></pre></td></tr></table></figure>
+
+
+
+<p>docker镜像命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker imgaes [-a|-q|-f] 		查看docker所有镜像帮助信息</span><br><span class="line">	-a							列出所有镜像</span><br><span class="line">	-q							只显示镜像id</span><br><span class="line">	</span><br><span class="line">docker删除命令</span><br><span class="line">  docker rmi -f name|id		删除指定容器</span><br><span class="line">  docker rmi -f id id id 	删除多个容器</span><br><span class="line">    $(docker images -aq) 	删除全部容器</span><br><span class="line">	</span><br><span class="line">docker搜索命令</span><br><span class="line">  docker search name</span><br><span class="line">    --filter&#x3D;stars&#x3D;3000		搜索镜像的收藏数大于3000</span><br><span class="line">    </span><br><span class="line">docker下载命令</span><br><span class="line">  docker pull name[:tag]</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>docker容器命令</strong>    </p>
+<p>新建容器并启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run [可选参数]	image</span><br><span class="line"></span><br><span class="line">#参数说明</span><br><span class="line">	--name&#x3D;&quot;name&quot;			容器名称</span><br><span class="line">	-d								后台方式启动</span><br><span class="line">	-p								指定容器的端口  -p	8080:8080</span><br><span class="line">			-p	主机端口:容器端口(常用)</span><br><span class="line">			-p  ip:主机端口:容器端口</span><br><span class="line">			-p	容器端口</span><br><span class="line">			容器端口</span><br><span class="line">	-it								使用交互方式运行，进入容器</span><br><span class="line">	-P								随机指定端口</span><br></pre></td></tr></table></figure>
+
+<p>启动并进入容器</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmffju2hujj30wa06mdhb.jpg" alt="image-20210107151012641"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">列出所有运行容器  </span><br><span class="line">  docker ps				当前运行的容器</span><br><span class="line">      -a					当前运行的容器+历史运行的容器</span><br><span class="line">      -n&#x3D;?				显示最近创建的容器</span><br><span class="line">      -q					只显示容器的编号</span><br><span class="line">      </span><br><span class="line">退出容器</span><br><span class="line">	exit				容器停止并容器</span><br><span class="line">	ctrl+p+q		快捷键，容器退出不停止</span><br><span class="line"></span><br><span class="line">删除容器</span><br><span class="line">	docker rm 容器id						 删除指定容器，不能删除正在运行的容器。</span><br><span class="line">			-f $(docker ps -aq)			删除所有容器</span><br><span class="line">			</span><br><span class="line">	docker ps -a -q|xargs docker rm 	删除所有容器</span><br></pre></td></tr></table></figure>
+
+<p>启动和停止容器操作</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker start 容器id						启动容器</span><br><span class="line">docker restart 容器id					重启容器</span><br><span class="line">docker stop 容器id						停止当前运行的容器</span><br><span class="line">docker kill	容器id						强制停止当前运行的容器</span><br></pre></td></tr></table></figure>
+
+<p>后台启动容器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d centos</span><br><span class="line">			容器后台运行时，必须要有一个前台进程，docker发现没有前台应用，就会自动停止。</span><br></pre></td></tr></table></figure>
+
+<p>查看日志命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker logs  容器id</span><br><span class="line">		-tf									显示日志</span><br><span class="line">		--tail number				显示日志条数</span><br><span class="line"></span><br><span class="line">写shell脚本，让容器永不停止</span><br><span class="line">docker run -d centos &#x2F;bin&#x2F;bash -c &quot;while true;do echo time;sleep 1;done&quot;</span><br></pre></td></tr></table></figure>
+
+<p>查看容器中的进程信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker top 容器id</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmffjsnxjjj30v603c74l.jpg" alt="image-20210107153651855"></p>
+<p>查看镜像元数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker inspect --help			查看</span><br><span class="line"></span><br><span class="line">docker inspect 容器id			查看容器的元数据</span><br></pre></td></tr></table></figure>
+
+<p>进入当前正在运行的容器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker exec -it 容器id &#x2F;bin&#x2F;bash		进行容器后开启新的终端</span><br><span class="line">docker attach 容器id &#x2F;bin&#x2F;bash			进入当前正在运行的终端，不会启动新的进程</span><br></pre></td></tr></table></figure>
+
+<p>容器拷贝文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker cp 容器id:容器内路径	宿主机路径</span><br><span class="line"></span><br><span class="line">docker cp 宿主机路径  容器Id:容器内路径</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>作业1：部署nginx</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">搜索镜像</span><br><span class="line">  docker search nginx</span><br><span class="line">下载镜像</span><br><span class="line">	docker pull nginx</span><br><span class="line">启动镜像</span><br><span class="line">  docker run -d --name nginx01 -p 8080(外部端口):8080(容器端口)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>作业2：部署tomcat</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -it --rm  tomcat:9.0		用完即删除</span><br><span class="line"></span><br><span class="line">下载镜像</span><br><span class="line">	docker pull tomcat</span><br><span class="line">启动镜像</span><br><span class="line">	docker run -d -p 6666:8080 --name tomcat01 tomcat</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmffjuzsaij30yy0u0k5v.jpg" alt="image-20210107181357152"></p>
+<blockquote>
+<p>作业3：部署es+kibana</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e &quot;discovery.type&#x3D;single-node&quot; -e  ES_JAVA_OPTS&#x3D;&quot;-Xms64m -Xmx512m&quot; elasticsearch:7.6.2</span><br><span class="line"></span><br><span class="line">如上命令开启的es  内存占用较小</span><br><span class="line">docker stats		查看docker CPU状态</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>作业：安装kibana</p>
+</blockquote>
+<blockquote>
+<p>portainer(可视化)</p>
+</blockquote>
+<p>Docker图形化界面管理工具！提供一个后台面板供我们操作！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8000:9000 --restart&#x3D;always -v &#x2F;var&#x2F;run&#x2F;docker.sock:&#x2F;var&#x2F;run&#x2F;docker.sock --privileged&#x3D;true \</span><br><span class="line"> portainer&#x2F;portainer</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmffjt6ca4j31550u0gow.jpg" alt="image-20210107203200900"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEgy1gmffjklhwfj31pb0u01cn.jpg" alt="image-20210107203518716"></p>
+<blockquote>
+<p>docker commit镜像</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker commit 提交容器成为一个新的副本</span><br><span class="line"></span><br><span class="line">docker commit -m &quot;提交描述信息&quot; -a&#x3D;&quot;作者&quot; 容器id 目标镜像名:[tag]</span><br><span class="line"></span><br><span class="line">docker commit -a &quot;Time&quot; -m &quot;add webapps app&quot; 容器id  生成的镜像名:版本</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>docker入门</category>
+      </categories>
+      <tags>
+        <tag>docker基础</tag>
       </tags>
   </entry>
 </search>

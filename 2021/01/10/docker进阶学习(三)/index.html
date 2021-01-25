@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    docker进阶学习(三) |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-docker进阶学习(三)" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  docker进阶学习(三)
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%89)/" class="article-date">
+  <time datetime="2021-01-09T20:39:38.000Z" itemprop="datePublished">2021-01-10</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/docker%E8%BF%9B%E9%98%B6/">docker进阶</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hhfusgsj31c00u0txk.jpg" alt="30"></p>
+<a id="more"></a>
+
+<h1 id="Docker-Swarm"><a href="#Docker-Swarm" class="headerlink" title="Docker Swarm"></a>Docker Swarm</h1><blockquote>
+<p>Swarm是docker 集群模式，主要分为管理者和工作者模式。</p>
+</blockquote>
+<h2 id="工作模式"><a href="#工作模式" class="headerlink" title="工作模式"></a>工作模式</h2><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34cgxcj31ej0u00yh.jpg" alt="image-20210110044017241"></p>
+<p>集群环境中，Manager(管理者)最少为三台，而Manager下管理多台Worker(工作者)</p>
+<h2 id="搭建集群"><a href="#搭建集群" class="headerlink" title="搭建集群"></a>搭建集群</h2><blockquote>
+<p>准备至少四台服务器</p>
+</blockquote>
+<p>查看<code>swarm</code>命令帮助</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_8_centos ~]# docker swarm --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm COMMAND</span><br><span class="line"></span><br><span class="line">Manage Swarm</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  ca          Display and rotate the root CA</span><br><span class="line">  init        Initialize a swarm												#初始化一个节点</span><br><span class="line">  join        Join a swarm as a node and&#x2F;or manager			#加入一个节点</span><br><span class="line">  join-token  Manage join tokens												#生成manager节点</span><br><span class="line">  leave       Leave the swarm														#离开集群节点</span><br><span class="line">  unlock      Unlock swarm</span><br><span class="line">  unlock-key  Manage the unlock key</span><br><span class="line">  update      Update the swarm</span><br></pre></td></tr></table></figure>
+
+<p>初始化节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[root@VM_0_8_centos ~]# docker swarm init --help</span><br><span class="line"></span><br><span class="line">Usage:  docker swarm init [OPTIONS]</span><br><span class="line"></span><br><span class="line">Initialize a swarm</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      --advertise-addr string                  Advertised address (format: &lt;ip|interface&gt;[:port])  # IP地址</span><br><span class="line">      --autolock                               Enable manager autolocking (requiring an unlock</span><br><span class="line">                                               key to start a stopped manager)</span><br><span class="line">      --availability string                    Availability of the node</span><br><span class="line">                                               (&quot;active&quot;|&quot;pause&quot;|&quot;drain&quot;) (default &quot;active&quot;)</span><br><span class="line">      --cert-expiry duration                   Validity period for node certificates</span><br><span class="line">                                               (ns|us|ms|s|m|h) (default 2160h0m0s)</span><br><span class="line">      --data-path-addr string                  Address or interface to use for data path traffic</span><br><span class="line">                                               (format: &lt;ip|interface&gt;)</span><br><span class="line">      --data-path-port uint32                  Port number to use for data path traffic (1024 -</span><br><span class="line">                                               49151). If no value is set or is set to 0, the</span><br><span class="line">                                               default port (4789) is used.</span><br><span class="line">      --default-addr-pool ipNetSlice           default address pool in CIDR format (default [])</span><br><span class="line">      --default-addr-pool-mask-length uint32   default address pool subnet mask length (default 24)</span><br><span class="line">      --dispatcher-heartbeat duration          Dispatcher heartbeat period (ns|us|ms|s|m|h)</span><br><span class="line">                                               (default 5s)</span><br><span class="line">      --external-ca external-ca                Specifications of one or more certificate signing</span><br><span class="line">                                               endpoints</span><br><span class="line">      --force-new-cluster                      Force create a new cluster from current state</span><br><span class="line">      --listen-addr node-addr                  Listen address (format: &lt;ip|interface&gt;[:port])</span><br><span class="line">                                               (default 0.0.0.0:2377)</span><br><span class="line">      --max-snapshots uint                     Number of additional Raft snapshots to retain</span><br><span class="line">      --snapshot-interval uint                 Number of log entries between Raft snapshots</span><br><span class="line">                                               (default 10000)</span><br><span class="line">      --task-history-limit int                 Task history retention limit (default 5)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>初始化节点时需要加入本机地址，以便于其他主机加入节点。地址分为两种：公网、私网</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker swarm init --advertise-addr string 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>初始化节点成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk0064lj31i60cs787.jpg" alt="image-20210110045224188"></p>
+<p>生成节点地址，其他主机直接运行一下命令，即可成功加入集群中。使用以下命令加入节点后，主机为Worker(工作者)，若要变成manager(管理者)需生成新的管理节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker swarm join --token SWMTKN-1-2kj60xtr2zqts2rekblm9trm4s1uuh0nomvvjuevegwi27t6e0-dydelmr2tbrm4q3fwsc950d2i 127.0.0.1:2377</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjx5gidj31iu04o76g.jpg" alt="image-20210110045655232"></p>
+<p>加入成功，并显示为worker。</p>
+<p>查看swarm所有集群主机</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker node ls   #下图中显示leader的为管理节点</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk0etpyj31y6068416.jpg" alt="image-20210110045825964"></p>
+<blockquote>
+<p>生成节点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">manager节点</span><br><span class="line">	docker swarm join-token manager </span><br><span class="line">  </span><br><span class="line">worker节点</span><br><span class="line">	docker swarm join-token worker</span><br></pre></td></tr></table></figure>
+
+<p><strong>生成管理者节点</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjxnnjej321y072jtc.jpg" alt="image-20210110050202237"></p>
+<p><strong>生成工作者节点</strong></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjvaowzj320s0720uo.jpg" alt="image-20210110050512979"></p>
+<blockquote>
+<p>主机添加完成后，使用docker node ls 查看所有</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjwpu7nj31wm0a0dk3.jpg" alt="image-20210110050621922"></p>
+<p>两台<code>manager</code>，三台<code>worker</code></p>
+<p>至此，集群搭建完毕！</p>
+<h2 id="Raft协议"><a href="#Raft协议" class="headerlink" title="Raft协议"></a>Raft协议</h2><blockquote>
+<p>双主三从：当一个主节点挂了，其他节点无法使用。</p>
+<p>Raft协议：保证大多数节点存活才可以用，只要&gt;1，即集群最少大于3台</p>
+</blockquote>
+<p><strong>将另外一台主节点停止，另外一个主节点无法使用</strong></p>
+<ol>
+<li><p>另外一台主节点使用命令<code>docker node ls</code> 可用。(worker无法使用<code>docker node ls</code>)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk2q798j325y09igpc.jpg" alt="image-20210110052237936"></p>
+</li>
+</ol>
+<ol start="2">
+<li>将<code>MANAGER STATUS</code>为<code>leader</code>的主节点停止，然后在<code>Reachable</code>主节点上面再次运行<code>docker node ls</code>命令时发现无法执行。</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir385jzbj325u0bq79r.jpg" alt="image-20210110052747774"></p>
+<ol start="3">
+<li>重新启动docker服务后，<code>leader</code>和<code>Reachable</code>主机状态替换</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjvt38vj31za0jigub.jpg" alt="image-20210110053036570"></p>
+<blockquote>
+<p>将其中一台worker主机离开当前集群</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker swarm leave</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk1gbq7j310403yt9m.jpg" alt="image-20210110053338719"></p>
+<p>离开成功，再次查看集群节点时会发现其中一台worker节点状态为down，表示已不再集群节点中</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34rydnj31vq0ao0xw.jpg" alt="image-20210110053505325"></p>
+<blockquote>
+<p>将此主机添加成主节点(管理者)</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">生成管理节点</span><br><span class="line">	docker swarm join-token manager</span><br></pre></td></tr></table></figure>
+
+<p>主节点变为三台主机</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjyge1rj31j007qadx.jpg" alt="image-20210110053748782"></p>
+<blockquote>
+<p>停止其中一台主节点，其他两台主节点可正常使用。</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjudjgdj324c07y434.jpg" alt="image-20210110054021277"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir358y7sj31k8080wi5.jpg" alt="image-20210110054041341"></p>
+<h2 id="实战：-弹性、扩缩容、集群！"><a href="#实战：-弹性、扩缩容、集群！" class="headerlink" title="实战： 弹性、扩缩容、集群！"></a>实战： 弹性、扩缩容、集群！</h2><blockquote>
+<p>集群：Swarm        </p>
+<p>启动服务：docker service</p>
+<p>容器 =&gt; 服务 =&gt; 副本</p>
+</blockquote>
+<p>启动一个环境，使用集群可随时扩缩容多个副本(多个服务),可理解为负载均衡！</p>
+<p><strong>docker service 帮助命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@iZe9n1hdljjk4fZ:~# docker service --help</span><br><span class="line"></span><br><span class="line">Usage:  docker service COMMAND</span><br><span class="line"></span><br><span class="line">Manage services</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  create      Create a new service																		#创建一个服务(容器)</span><br><span class="line">  inspect     Display detailed information on one or more services		#查看服务详细信息</span><br><span class="line">  logs        Fetch the logs of a service or task											#查看服务日志</span><br><span class="line">  ls          List services																					</span><br><span class="line">  ps          List the tasks of one or more services									#查看运行服务</span><br><span class="line">  rm          Remove one or more services															#删除服务</span><br><span class="line">  rollback    Revert changes to a service&#39;s configuration							#回滚操作</span><br><span class="line">  scale       Scale one or multiple replicated services								#创建多个副本	</span><br><span class="line">  update      Update a service																				#更新多个副本</span><br><span class="line">			--replicas uint   </span><br><span class="line">Run &#39;docker service COMMAND --help&#39; for more information on a command.</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p><code>docker service</code>和<code>docker run</code>类似</p>
+<blockquote>
+<p>启动tomcat环境</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service create -p 8080:80 --name mynginx nginx</span><br></pre></td></tr></table></figure>
+
+<p>表示当前运行副本为一台主机上面，且是随机分布的其他集群节点上</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjz0xy0j315a0680u7.jpg" alt="image-20210110062750024"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjusa10j31ic06qjtj.jpg" alt="image-20210110062738599"></p>
+<blockquote>
+<p>查看运行服务</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service ps mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir3766nej31i407egn5.jpg" alt="image-20210110062838809"></p>
+<blockquote>
+<p>update 创建多个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service update --replicas 4 mynginx</span><br></pre></td></tr></table></figure>
+
+<p>部署了四个副本，并全部运行成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk1un0fj311g0ak75r.jpg" alt="image-20210110063013066"></p>
+<p>查看其他节点运行状态</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjwbhn8j31ia07k40o.jpg" alt="image-20210110063038249"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir35zur4j31iw0aitco.jpg" alt="image-20210110063057598"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjjziitaj31ii07wwge.jpg" alt="image-20210110063109766"></p>
+<p>共四个服务运行，此时不管这三台服务器中的那个ip都可访问到此服务</p>
+<blockquote>
+<p>回滚操作，将数字修改为1，就会只运行一个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service update --replicas 1 mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir36rqq3j313q05yjsz.jpg" alt="image-20210110063714332"></p>
+<blockquote>
+<p>scale：创建多个副本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">创建多个副本</span><br><span class="line">	docker service scale mynginx&#x3D;5</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjju1as9j30wm0ai0uf.jpg" alt="image-20210110063822794"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">同理，回滚一个副本</span><br><span class="line">	docker service scale mynginx&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir34kzauj317g074tai.jpg" alt="image-20210110063850750"></p>
+<blockquote>
+<p>移除服务</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker service rm mynginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmjjk2bn6xj30tc04aaan.jpg" alt="image-20210110064039794"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>Swarm：集群的管理和编排。docker可以初始化一个swarm集群，其他节点可以加入。(管理、工作者)</p>
+</blockquote>
+<blockquote>
+<p>Node：docker节点，多个节点组成了集群网络。</p>
+</blockquote>
+<blockquote>
+<p>Service：任务，可以在管理节点或者工作节点运行。核心。用户可访问</p>
+</blockquote>
+<blockquote>
+<p>Task：容器内的命令，细节任务！</p>
+<p>​        -    命令 -&gt; 管理 -&gt; API -&gt; 调度- &gt; 工作节点(创建Task容器维护！)</p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir37mp70j30wm0rsacl.jpg" alt="image-20210110174925513"></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%89)/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Swarm%E3%80%81%E9%9B%86%E7%BE%A4/" rel="tag">Swarm、集群</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2021/01/11/Markdown%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Markdown语法学习
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">docker进阶学习(二)</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['面朝大海，春暖花开', '愿你一生努力，一生被爱', '想要的都拥有，得不到的都释怀'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
