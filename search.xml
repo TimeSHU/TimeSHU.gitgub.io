@@ -2333,4 +2333,81 @@
         <category>黑客秘籍3</category>
       </categories>
   </entry>
+  <entry>
+    <title>docker进阶学习(二)</title>
+    <url>/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/27.jpg" alt="30"></p>
+<a id="more"></a>
+
+<h1 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h1><ol>
+<li>DockerFile 单个容器  手动运行。</li>
+<li>Docker Compose 定义多个容器，高效管理。</li>
+</ol>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -L https:&#x2F;&#x2F;get.daocloud.io&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chmod a+x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41f6p09j316o0tiwmc.jpg" alt="image-20210110023952336"></p>
+<h2 id="官方demo"><a href="#官方demo" class="headerlink" title="官方demo"></a>官方demo</h2><ol>
+<li><code>mkdir compose</code></li>
+<li><code>cd compose</code></li>
+<li>创建<code>app.py</code>，写入以下代码</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">cache = redis.Redis(host=<span class="string">'redis'</span>, port=<span class="number">6379</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_hit_count</span><span class="params">()</span>:</span></span><br><span class="line">    retries = <span class="number">5</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> cache.incr(<span class="string">'hits'</span>)</span><br><span class="line">        <span class="keyword">except</span> redis.exceptions.ConnectionError <span class="keyword">as</span> exc:</span><br><span class="line">            <span class="keyword">if</span> retries == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">raise</span> exc</span><br><span class="line">            retries -= <span class="number">1</span></span><br><span class="line">            time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    count = get_hit_count()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World! I have been seen &#123;&#125; times.\n'</span>.format(count)</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>创建<code>requirements.txt</code> ，写入需要用到的python库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flask</span><br><span class="line">redis</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建``DockerFile`</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">FROM python:3.7-alpine</span><br><span class="line">WORKDIR &#x2F;code</span><br><span class="line">ENV FLASK_APP&#x3D;app.py</span><br><span class="line">ENV FLASK_RUN_HOST&#x3D;0.0.0.0</span><br><span class="line">RUN apk add --no-cache gcc musl-dev linux-headers</span><br><span class="line">COPY requirements.txt requirements.txt</span><br><span class="line">RUN pip install -r requirements.txt</span><br><span class="line">EXPOSE 5000</span><br><span class="line">COPY . .</span><br><span class="line">CMD [&quot;flask&quot;, &quot;run&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建``docker-compose.yml`</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.3"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"5000:5000"</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">"redis:alpine"</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>docker-compose up</code> 启动成功</p>
+</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41fqay0j313u0u0qi6.jpg" alt="image-20210110030552217"></p>
+<p><strong>网络</strong></p>
+<p>当使用docker-compose启动一个环境时，docker network会自定义一个网络</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41e6dntj30xw09ydia.jpg" alt="image-20210110032007279"></p>
+<p>所有服务都在同一个网络下，并都可使用域名访问</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41dq36jj31ba0u0qa6.jpg" alt="image-20210110032102626"></p>
+<h2 id="yaml规则"><a href="#yaml规则" class="headerlink" title="yaml规则"></a>yaml规则</h2><p>docker-compose.yml</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#核心配置services</span><br><span class="line">version:		#版本信息,对应docker版本，往下兼容</span><br><span class="line">services:		#服务，核心</span><br><span class="line">	服务1:web</span><br><span class="line">		#服务配置</span><br><span class="line">	服务2:redis</span><br><span class="line">		#服务配置</span><br><span class="line">	服务3:network</span><br><span class="line">		#服务配置</span><br><span class="line">	服务4:depends_on		#重要，服务启动依赖，按照依赖来启动服务</span><br><span class="line">		......</span><br><span class="line">#其他配置</span><br><span class="line">volumes:	#卷挂载</span><br><span class="line">networks:	#网络配置</span><br><span class="line">configs:	#配置信息</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41cswz7j314a0liwg2.jpg" alt="image-20210110033222947"></p>
+<h2 id="一键部署WP博客"><a href="#一键部署WP博客" class="headerlink" title="一键部署WP博客"></a>一键部署WP博客</h2><ol>
+<li><code>mkdir mywordpress</code></li>
+<li><code>cd mywordpress</code></li>
+<li>编写<code>yaml</code>文件</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.3'</span>															<span class="comment">#版本信息</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span>																		<span class="comment">#服务</span></span><br><span class="line">   <span class="attr">db:</span>																			<span class="comment">#数据库服务</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">mysql:5.7</span>												<span class="comment">#数据库镜像为mysql:5.7版本</span></span><br><span class="line">     <span class="attr">volumes:</span>																<span class="comment">#挂载卷目录</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#数据库配置</span></span><br><span class="line">       <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">somewordpress</span>		<span class="comment">#数据库root密码</span></span><br><span class="line">       <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span>						<span class="comment">#数据库命令</span></span><br><span class="line">       <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span>								<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span>						<span class="comment">#数据库密码</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">wordpress:</span>																<span class="comment">#博客</span></span><br><span class="line">     <span class="attr">depends_on:</span>														<span class="comment">#依赖环境，依赖于db，先启动db，在启动博客</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">wordpress:latest</span>								<span class="comment">#博客镜像</span></span><br><span class="line">     <span class="attr">ports:</span>																	</span><br><span class="line">       <span class="bullet">-</span> <span class="string">"80:80"</span>													<span class="comment">#端口映射。主机端口:容器端口</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#环境配置</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span>						<span class="comment">#数据库连接</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span>					<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span>			<span class="comment">#数据库密码</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span>					<span class="comment">#数据库名称</span></span><br><span class="line"><span class="attr">volumes:</span>																		<span class="comment">#卷挂载</span></span><br><span class="line">    <span class="attr">db_data:</span> <span class="string">&#123;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>后台启动</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41eov57j315w0u0qdo.jpg" alt="image-20210110035547264"></p>
+<p>搭建成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41ci2o9j30zf0u0q78.jpg" alt="image-20210110035627009"></p>
+<p>停止服务</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker-compose down   #必须在环境的目录下才可停止</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41d9fhuj313q0bkdio.jpg" alt="image-20210110035746136"></p>
+<blockquote>
+<p>docker-compose官方文档地址：<a href="https://docs.docker.com/compose/compose-file/compose-file-v3/#restart" target="_blank" rel="noopener">https://docs.docker.com/compose/compose-file/compose-file-v3/#restart</a></p>
+</blockquote>
+<h2 id="实战搭建s2-061漏洞环境"><a href="#实战搭建s2-061漏洞环境" class="headerlink" title="实战搭建s2-061漏洞环境"></a>实战搭建s2-061漏洞环境</h2><p>上篇文章中，我们使用了Dockerfile搭建漏洞环境，本文中还是沿用上文中的Dockerfile文件，然后来编写yaml文件，来一键启动s2-061环境</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line">services:</span><br><span class="line">  s2-061:</span><br><span class="line">    build: .</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8099:8080&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmg75m8vnj315m0u0tpi.jpg" alt="image-20210113224236587"></p>
+]]></content>
+      <categories>
+        <category>docker进阶</category>
+      </categories>
+      <tags>
+        <tag>Compose</tag>
+      </tags>
+  </entry>
 </search>
