@@ -2324,13 +2324,7 @@
 
 
 
-<h2 id="dnscat2"><a href="#dnscat2" class="headerlink" title="dnscat2"></a><strong>dnscat2</strong></h2><h2 id="p0wnedShell"><a href="#p0wnedShell" class="headerlink" title="p0wnedShell"></a><strong>p0wnedShell</strong></h2><h2 id="Pupy-Shell"><a href="#Pupy-Shell" class="headerlink" title="Pupy Shell"></a><strong>Pupy Shell</strong></h2><h2 id="Merlin"><a href="#Merlin" class="headerlink" title="Merlin"></a><strong>Merlin</strong></h2><h2 id="Nishang"><a href="#Nishang" class="headerlink" title="Nishang"></a><strong>Nishang</strong></h2><h2 id="漏洞环境搭建"><a href="#漏洞环境搭建" class="headerlink" title="漏洞环境搭建"></a>漏洞环境搭建</h2><p>下载metasploit2和OWASPBWA漏洞虚拟机，虚拟机中存在常见的漏洞，便于我们理解漏洞和了解攻击手法。</p>
-<ul>
-<li>metasploit2</li>
-<li>OWASPBWA</li>
-</ul>
-<p>同小型AD域可放置在同一个网络下，构成一个小型域内网，便于后续我们进行测试。</p>
-]]></content>
+<h2 id="dnscat2"><a href="#dnscat2" class="headerlink" title="dnscat2"></a><strong>dnscat2</strong></h2><h2 id="p0wnedShell"><a href="#p0wnedShell" class="headerlink" title="p0wnedShell"></a><strong>p0wnedShell</strong></h2><h2 id="Pupy-Shell"><a href="#Pupy-Shell" class="headerlink" title="Pupy Shell"></a><strong>Pupy Shell</strong></h2><h2 id="Merlin"><a href="#Merlin" class="headerlink" title="Merlin"></a><strong>Merlin</strong></h2><h2 id="Nishang"><a href="#Nishang" class="headerlink" title="Nishang"></a><strong>Nishang</strong></h2>]]></content>
       <categories>
         <category>黑客秘籍3</category>
       </categories>
