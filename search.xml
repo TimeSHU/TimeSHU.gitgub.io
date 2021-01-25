@@ -1759,7 +1759,7 @@
   <entry>
     <title>PHP反序列化之初探phar</title>
     <url>/2020/10/27/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8B%E5%88%9D%E6%8E%A2phar/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/91.jpg" alt="91"></p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0uq6lbj30sg0sgq79.jpg" alt="91"></p>
 <a id="more"></a>
 
 <h3 id="0x00-伪协议"><a href="#0x00-伪协议" class="headerlink" title="0x00 伪协议"></a>0x00 伪协议</h3><p>PHP伪协议大致有如下几种</p>
@@ -1774,7 +1774,7 @@
 </li>
 <li><p>manifest describing the contents</p>
 <p>​    phar文件的压缩信息，其中meta-data部分的信息会以序列化的形式存储，而此为漏洞触发关键点。(有序列化就有反序列化)</p>
-<p>![image-20201027171209011](../../../Library/Application Support/typora-user-images/image-20201027171209011.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0v7belj30oj0bqwgf.jpg" alt="image-20201027171209011"></p>
 </li>
 <li><p>the file contents</p>
 <p>​    被压缩的文件内容，无特殊要求下，此文件内容可任意修改。</p>
@@ -1788,9 +1788,9 @@
 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestObject</span> </span>&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@unlink(<span class="string">"phar.phar"</span>);</span><br><span class="line"></span><br><span class="line">$phar = <span class="keyword">new</span> Phar(<span class="string">"phar.phar"</span>); <span class="comment">//后缀名必须为phar</span></span><br><span class="line">$phar-&gt;startBuffering();</span><br><span class="line">$phar-&gt;setStub(<span class="string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="comment">//设置stub</span></span><br><span class="line"></span><br><span class="line">$o = <span class="keyword">new</span> TestObject();</span><br><span class="line"></span><br><span class="line">$phar-&gt;setMetadata($o); <span class="comment">//将自定义的meta-data存入manifest</span></span><br><span class="line">$phar-&gt;addFromString(<span class="string">"test.txt"</span>, <span class="string">"test"</span>); <span class="comment">//添加要压缩的文件</span></span><br><span class="line"><span class="comment">//签名自动计算</span></span><br><span class="line">$phar-&gt;stopBuffering();</span><br></pre></td></tr></table></figure>
 
 <p>访问demo文件后，会在当前目录生成一个phar.phar文件</p>
-<p>![image-20201027180943383](../../../Library/Application Support/typora-user-images/image-20201027180943383.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0u8yf4j31o40cm0v5.jpg" alt="image-20201027180943383"></p>
 <p>可以看见文件格式，中间部分是以序列化格式存储</p>
-<p>![image-20201027181105728](../../../Library/Application Support/typora-user-images/image-20201027181105728.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0tvo0hj315u0ek0y6.jpg" alt="image-20201027181105728"></p>
 <h3 id="0x02-漏洞利用"><a href="#0x02-漏洞利用" class="headerlink" title="0x02 漏洞利用"></a>0x02 漏洞利用</h3><p>参考：<a href="https://blog.zsxsoft.com/post/38" target="_blank" rel="noopener">https://blog.zsxsoft.com/post/38</a></p>
 <p><a href="https://xz.aliyun.com/t/2715" target="_blank" rel="noopener">https://xz.aliyun.com/t/2715</a></p>
 ]]></content>
@@ -1848,12 +1848,18 @@
 <p><a href="https://mp.weixin.qq.com/s/JzGDyP6RGZ4xCxV4gqM2Sw" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/JzGDyP6RGZ4xCxV4gqM2Sw</a></p>
 <p><a href="https://zhuanlan.zhihu.com/p/69132837" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/69132837</a></p>
 ]]></content>
+      <categories>
+        <category>php反序列化</category>
+      </categories>
   </entry>
   <entry>
     <title>onethink缓存漏洞分析</title>
     <url>/2020/12/24/onethink%E7%BC%93%E5%AD%98%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/95.jpg" alt="95"><a id="more"></a></p>
 ]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
   </entry>
   <entry>
     <title>docker基础学习</title>
@@ -1948,7 +1954,7 @@
   <entry>
     <title>记一次OneThinkPHP的审计学习（暂未更新）</title>
     <url>/2020/11/15/%E8%AE%B0%E4%B8%80%E6%AC%A1OneThinkPHP%E7%9A%84%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/95.jpg" alt="95"></p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0k2thdj30sg0sgdku.jpg" alt="95"></p>
 <a id="more"></a>
 
 <p>CMS：OneThinkphp 1.0</p>
@@ -1976,6 +1982,9 @@
 <figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  $config = unserialize(base64_decode(Typecho_Cookie::get(<span class="string">'__typecho_config'</span>)));<span class="comment">//此处</span></span><br><span class="line">  Typecho_Cookie::delete(<span class="string">'__typecho_config'</span>);</span><br><span class="line">  $db = <span class="keyword">new</span> Typecho_Db($config[<span class="string">'adapter'</span>], $config[<span class="string">'prefix'</span>]);</span><br><span class="line">  $db-&gt;addServer($config, Typecho_Db::READ | Typecho_Db::WRITE);</span><br><span class="line">  Typecho_Db::set($db);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
   </entry>
   <entry>
     <title>docker封装wordpressSMTP密码重置漏洞环境</title>
