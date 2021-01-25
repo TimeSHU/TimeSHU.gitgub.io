@@ -74,7 +74,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">754</span>
+            <span class="post-count">622</span>
         </span>
     </span>
 
@@ -83,7 +83,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">3 分钟</span>
+            <span class="post-count">2 分钟</span>
         </span>
     </span>
 </div>
@@ -108,7 +108,7 @@
       
 
       
-      <p><img src="../img/27.jpg" alt="27"></p>
+      <p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0njm1wj31c00u07fx.jpg" alt="27"></p>
 <a id="more"></a>
 
 <h3 id="0x00-docker基础命令"><a href="#0x00-docker基础命令" class="headerlink" title="0x00 docker基础命令"></a>0x00 docker基础命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">docker images							查看本地存在的docker镜像</span><br><span class="line"></span><br><span class="line">docker search							搜索docker镜像库</span><br><span class="line"></span><br><span class="line">docker inspect						查看镜像详细信息</span><br><span class="line"></span><br><span class="line">docker rmi image:tag			删除docker镜像</span><br><span class="line"></span><br><span class="line">docker ps 								查看运行的容器</span><br><span class="line"></span><br><span class="line">docker kill	容器ID				 杀死容器进程</span><br><span class="line"></span><br><span class="line">docker rm 容器ID 					 删除容器</span><br><span class="line"></span><br><span class="line">docker stop 容器ID				 暂停运行容器</span><br><span class="line"></span><br><span class="line">docker exec -ti 容器ID &#x2F;bin&#x2F;bash	进入容器</span><br><span class="line"></span><br><span class="line">docker cp 文件 容器ID:路径	宿主机复制到容器</span><br><span class="line"></span><br><span class="line">docker cp 容器ID:文件 路径	容器复制到宿主机</span><br></pre></td></tr></table></figure>
@@ -118,34 +118,34 @@
 <h3 id="0x01-创建镜像"><a href="#0x01-创建镜像" class="headerlink" title="0x01 创建镜像"></a>0x01 创建镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">命令：</span><br><span class="line"></span><br><span class="line">    docker commit</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line"></span><br><span class="line">    -a , --author : 作者信息</span><br><span class="line"></span><br><span class="line">    -m , --meassage : 提交消息</span><br><span class="line"></span><br><span class="line">    -p , --pause&#x3D;true : 提交时暂停容器运行</span><br></pre></td></tr></table></figure>
 
 <p>基于ubuntu搭建漏洞环境</p>
-<p>![image-20201224235833284](../../../Library/Application Support/typora-user-images/image-20201224235833284.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0tmvldj313y09ognf.jpg" alt="image-20201224235833284"></p>
 <p>运行ubuntu并进入容器</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -ti ubuntu bash</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201225000325731](../../../Library/Application Support/typora-user-images/image-20201225000325731.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0pqx4pj30fm04sdg8.jpg" alt="image-20201225000325731"></p>
 <p>复制文件到容器中</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp redis-4.0.10.tar.gz 98e5e9d2ee6c:&#x2F;</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201225002719115](../../../Library/Application Support/typora-user-images/image-20201225002719115.png)</p>
-<p>![image-20201225002735723](../../../Library/Application Support/typora-user-images/image-20201225002735723.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0n4uywj314009q75i.jpg" alt="image-20201225002719115"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0slszgj3140046t9p.jpg" alt="image-20201225002735723"></p>
 <p>redis未授权就是常规流程安装即可。</p>
 <p>打包成镜像</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit -a &#39;测试&#39; -m &#39;test.txt&#39; 98e5e9d2ee6c time&#x2F;test</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201225151301946](../../../Library/Application Support/typora-user-images/image-20201225151301946.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0o8qzrj30i10bujsi.jpg" alt="image-20201225151301946"></p>
 <p>上传镜像到存储库(个人),首先使用docker本地登录</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login		输入账号密码即可登录</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201225152119976](../../../Library/Application Support/typora-user-images/image-20201225152119976.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0ro2buj30k4041q33.jpg" alt="image-20201225152119976"></p>
 <p>上传镜像</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push images名</span><br></pre></td></tr></table></figure>
 
 <p>注意上传不成功，可能是因为tag名字不一致，需要和hub库的名字一致 </p>
-<p>![image-20201225152731831](../../../Library/Application Support/typora-user-images/image-20201225152731831.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0nz26gj314009q75i.jpg" alt="image-20201225152731831"></p>
 <p>修改了名称后开始上传</p>
 <p>成功</p>
-<p>![image-20201225152821679](../../../Library/Application Support/typora-user-images/image-20201225152821679.png)</p>
-<p>![image-20201225152846139](../../../Library/Application Support/typora-user-images/image-20201225152846139.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0q6weoj30k604w3yu.jpg" alt="image-20201225152821679"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0r6vddj31ik0so0we.jpg" alt="image-20201225152846139"></p>
 <h3 id="0x02-构建镜像"><a href="#0x02-构建镜像" class="headerlink" title="0x02 构建镜像"></a>0x02 构建镜像</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build</span><br></pre></td></tr></table></figure>
 
 <p>Dockerfile常用指令</p>
@@ -176,14 +176,14 @@
 <p>创建Dockerfile文件,以下命令是安装基于ubuntu安装redis，并映射端口，具体使用方法可参考菜鸟教程中的docker教程</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">FROM centos		&#x2F;&#x2F;使用centos版本作为基础镜像</span><br><span class="line">MAINTAINER Time 892732389@qq.com	&#x2F;&#x2F;创建者信息</span><br><span class="line">RUN yum update \		&#x2F;&#x2F;创建后执行命令，更新系统并安装常用系统组件</span><br><span class="line">	&amp;&amp; yum install -y gcc make pcre-devel zlib-devel tar zlib wget</span><br><span class="line">RUN wget http:&#x2F;&#x2F;download.redis.io&#x2F;releases&#x2F;redis-4.0.10.tar.gz \  &#x2F;&#x2F;下载redis</span><br><span class="line">	&amp;&amp; tar -zxf redis-4.0.10.tar.gz \	&#x2F;&#x2F;解压</span><br><span class="line">	&amp;&amp; cd redis-4.0.10 \		&#x2F;&#x2F;进入文件夹</span><br><span class="line">	&amp;&amp; make \			&#x2F;&#x2F;编译</span><br><span class="line">	&amp;&amp; make install</span><br><span class="line">EXPOSE 6937		&#x2F;&#x2F;开启外部端口方便镜像端口映射</span><br><span class="line">CMD redis-server		&#x2F;&#x2F;启动redis</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201226005613525](../../../Library/Application Support/typora-user-images/image-20201226005613525.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0otsscj318k0jumzs.jpg" alt="image-20201226005613525"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t centos_redis:v1 .	&#x2F;&#x2F;构造镜像命令</span><br></pre></td></tr></table></figure>
 
 <p>构造成功</p>
-<p>![image-20201226010531825](../../../Library/Application Support/typora-user-images/image-20201226010531825.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0qui7xj31120u0dlo.jpg" alt="image-20201226010531825"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 6379:6379 centos_redis:v1</span><br></pre></td></tr></table></figure>
 
-<p>![image-20201226010730558](../../../Library/Application Support/typora-user-images/image-20201226010730558.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0s91jej31fo0u0tin.jpg" alt="image-20201226010730558"></p>
 <h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><p>菜鸟教程：<a href="https://m.runoob.com/docker/" target="_blank" rel="noopener">https://m.runoob.com/docker/</a></p>
 <p><a href="https://www.cnblogs.com/jsonhc/p/7767669.html" target="_blank" rel="noopener">https://www.cnblogs.com/jsonhc/p/7767669.html</a></p>
 <p><a href="https://www.cnblogs.com/momoyan/p/12437312.html" target="_blank" rel="noopener">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
@@ -269,6 +269,15 @@
   
   <nav class="article-nav">
     
+      <a href="/2021/01/09/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%80)/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            docker进阶学习(一)
+          
+        </div>
+      </a>
+    
     
       <a href="/2020/12/24/onethink%E7%BC%93%E5%AD%98%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
@@ -347,7 +356,7 @@
     <ul>
       <li>
         Copyrights &copy;
-        2015-2020
+        2015-2021
         <i class="ri-heart-fill heart_icon"></i> John Doe
       </li>
     </ul>
