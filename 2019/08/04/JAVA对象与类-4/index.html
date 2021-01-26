@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    java对象与类(更新中。。。) |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-JAVA对象与类-4" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  java对象与类(更新中。。。)
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/08/04/JAVA%E5%AF%B9%E8%B1%A1%E4%B8%8E%E7%B1%BB-4/" class="article-date">
+  <time datetime="2019-08-04T12:45:27.000Z" itemprop="datePublished">2019-08-04</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yqkfuu3j31900u0qf1.jpg" alt="99"></p>
+<a id="more"></a>
+
+
+
+<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>本周学习java核心技术卷1基础知识原版第10版第四章-对象与类<br>这两周浪费了好多时间，都没怎么学，虽然学习压力大，但是还是要好好学习。</p>
+<h3 id="0x01-面向对象程序设计概述"><a href="#0x01-面向对象程序设计概述" class="headerlink" title="0x01 面向对象程序设计概述"></a>0x01 面向对象程序设计概述</h3><p>个人理解，java中的类和其他语言中的函数类似，只允许用户调用函数或者类下的方法，不允许直接修改函数或者类，提高了安全性。</p>
+<h3 id="0x02-使用预定义类"><a href="#0x02-使用预定义类" class="headerlink" title="0x02 使用预定义类"></a>0x02 使用预定义类</h3><h4 id="对象与对象变量"><a href="#对象与对象变量" class="headerlink" title="对象与对象变量"></a>对象与对象变量</h4><p>对象变量如果赋值null，那么此对象变量的指针指向了null。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">import java.util.Date;</span><br><span class="line">public class date &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        &#x2F;&#x2F;实例化(构造)一个新类,使用Date下的方法，必须实例化(构造)</span><br><span class="line">        System.out.println(new Date());&#x2F;&#x2F;Wed Aug 07 23:27:00 CST 2019</span><br><span class="line"></span><br><span class="line">        String s &#x3D; new Date().toString();</span><br><span class="line">        System.out.println(s);&#x2F;&#x2F;Wed Aug 07 23:32:09 CST 2019</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;此代码等同于上述代码，构造一个新的类并且赋值给一个变量，后面可直接使用变量.方法来使用Date类中所有的方法</span><br><span class="line">        Date barthday &#x3D; new Date();&#x2F;&#x2F;引用新构造的对象变量barthday</span><br><span class="line">        String b &#x3D; barthday.toString();</span><br><span class="line">        System.out.println(b);&#x2F;&#x2F;Wed Aug 07 23:32:46 CST 2019</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;错误用法</span><br><span class="line">        &#x2F;&#x2F;Date barth;</span><br><span class="line">        &#x2F;&#x2F;String d &#x3D; barth.toString();&#x2F;&#x2F;未构造方法，无法使用Date类中的方法</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;正确用法</span><br><span class="line">        &#x2F;&#x2F;Date barth &#x3D; new Date();</span><br><span class="line">        &#x2F;&#x2F;或者</span><br><span class="line">        Date barth &#x3D; barthday;&#x2F;&#x2F;引用已存在的对象</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="java类库中的LocalDate类"><a href="#java类库中的LocalDate类" class="headerlink" title="java类库中的LocalDate类"></a>java类库中的LocalDate类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import java.time.LocalDate;</span><br><span class="line">import java.util.Date;</span><br><span class="line"></span><br><span class="line">public class localdate &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        &#x2F;&#x2F;自定义特殊时间</span><br><span class="line">        LocalDate time &#x3D; LocalDate.of(2019 , 8 , 7);</span><br><span class="line">        System.out.println(time);&#x2F;&#x2F;2019-08-07</span><br><span class="line"></span><br><span class="line">        int year &#x3D; time.getYear();&#x2F;&#x2F;年</span><br><span class="line">        int month &#x3D; time.getDayOfMonth()+1;&#x2F;&#x2F;月</span><br><span class="line">        int day &#x3D; time.getDayOfMonth();&#x2F;&#x2F;日</span><br><span class="line">        System.out.println(year);</span><br><span class="line">        System.out.println(month);</span><br><span class="line">        System.out.println(day);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;增加天数，赋给days，days根据当前时间+1000计算。</span><br><span class="line">        LocalDate days &#x3D; time.plusDays(1000);</span><br><span class="line">        year &#x3D; days.getYear();</span><br><span class="line">        month &#x3D; days.getMonthValue();</span><br><span class="line">        day &#x3D; days.getDayOfMonth();</span><br><span class="line">        System.out.println(year);&#x2F;&#x2F;2022</span><br><span class="line">        System.out.println(month);&#x2F;&#x2F;5</span><br><span class="line">        System.out.println(day);&#x2F;&#x2F;3</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="更改器方法与访问器方法"><a href="#更改器方法与访问器方法" class="headerlink" title="更改器方法与访问器方法"></a>更改器方法与访问器方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">import jdk.swing.interop.SwingInterOpUtils;</span><br><span class="line"></span><br><span class="line">import java.time.LocalDate;</span><br><span class="line">import java.util.Calendar;</span><br><span class="line">import java.util.GregorianCalendar;</span><br><span class="line"></span><br><span class="line">public class plusdate &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        LocalDate time &#x3D; LocalDate.of(2019 , 8 , 7);</span><br><span class="line">        LocalDate days &#x3D; time.plusDays(1000);&#x2F;&#x2F;此方法是将当前时间+1000后赋给新变量，原变量不变</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;老版增加天数写法,使用此方法后，变量会改变</span><br><span class="line">        GregorianCalendar some &#x3D; new GregorianCalendar(2019 , 8 , 8);</span><br><span class="line">        some.add(Calendar.DAY_OF_MONTH , 1000);</span><br><span class="line">        int year &#x3D; some.get(Calendar.YEAR);&#x2F;&#x2F;年</span><br><span class="line">        int month &#x3D; some.get(Calendar.MONTH) + 1;&#x2F;&#x2F;月</span><br><span class="line">        int day &#x3D; some.get(Calendar.DAY_OF_MONTH);&#x2F;&#x2F;日</span><br><span class="line">        System.out.println(year);</span><br><span class="line">        System.out.println(month);</span><br><span class="line">        System.out.println(day);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>日历程序小栗子<br>代码有点绕，看的我有点懵，所以暂时不写注释了。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import java.time.DayOfWeek;</span><br><span class="line">import java.time.LocalDate;</span><br><span class="line"></span><br><span class="line">public class datelizi &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        LocalDate date &#x3D; LocalDate.now();&#x2F;&#x2F;实例化</span><br><span class="line">        int month &#x3D; date.getMonthValue();&#x2F;&#x2F;月</span><br><span class="line">        int today &#x3D; date.getDayOfMonth();&#x2F;&#x2F;日</span><br><span class="line"></span><br><span class="line">        date &#x3D; date.minusDays(today - 1);&#x2F;&#x2F;获取当前天数指定减去的天数</span><br><span class="line">        DayOfWeek weekday &#x3D; date.getDayOfWeek();&#x2F;&#x2F;获取当前日期是周几</span><br><span class="line">        int value &#x3D; weekday.getValue();&#x2F;&#x2F;返回当前月份值</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;Mon Tue Wed Thu Fri sat Sun&quot;);</span><br><span class="line">        for (int i&#x3D;1;i&lt;value;i++)&#123;&#x2F;&#x2F;月份从1开始，1小于当前月份</span><br><span class="line">            System.out.println(&quot;   &quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        while (date.getMonthValue() &#x3D;&#x3D; month)&#123;</span><br><span class="line">            System.out.printf(&quot;%3d&quot; , date.getDayOfMonth());</span><br><span class="line">            if (date.getDayOfMonth() &#x3D;&#x3D; today)&#123;</span><br><span class="line">                System.out.println(&quot;*&quot;);</span><br><span class="line">            &#125;else &#123;</span><br><span class="line">                System.out.println(&quot; &quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            date &#x3D; date.plusDays(1);</span><br><span class="line">            if (date.getDayOfWeek().getValue() &#x3D;&#x3D; 1)&#123;</span><br><span class="line">                System.out.println();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (date.getDayOfWeek().getValue() !&#x3D; 1)&#123;</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x03-用户自定义类"><a href="#0x03-用户自定义类" class="headerlink" title="0x03 用户自定义类"></a>0x03 用户自定义类</h3><h4 id="Employee类"><a href="#Employee类" class="headerlink" title="Employee类"></a>Employee类</h4><p>增加雇员薪水小程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">import java.time.*;</span><br><span class="line">public class EmployeeTest&#123;</span><br><span class="line">    public static void main(String args)&#123;</span><br><span class="line">        Employee[] staff &#x3D; new Employee[3];&#x2F;&#x2F;定义三个成员</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;写入三个成员的个人信息</span><br><span class="line">        staff[0] &#x3D; new Employee(&quot;carl Cracker&quot; , 75000 , 1987 , 12 , 15);</span><br><span class="line">        staff[1] &#x3D; new Employee(&quot;Harry Hacker&quot; , 50000 , 1989 , 10 , 1);</span><br><span class="line">        staff[2] &#x3D; new Employee(&quot;Tony Tester&quot; , 40000 , 1990 , 3 , 15);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;将成员的薪水提高5%</span><br><span class="line">        for (Employee e : staff)&#123;</span><br><span class="line">            e.raiseSalary(5);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;遍历输出成员薪水增加后的信息</span><br><span class="line">        for (Employee e:staff)&#123;</span><br><span class="line">            System.out.println(&quot;name&#x3D;&quot; + e.getName() + &quot;, salary&#x3D;&quot; + e.getSalary() + &quot;, hireDay&#x3D;&quot; + e.getHireDay());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Employee&#123;</span><br><span class="line">    private String name;&#x2F;&#x2F;定义字符串类型(名字)</span><br><span class="line">    private double salary;&#x2F;&#x2F;浮点型数值(薪水)</span><br><span class="line">    private LocalDate hireDay;&#x2F;&#x2F;时间类型(出生年月日)</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;封装一个类，接收传输过来的数值，放入类中处理</span><br><span class="line">    public Employee(String n , double s, int year, int month, int day)&#123;</span><br><span class="line">        name &#x3D; n;</span><br><span class="line">        salary &#x3D; s;</span><br><span class="line">        hireDay &#x3D; LocalDate.of(year , month , day);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double getSalary()&#123;</span><br><span class="line">        return salary;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public LocalDate getHireDay()&#123;</span><br><span class="line">        return hireDay;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;接收传递过来的参数值，并进行运算后弹出运算结果</span><br><span class="line">    public void raiseSalary(double byPercent)&#123;</span><br><span class="line">        double raise &#x3D; salary * byPercent &#x2F; 100;</span><br><span class="line">        salary +&#x3D; raise;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="剖析Employee类"><a href="#剖析Employee类" class="headerlink" title="剖析Employee类"></a>剖析Employee类</h4><p>public 公共的，任何类或方法都可以调用这些方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public Employee(String n , double s, int year, int month, int day)</span><br><span class="line">public String getName()</span><br><span class="line">public double getSalary()</span><br><span class="line">public LocalDate getHireDay()</span><br><span class="line">public void raiseSalary(double byPercent)</span><br></pre></td></tr></table></figure>
+
+<p>private 私有的，只有类里面的方法才可以调用，其他类方法禁止调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private String name;</span><br><span class="line">private double salary;</span><br><span class="line">private LocalDate hireDay;</span><br></pre></td></tr></table></figure>
+
+<h4 id="从构造器开始"><a href="#从构造器开始" class="headerlink" title="从构造器开始"></a>从构造器开始</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;封装类</span><br><span class="line">    public Employee(String n , double s, int year, int month, int day)&#123;</span><br><span class="line">        name &#x3D; n;</span><br><span class="line">        salary &#x3D; s;</span><br><span class="line">        hireDay &#x3D; LocalDate.of(year , month , day);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;实例化Employee</span><br><span class="line">new Employee(&quot;carl Cracker&quot; , 75000 , 1987 , 12 , 15);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;上述实例化后，会把写入的内容放入实例域中</span><br><span class="line">name &#x3D; &quot;carl Cracker&quot;</span><br><span class="line">salary &#x3D; 75000</span><br><span class="line">hireDay &#x3D; LocalDate.of(1987, 12, 15)</span><br></pre></td></tr></table></figure>
+<p>构造器一般跟随new使用，无法对已经设置过的实例域重新赋值</p>
+<h4 id="隐式参数与显式参数"><a href="#隐式参数与显式参数" class="headerlink" title="隐式参数与显式参数"></a>隐式参数与显式参数</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;将参数带入此方法中，运算后返回结果</span><br><span class="line">    public void raiseSalary(double byPercent)&#123;</span><br><span class="line">        double raise &#x3D; salary * byPercent &#x2F; 100;</span><br><span class="line">        salary +&#x3D; raise;</span><br><span class="line">    &#125;</span><br><span class="line">&#x2F;&#x2F;调用上述方法的对象，传入参数5</span><br><span class="line">	e.raiseSalary(5);</span><br><span class="line">&#x2F;&#x2F;运算，员工本来薪水*传入的参数5 &#x2F; 100</span><br><span class="line">    double raise &#x3D; salary * byPercent &#x2F; 100;</span><br><span class="line">    salary +&#x3D; raise;</span><br></pre></td></tr></table></figure>
+<p>raiseSalary方法有两个参数，第一个参数隐式参数，在方法名前的Employee类，第二个是显式参数byPercent，在方法名()中</p>
+<h4 id="封装的优点"><a href="#封装的优点" class="headerlink" title="封装的优点"></a>封装的优点</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public String getName()&#123;</span><br><span class="line">    return name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public double getSalary()&#123;</span><br><span class="line">    return salary;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public LocalDate getHireDay()&#123;</span><br><span class="line">    return hireDay;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>封装，只返回一个调用方法，其他人无法通过方法修改封装内中的内容，增强安全性</p>
+<ul>
+<li>设置私有数据域</li>
+<li>公有域访问器方法</li>
+<li>公有域更改器方法</li>
+</ul>
+<h4 id="final实例域"><a href="#final实例域" class="headerlink" title="final实例域"></a>final实例域</h4><p>实例域定义为final，构建对象时必须初始化域，且不能对域进行修改。</p>
+<h3 id="0x04-静态域与静态方法"><a href="#0x04-静态域与静态方法" class="headerlink" title="0x04 静态域与静态方法"></a>0x04 静态域与静态方法</h3><h4 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h4><p>//调用静态方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">public class Test &#123;</span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        Employee[] staff &#x3D; new Employee[3];</span><br><span class="line"></span><br><span class="line">        staff[0] &#x3D; new Employee(&quot;Tom&quot; , 40000);</span><br><span class="line">        staff[1] &#x3D; new Employee(&quot;Dick&quot; ,60000);</span><br><span class="line">        staff[2] &#x3D; new Employee(&quot;Harry&quot; , 65000);</span><br><span class="line"></span><br><span class="line">        for (Employee e : staff)&#123;</span><br><span class="line">            e.setId();</span><br><span class="line">            System.out.println(&quot;name&#x3D;&quot; + e.getName() + &quot;id&#x3D;&quot; + e.getId() + &quot;,salary&#x3D;&quot; + e.getSalary());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int n &#x3D; Employee.getNextId();</span><br><span class="line">        System.out.println(&quot;Next availabble id&#x3D;&quot; + n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Employee&#123;</span><br><span class="line">    private static int nextId &#x3D; 1;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line">    private double salary;</span><br><span class="line">    private int id;</span><br><span class="line"></span><br><span class="line">    public Employee(String n , double s)&#123;</span><br><span class="line">        name &#x3D; n;</span><br><span class="line">        salary &#x3D; s;</span><br><span class="line">        id &#x3D; 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName()&#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double getSalary()&#123;</span><br><span class="line">        return salary;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getId()&#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setId() &#123;</span><br><span class="line">        id &#x3D; nextId;</span><br><span class="line">        nextId++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static int getNextId()&#123;</span><br><span class="line">        return nextId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args)&#123;</span><br><span class="line">        Employee e &#x3D; new Employee(&quot;Harry&quot; , 50000);</span><br><span class="line">        System.out.println(e.getName() + &quot; &quot; + e.getSalary());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2019/08/04/JAVA%E5%AF%B9%E8%B1%A1%E4%B8%8E%E7%B1%BB-4/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JAVA/" rel="tag">JAVA</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/08/04/%E5%85%B3%E4%BA%8Ejava%E4%B8%AD%E4%B8%8D%E5%B8%A6%E7%AC%A6%E5%8F%B7%E5%8F%B3%E7%A7%BB%E9%97%AE%E9%A2%98%E5%A1%AB%E5%9D%91/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            关于java中不带符号右移问题填坑
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/07/31/Freshly%E9%9D%B6%E6%9C%BA%E5%AE%9E%E6%88%98/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Freshly靶机实战</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+
+<script src="/js/clickLove.js"></script>
+
+
+<!-- ClickBoom -->
+
+
+<script src="/js/clickBoom.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>

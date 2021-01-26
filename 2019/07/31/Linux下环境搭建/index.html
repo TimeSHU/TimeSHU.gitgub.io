@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Ubuntu下Nginx+php+mysql+安全加固 |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-Linux下环境搭建" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Ubuntu下Nginx+php+mysql+安全加固
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/07/31/Linux%E4%B8%8B%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time datetime="2019-07-31T10:00:11.000Z" itemprop="datePublished">2019-07-31</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">14 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yrpi2ohj30hs0dc0ur.jpg" alt="99"></p>
+<a id="more"></a>
+
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><h3 id="0x00-准备工作"><a href="#0x00-准备工作" class="headerlink" title="0x00 准备工作"></a>0x00 准备工作</h3><p>虚拟机：Vmware15<br>系统：Ubuntu16<br>虚拟机装ubuntu过程个人觉得就不用详说了。。反正就是一顿操作猛如虎。。然后就安装好了，因为登录是个人用户，所以做了一些设置，让其可以使用root方式登录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1、安装vim(个人喜欢用vim，自带的vi不太喜欢用)</span><br><span class="line">   sudo apt-get install vim</span><br><span class="line"></span><br><span class="line">2、设置root密码</span><br><span class="line">   sudo passwd ******</span><br><span class="line"></span><br><span class="line">3、配置文件，设置root可登录</span><br><span class="line">   sudo vim &#x2F;usr&#x2F;share&#x2F;lightdm&#x2F;lightdm.conf.d&#x2F;50-ubuntu.conf</span><br><span class="line">   在文件最后添加：greeter-show-manual-login&#x3D;true</span><br></pre></td></tr></table></figure>
+
+<p>更换源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br><span class="line"></span><br><span class="line">清华大学源</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-updates main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-updates main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-backports main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-backports main restricted universe multiverse</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-security main restricted universe multiverse</span><br><span class="line"># deb-src https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;ubuntu&#x2F; xenial-security main restricted universe multiverse</span><br></pre></td></tr></table></figure>
+
+<p>安装截图<br><img src="https://i.imgur.com/vpV9Ndn.png" alt=""></p>
+<p>更新ubuntu</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">更新</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br><span class="line">sudo apt clean</span><br><span class="line"></span><br><span class="line">更新报错，提示资源管理器被占用，使用ps -e | grep apt 查看占用进程</span><br><span class="line">使用sudo kill PID号 杀死进程，重新运行以上命令即可</span><br></pre></td></tr></table></figure>
+
+<p>成功截图<br><img src="https://i.imgur.com/L9e54ys.jpg" alt=""></p>
+<h3 id="0x01-搭建web环境"><a href="#0x01-搭建web环境" class="headerlink" title="0x01 搭建web环境"></a>0x01 搭建web环境</h3><h4 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get -y install mysql-server mysql-client</span><br></pre></td></tr></table></figure>
+<p>中途会让你设置数据库密码,或者使用以下命令设置密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<p>可以正常连接，此时账户是root<br><img src="https://i.imgur.com/EQw5sAb.png" alt=""></p>
+<h4 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apt-get install nginx -y</span><br><span class="line"></span><br><span class="line">启动nginx守护程序</span><br><span class="line">systemctl start nginx.service</span><br><span class="line">systemctl enable nginx.service</span><br></pre></td></tr></table></figure>
+
+<h4 id="安装php-fpm"><a href="#安装php-fpm" class="headerlink" title="安装php-fpm"></a>安装php-fpm</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get -y install php7.0-fpm php7.0-mysql</span><br></pre></td></tr></table></figure>
+<p>配置php.ini文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;php&#x2F;7.0&#x2F;fpm&#x2F;php.ini</span><br></pre></td></tr></table></figure>
+<p>在配置文件中查看以下参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.</span><br><span class="line">; http:&#x2F;&#x2F;php.net&#x2F;cgi.fix-pathinfo</span><br><span class="line">; cgi.fix_pathinfo&#x3D;1</span><br><span class="line"></span><br><span class="line">使用 &#x2F; ; to use SCRIPT_ 找到此行，修改最后一行为以下</span><br><span class="line"></span><br><span class="line">; to use SCRIPT_FILENAME rather than PATH_TRANSLATED.</span><br><span class="line">; http:&#x2F;&#x2F;php.net&#x2F;cgi.fix-pathinfo</span><br><span class="line">cgi.fix_pathinfo&#x3D;0</span><br></pre></td></tr></table></figure>
+<p>保存后重新启动php</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart php7.0-fpm.service</span><br><span class="line">systemctl enable php7.0-fpm.service</span><br></pre></td></tr></table></figure>
+<p>配置Nginx使用php处理器<br>打开配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;default</span><br></pre></td></tr></table></figure>
+<p>设置以下对应参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server;</span><br><span class="line"></span><br><span class="line">    root &#x2F;var&#x2F;www&#x2F;html;</span><br><span class="line">    index index.php index.html index.htm index.nginx-debian.html;</span><br><span class="line"></span><br><span class="line">    server_name 127.0.0.1;</span><br><span class="line"></span><br><span class="line">    location ~ \.php$ &#123;</span><br><span class="line">        include snippets&#x2F;fastcgi-php.conf;</span><br><span class="line">        fastcgi_pass unix:&#x2F;run&#x2F;php&#x2F;php7.0-fpm.sock;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    location ~ &#x2F;\.ht &#123;</span><br><span class="line">        deny all;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>创建index.php</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>访问成功<br><img src="https://i.imgur.com/My1oL7P.png" alt=""></p>
+<p>参考连接：<br><a href="https://www.globo.tech/learning-center/setup-nginx-php-fpm-mysql-ubuntu-16/" target="_blank" rel="noopener">https://www.globo.tech/learning-center/setup-nginx-php-fpm-mysql-ubuntu-16/</a><br><a href="https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04" target="_blank" rel="noopener">https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-in-ubuntu-16-04</a></p>
+<h3 id="0x02-php连接mysql"><a href="#0x02-php连接mysql" class="headerlink" title="0x02 php连接mysql"></a>0x02 php连接mysql</h3><p>让php连接mysql，感觉网上找个源码搭建有点不太好，不是自己的东西，所以准备自己写一个可以插入数据的页面,先本机测试，然后放到ubuntu虚拟机中</p>
+<h4 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create database mag;&#x2F;&#x2F;创建test数据库</span><br><span class="line">use mag;&#x2F;&#x2F;选择数据库</span><br><span class="line">&#x2F;&#x2F;创建表</span><br><span class="line">create table mag(</span><br><span class="line">id int not null primary key,</span><br><span class="line">name char(10) not null,</span><br><span class="line">content varchar(100) not null</span><br><span class="line">)charset utf8;</span><br></pre></td></tr></table></figure>
+<p>创建成功<br><img src="https://i.imgur.com/pBGAcMK.png" alt=""></p>
+<h4 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h4><p>有点丑，不过可以用就行。。。</p>
+<p>php代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">&#x2F;&#x2F;连接数据库</span><br><span class="line">$conn &#x3D; mysql_connect(&#39;localhost&#39; , &#39;root&#39; , &#39;root&#39;);</span><br><span class="line">mysql_query(&#39;use mag&#39; , $conn);&#x2F;&#x2F;选择数据库</span><br><span class="line">mysql_query(&#39;set names utf8&#39; , $conn);&#x2F;&#x2F;设置字符集</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;获取post过来的数据</span><br><span class="line">$id &#x3D; $_POST[&#39;id&#39;];</span><br><span class="line">$name &#x3D; $_POST[&#39;name&#39;];</span><br><span class="line">$content &#x3D; $_POST[&#39;content&#39;];</span><br><span class="line">$sql &#x3D; &quot;INSERT INTO mag(id , name , content) VALUE (&#39;$id&#39; , &#39;$name&#39; , &#39;$content&#39;)&quot;;</span><br><span class="line"></span><br><span class="line">if (mysql_query($sql , $conn)) &#123;</span><br><span class="line">    echo &quot;OK&quot;;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    echo &quot;no&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>html代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang&#x3D;&quot;en&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset&#x3D;&quot;UTF-8&quot;&gt;</span><br><span class="line">    &lt;title&gt;留言板&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;form action&#x3D;&quot;mag.php&quot; method&#x3D;&quot;post&quot;&gt;</span><br><span class="line">    &lt;p&gt;ID  ：&lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;id&quot;&gt;&lt;br&#x2F;&gt;&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;p&gt;昵称：&lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot;&gt;&lt;br&#x2F;&gt;&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;p&gt;内容：&lt;textarea name&#x3D;&quot;content&quot; id&#x3D;&quot;&quot; cols&#x3D;&quot;30&quot; rows&#x3D;&quot;10&quot;&gt;&lt;&#x2F;textarea&gt;&lt;br&#x2F;&gt;&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;p style&#x3D;&quot;height: 200px&quot;&gt;&lt;input type&#x3D;&quot;submit&quot; value&#x3D;&quot;SUBMIT&quot;&gt;&lt;&#x2F;p&gt;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+<p>插入成功<br><img src="https://i.imgur.com/j7JCRQx.png" alt=""><br><img src="https://i.imgur.com/7D3J2R2.png" alt=""><br><img src="https://i.imgur.com/WTTACJT.png" alt=""></p>
+<p>开始测试虚拟机是否可用。</p>
+<h4 id="ubuntu下php连接mysql"><a href="#ubuntu下php连接mysql" class="headerlink" title="ubuntu下php连接mysql"></a>ubuntu下php连接mysql</h4><p>创建数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">create database mag;&#x2F;&#x2F;创建test数据库</span><br><span class="line">use mag;&#x2F;&#x2F;选择数据库</span><br><span class="line">&#x2F;&#x2F;创建表</span><br><span class="line">create table mag(</span><br><span class="line">id int not null primary key,</span><br><span class="line">name char(10) not null,</span><br><span class="line">content varchar(100) not null</span><br><span class="line">)charset utf8;</span><br></pre></td></tr></table></figure>
+
+<p>将代码放入ubuntu下的html目录中，发现提交数据报错，报500错误，<br>搜索后发现nginx禁止静态页面使用post方式，需要修改nginx.conf.<br>在nginx.conf下添加以下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">error_page  405 &#x3D;200 @405;</span><br><span class="line"> location @405 &#123;</span><br><span class="line">         proxy_method GET;</span><br><span class="line">         proxy_pass http:&#x2F;&#x2F;localhost;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>还是报错，测试各种方法都失败了。猜测可能不是nginx的问题，如果mysql配置错误也会爆出500错误，查看mysql错误日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;var&#x2F;log&#x2F;nginx&#x2F;error.log</span><br></pre></td></tr></table></figure>
+<p>报mysql_connetc错误。<br><img src="https://i.imgur.com/WA4K2fV.png" alt=""></p>
+<p>最后发现环境不一样，本机使用的phpstudy集成环境，使用的是php5<br>ubuntu下载的php7，两种不一样。<br>php7使用的是mysqli，所以连接需要使用mysqli_connect</p>
+<p>代码修改这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;连接数据库</span><br><span class="line">$conn &#x3D; mysqli_connect(&#39;127.0.0.1&#39; , &#39;root&#39; , &#39;888888&#39;);</span><br><span class="line">mysqli_query(&#39;use mag&#39; , $conn);&#x2F;&#x2F;选择数据库</span><br><span class="line">mysqli_query(&#39;set names utf8&#39; , $conn);&#x2F;&#x2F;设置字符集</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;获取get过来的数据</span><br><span class="line">$id &#x3D; $_GET[&#39;id&#39;];</span><br><span class="line">$name &#x3D; $_GET[&#39;name&#39;];</span><br><span class="line">$content &#x3D; $_GET[&#39;content&#39;];</span><br><span class="line">$sql &#x3D; &quot;INSERT INTO mag(id , name , content) VALUES (&#39;$id&#39; , &#39;$name&#39; , &#39;$content&#39;)&quot;;</span><br><span class="line"></span><br><span class="line">if (mysqli_query($conn , $sql)) &#123;</span><br><span class="line">    echo $sql;</span><br><span class="line">    echo &#39;ok&#39;;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    echo $sql;</span><br><span class="line">    echo &#39;no&#39;;</span><br></pre></td></tr></table></figure>
+<p>发现还是报错，提示mysqli_query($conn , $sql)这行出问题，使用f12查看网络，发现报错500。。经过表哥们的提醒，mysql配置连接不应该按照php5的来写。<br>修改成以下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$host &#x3D; &#39;localhost:3306&#39;;</span><br><span class="line">$username &#x3D; &#39;root&#39;;</span><br><span class="line">$password &#x3D; &#39;888888&#39;;</span><br><span class="line">$dbname &#x3D; &#39;mag&#39;;</span><br><span class="line">$link &#x3D; mysqli_connect($host , $username , $password , $dbname);</span><br><span class="line">mysqli_set_charset($link , &#39;utf-8&#39;);</span><br><span class="line">&#x2F;&#x2F;获取get过来的数据</span><br><span class="line">$id &#x3D; $_GET[&#39;id&#39;];</span><br><span class="line">$name &#x3D; $_GET[&#39;name&#39;];</span><br><span class="line">$content &#x3D; $_GET[&#39;content&#39;];</span><br><span class="line">$sql &#x3D; &quot;INSERT INTO mag(id , name , content) VALUES ($id , &#39;$name&#39; , &#39;$content&#39;)&quot;;</span><br><span class="line">$res &#x3D; mysqli_query($link , $sql);</span><br><span class="line"></span><br><span class="line">if (!$res) &#123;</span><br><span class="line">	echo $sql;</span><br><span class="line">	echo &quot;&lt;br&#x2F;&gt;no&quot;;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">	echo $sql;</span><br><span class="line">	echo &quot;&lt;br&#x2F;&gt;yes&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>数据插入成功<br><img src="https://i.imgur.com/GkVYO25.png" alt=""><br><img src="https://i.imgur.com/UoziyQA.png" alt=""></p>
+<p>困扰我大半天的问题，终于解决了，感谢大表哥们的回答啊。。</p>
+<h3 id="0x03-Ubuntu安全加固"><a href="#0x03-Ubuntu安全加固" class="headerlink" title="0x03 Ubuntu安全加固"></a>0x03 Ubuntu安全加固</h3><p>参考连接：<a href="https://www.freebuf.com/column/202728.html" target="_blank" rel="noopener">https://www.freebuf.com/column/202728.html</a></p>
+<p>根据群主说的下载了linux安全加固PDF，但是由于第一次做加固，所以不太懂，在freebuf上面找了一篇文章，根据此文章进行加固</p>
+<h4 id="身份鉴别"><a href="#身份鉴别" class="headerlink" title="身份鉴别"></a>身份鉴别</h4><h5 id="口令复杂度策略"><a href="#口令复杂度策略" class="headerlink" title="口令复杂度策略"></a>口令复杂度策略</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">口令长度至少8位，并包括数字、小写字母、大写字母和特殊符号4类中至少2类。</span><br><span class="line"></span><br><span class="line">Minlen &#x2F;&#x2F;密码最小长度要求；</span><br><span class="line">Lcredit &#x2F;&#x2F;小写字符数量</span><br><span class="line">Ocredit &#x2F;&#x2F;特殊字符数量</span><br></pre></td></tr></table></figure>
+<p>因为安装的ubuntu，所以有些文件可能不太一样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">修改&#x2F;etc&#x2F;security&#x2F;pwquality.conf配置文件</span><br><span class="line">vim &#x2F;etc&#x2F;security&#x2F;pwquality.conf</span><br><span class="line"></span><br><span class="line">Minlen &#x2F;&#x2F;密码最小长度要求；</span><br><span class="line">Lcredit &#x2F;&#x2F;小写字符数量</span><br><span class="line">Ocredit &#x2F;&#x2F;特殊字符数量</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/QrqAT9U.png" alt=""></p>
+<h5 id="口令最长生存期策略"><a href="#口令最长生存期策略" class="headerlink" title="口令最长生存期策略"></a>口令最长生存期策略</h5><p>修改/etc/login.defs</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;login.defs</span><br><span class="line"></span><br><span class="line">找到以下参数修改</span><br><span class="line">PASS_MAX_DAYS   180  #密码最长过期天数</span><br><span class="line">PASS_MIN_DAYS   90  #密码最小过期天数</span><br><span class="line">PASS_WARN_AGE   10   #密码过期警告天数</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/PHJNq6k.png" alt=""></p>
+<h5 id="多次登录失败锁定策略"><a href="#多次登录失败锁定策略" class="headerlink" title="多次登录失败锁定策略"></a>多次登录失败锁定策略</h5><p>修改/etc/pam.d/login配置文件<br>各参数解释: </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">even_deny_root 也限制root用户；</span><br><span class="line">deny 设置普通用户和root用户连续错误登陆的最大次数，超过最大次数，则锁定该用户</span><br><span class="line">unlock_time 设定普通用户锁定后，多少时间后解锁，单位是秒；</span><br><span class="line">root_unlock_time 设定root用户锁定后，多少时间后解锁，单位是秒；</span><br></pre></td></tr></table></figure>
+<p>设置为密码连续错误6次锁定，锁定时间30秒 root密码连续错误6次锁定，时间为 100秒 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">添加</span><br><span class="line">#%PAM-1.0</span><br><span class="line">auth required pam_tally2.so onerr&#x3D;fail deny&#x3D;6 unlock_time&#x3D;30 even_deny_root root_unlock_time&#x3D;100</span><br></pre></td></tr></table></figure>
+
+<h4 id="访问控制"><a href="#访问控制" class="headerlink" title="访问控制"></a>访问控制</h4><h5 id="多余账户锁定策略"><a href="#多余账户锁定策略" class="headerlink" title="多余账户锁定策略"></a>多余账户锁定策略</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">应锁定与设备运行、维护等工作无关的账号。</span><br><span class="line">&#x2F;etc&#x2F;password以root账户登录Linux系统</span><br><span class="line">锁定用户方法一：</span><br><span class="line">修改&#x2F;etc&#x2F;password文件，将需要锁定的用户的shell域后添加nologin；</span><br><span class="line">test:x:1000:100:-LINUX:&#x2F;home&#x2F;test:&#x2F;bin&#x2F;bash&#x2F;nologin</span><br><span class="line"></span><br><span class="line">锁定用户方法二：</span><br><span class="line">在超级权限的账户下使用”passwd”命令</span><br><span class="line">#passwd –lusername &#x2F;&#x2F;锁定账户；</span><br><span class="line">#passwd –dusername&#x2F;&#x2F;解锁用户；</span><br><span class="line">解锁用户后需重新设置密码，且&#x2F;etc&#x2F;passwd文件内容不会发生变化。该操作比较麻烦，不推荐使用。</span><br></pre></td></tr></table></figure>
+<p>对以下账户进行锁定，使用第一种方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">锁定uucp账户</span><br><span class="line">uucp:x:10:10:uucp:-LINUX:&#x2F;var&#x2F;spool&#x2F;uucp:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line"></span><br><span class="line">锁定lp账户</span><br><span class="line">lp:x:7:7:lp:-LINUX:&#x2F;var&#x2F;spool&#x2F;lpd:&#x2F;usr&#x2F;sbin&#x2F;nologin</span><br><span class="line"></span><br><span class="line">锁定sync账户</span><br><span class="line">sync:x:4:65534:sync:-LINUX:&#x2F;bin:&#x2F;bin&#x2F;sync</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/nes6i8Z.png" alt=""></p>
+<h5 id="关键目录权限控制"><a href="#关键目录权限控制" class="headerlink" title="关键目录权限控制"></a>关键目录权限控制</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">重点设置password、shadow、group、service、login.defs、xinetd.conf、security、ssh_config文件权限。</span><br><span class="line"></span><br><span class="line">其实很多版本都默认设置了一些。</span><br><span class="line"></span><br><span class="line">ls –l &#x2F;etc&#x2F;passwd&#x2F;&#x2F;查看passwd文件是否为644权限</span><br><span class="line">ls –l &#x2F;etc&#x2F;shadow&#x2F;&#x2F;查看shadow文件是否为600权限</span><br><span class="line">ls –l &#x2F;etc&#x2F;group&#x2F;&#x2F;查看group文件是否为644权限</span><br><span class="line">ls –l &#x2F;etc&#x2F;services&#x2F;&#x2F;查看services文件是否为644权限</span><br><span class="line">ls –l &#x2F;etc&#x2F;login.defs &#x2F;&#x2F;查看login.defs是否为644权限</span><br><span class="line">ls -l &#x2F;ssh&#x2F;ssh_config &#x2F;&#x2F;查看ssh_config文件是否为600权限</span><br></pre></td></tr></table></figure>
+<p>计算权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">r&#x3D;4，w&#x3D;2，x&#x3D;1 </span><br><span class="line">若要rwx属性则4+2+1&#x3D;7； </span><br><span class="line">若要rw-属性则4+2&#x3D;6； </span><br><span class="line">若要r-x属性则4+1&#x3D;5。</span><br></pre></td></tr></table></figure>
+<p>查看关键目录权限<br>符合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">passwd文件为 6+4+4&#x3D;644</span><br><span class="line">-rw-r--r-- 1 root root 2371 Jul 30 21:59 &#x2F;etc&#x2F;passwd</span><br><span class="line"></span><br><span class="line">group文件为 6+4+4&#x3D;644</span><br><span class="line">-rw-r--r-- 1 root root 1008 Jul 30 04:01 &#x2F;etc&#x2F;group</span><br><span class="line"></span><br><span class="line">services文件为 6+4+4&#x3D;644</span><br><span class="line">-rw-r--r-- 1 root root 19605 Oct 25  2014 &#x2F;etc&#x2F;services</span><br><span class="line"></span><br><span class="line">login.defs文件为 6+4+4&#x3D;644</span><br><span class="line">-rw-r--r-- 1 root root 10551 Jul 30 21:27 &#x2F;etc&#x2F;login.defs</span><br></pre></td></tr></table></figure>
+<p>不符合</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">shadow文件为 6+4+0&#x3D;640 不符合</span><br><span class="line">-rw-r----- 1 root shadow 1332 Jul 30 04:01 &#x2F;etc&#x2F;shadow</span><br><span class="line"></span><br><span class="line">修改</span><br><span class="line">chmod 600 &#x2F;etc&#x2F;shadow</span><br><span class="line">shadow文件为 6+0+0&#x3D;600  符合</span><br><span class="line">-rw------- 1 root shadow 1332 Jul 30 04:01 &#x2F;etc&#x2F;shadow</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ssh_config文件为 6+4+4&#x3D;644 不符合</span><br><span class="line">-rw-r--r-- 1 root root 1756 Apr 28  2016 &#x2F;etc&#x2F;ssh&#x2F;ssh_config</span><br><span class="line"></span><br><span class="line">修改</span><br><span class="line">chmod 600 &#x2F;etc&#x2F;ssh&#x2F;ssh_config</span><br><span class="line">ssh_config文件为 6+0+0&#x3D;600  符合</span><br><span class="line">-rw------- 1 root root 1756 Apr 28  2016 &#x2F;etc&#x2F;ssh&#x2F;ssh_config</span><br></pre></td></tr></table></figure>
+
+<h5 id="用户缺省权限控制"><a href="#用户缺省权限控制" class="headerlink" title="用户缺省权限控制"></a>用户缺省权限控制</h5><p>umask值应为027或更小的权限<br>修改/etc/profile</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">umask 027</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/EstXob0.png" alt=""></p>
+<h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>1、重新温习了环境搭建这一块的知识，搭建这块倒也没有遇到什么坑。<br>2、了解php5和php7语法这块的区别，大体上面的没有变，就是语法格式上面可能有些改变。。。之前学的是php5，加上好久没有搞php了，这坑踩了几个小时才解决。。<br>3、linux安全加固这块是完全没有碰过的，以前只听过加固，知道加固的一些关键点，但是从来没有实践过，这次动手感觉涨了不少见识。</p>
+<p>总体来说，根据这次作业还是学到了很多东西，特别是加固这块，加固命令，检查那些地方，可能没有完全按照文章里面写的加固，有些文件没有，有些是看不太懂，所以不敢操作。。怕把虚拟机搞崩溃了，总结就到这里结束了。。。</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2019/07/31/Linux%E4%B8%8B%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag">随笔</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/07/31/Freshly%E9%9D%B6%E6%9C%BA%E5%AE%9E%E6%88%98/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Freshly靶机实战
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/07/31/PentestBox%E5%85%A5%E9%97%A8%E6%89%8B%E5%86%8C/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">PentestBox入门手册</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+
+<script src="/js/clickLove.js"></script>
+
+
+<!-- ClickBoom -->
+
+
+<script src="/js/clickBoom.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>

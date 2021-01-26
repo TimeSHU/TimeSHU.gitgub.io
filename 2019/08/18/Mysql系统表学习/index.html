@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Mysql系统表学习 |  Time
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  
+  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
+  
+  <div id="app">
+    <main class="content on">
+      <section class="outer">
+  <article id="post-Mysql系统表学习" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Mysql系统表学习
+</h1>
+ 
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/08/18/Mysql%E7%B3%BB%E7%BB%9F%E8%A1%A8%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time datetime="2019-08-18T05:01:42.000Z" itemprop="datePublished">2019-08-18</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+
+      
+      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ytwtgtpj31c00u0dll.jpg" alt="99"></p>
+<a id="more"></a>
+
+
+
+<h3 id="0x00-学习任务概述"><a href="#0x00-学习任务概述" class="headerlink" title="0x00 学习任务概述"></a>0x00 学习任务概述</h3><ul>
+<li>如何利用数据库的功能读写文件，需要什么样的条件才可以读写</li>
+<li>学习数据库系统表功能，如何利用sql语句查询库名、表名、字段名、内容以及当前用户等基本信息，将学习过程中关键部分整理成报告</li>
+<li>尝试查询处用户的hash，并使用hashcat来对获取的hash进行暴力破解</li>
+</ul>
+<h3 id="0x01-数据库读功能"><a href="#0x01-数据库读功能" class="headerlink" title="0x01 数据库读功能"></a>0x01 数据库读功能</h3><ul>
+<li>读取文件函数<ul>
+<li>load_file()</li>
+<li>load data infile()</li>
+<li>system cat<br>load_file()和load data infile 读取文件的方法:新建一个表，读取文件为字符串形式插入表中，然后读出表中数据.<br>需满足条件：</li>
+<li>有file权限</li>
+<li>secure_file_priv值不为NULL</li>
+</ul>
+</li>
+</ul>
+<p>查看secure_file_priv是否为空</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show global variables like &quot;secure_file_priv&quot;;</span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| secure_file_priv |       |</span><br><span class="line">+------------------+-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h4 id="load-file"><a href="#load-file" class="headerlink" title="load_file"></a>load_file</h4><p>读取文件,首先在D盘下新建一个1.txt文件,内容：mysqlceshi<br>在数据库中新建一张表</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">create table text(cmd text);&#x2F;&#x2F;新建一个text表，字段为cmd，文本类型</span><br><span class="line"></span><br><span class="line">mysql&gt; create table text(cmd text);</span><br><span class="line">Query OK, 0 rows affected (0.04 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into text(cmd) values(load_file(&#39;d:&#x2F;1.txt&#39;));&#x2F;&#x2F;读取文件</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from text;</span><br><span class="line">+------------+</span><br><span class="line">| cmd        |</span><br><span class="line">+------------+</span><br><span class="line">| mysqlceshi |</span><br><span class="line">+------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p>读取成功!</p>
+<h4 id="load-data-infile"><a href="#load-data-infile" class="headerlink" title="load data infile"></a>load data infile</h4><p>在注入中load_file经常被拦截，可以使用此方法绕过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; load data infile &#39;d:&#x2F;2.txt&#39; into table text;&#x2F;&#x2F;读取文件</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line">Records: 1  Deleted: 0  Skipped: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from text;</span><br><span class="line">+------------------+</span><br><span class="line">| cmd              |</span><br><span class="line">+------------------+</span><br><span class="line">| mysqlceshi       |</span><br><span class="line">| load data infile |</span><br><span class="line">+------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h4 id="system-cat"><a href="#system-cat" class="headerlink" title="system cat"></a>system cat</h4><p>mysql版本大于5.0时，也可以使用此命令读取文件,注意：此方法只能本地读取，远程无法使用，无法越权使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">貌似windows下无法使用system cat函数???，测试没成功，使用以管理员运行的命令行也失败，难道只有在linux下才能成功?</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x02-数据库写-导出"><a href="#0x02-数据库写-导出" class="headerlink" title="0x02 数据库写(导出)"></a>0x02 数据库写(导出)</h3><ul>
+<li>outfile<br>将数据库内容导出到某文件中,具有写(读写权限)</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from text into outfile &#39;d:&#x2F;3.txt&#39;;</span><br><span class="line">Query OK, 2 rows affected (0.00 sec)</span><br></pre></td></tr></table></figure>
+<p><img src="https://i.imgur.com/qI6pFni.png" alt=""></p>
+<h3 id="0x03-数据库系统表"><a href="#0x03-数据库系统表" class="headerlink" title="0x03 数据库系统表"></a>0x03 数据库系统表</h3><p>安装mysql数据库后，数据库中默认会有三张表</p>
+<ul>
+<li>information_schema <ul>
+<li>存在数据库所有信息，使用show databases;查看所有信息引用的就是此数据库中的内容</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">+---------------------------------------+</span><br><span class="line">| Tables_in_information_schema          |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">| CHARACTER_SETS                        |</span><br><span class="line">| COLLATIONS                            |</span><br><span class="line">| COLLATION_CHARACTER_SET_APPLICABILITY |</span><br><span class="line">| COLUMNS                               |</span><br><span class="line">| COLUMN_PRIVILEGES                     |</span><br><span class="line">| ENGINES                               |</span><br><span class="line">| EVENTS                                |</span><br><span class="line">| FILES                                 |</span><br><span class="line">| GLOBAL_STATUS                         |</span><br><span class="line">| GLOBAL_VARIABLES                      |</span><br><span class="line">| KEY_COLUMN_USAGE                      |</span><br><span class="line">| PARAMETERS                            |</span><br><span class="line">| PARTITIONS                            |</span><br><span class="line">| PLUGINS                               |</span><br><span class="line">| PROCESSLIST                           |</span><br><span class="line">| PROFILING                             |</span><br><span class="line">| REFERENTIAL_CONSTRAINTS               |</span><br><span class="line">| ROUTINES                              |</span><br><span class="line">| SCHEMATA                              |</span><br><span class="line">| SCHEMA_PRIVILEGES                     |</span><br><span class="line">| SESSION_STATUS                        |</span><br><span class="line">| SESSION_VARIABLES                     |</span><br><span class="line">| STATISTICS                            |</span><br><span class="line">| TABLES                                |</span><br><span class="line">| TABLESPACES                           |</span><br><span class="line">| TABLE_CONSTRAINTS                     |</span><br><span class="line">| TABLE_PRIVILEGES                      |</span><br><span class="line">| TRIGGERS                              |</span><br><span class="line">| USER_PRIVILEGES                       |</span><br><span class="line">| VIEWS                                 |</span><br><span class="line">| INNODB_BUFFER_PAGE                    |</span><br><span class="line">| INNODB_TRX                            |</span><br><span class="line">| INNODB_BUFFER_POOL_STATS              |</span><br><span class="line">| INNODB_LOCK_WAITS                     |</span><br><span class="line">| INNODB_CMPMEM                         |</span><br><span class="line">| INNODB_CMP                            |</span><br><span class="line">| INNODB_LOCKS                          |</span><br><span class="line">| INNODB_CMPMEM_RESET                   |</span><br><span class="line">| INNODB_CMP_RESET                      |</span><br><span class="line">| INNODB_BUFFER_PAGE_LRU                |</span><br><span class="line">+---------------------------------------+</span><br><span class="line">40 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>performance_schema<ul>
+<li>监控mysql server运行过程中的资源消耗情况</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show tables;</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">| Tables_in_performance_schema                 |</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">| cond_instances                               |</span><br><span class="line">| events_waits_current                         |</span><br><span class="line">| events_waits_history                         |</span><br><span class="line">| events_waits_history_long                    |</span><br><span class="line">| events_waits_summary_by_instance             |</span><br><span class="line">| events_waits_summary_by_thread_by_event_name |</span><br><span class="line">| events_waits_summary_global_by_event_name    |</span><br><span class="line">| file_instances                               |</span><br><span class="line">| file_summary_by_event_name                   |</span><br><span class="line">| file_summary_by_instance                     |</span><br><span class="line">| mutex_instances                              |</span><br><span class="line">| performance_timers                           |</span><br><span class="line">| rwlock_instances                             |</span><br><span class="line">| setup_consumers                              |</span><br><span class="line">| setup_instruments                            |</span><br><span class="line">| setup_timers                                 |</span><br><span class="line">| threads                                      |</span><br><span class="line">+----------------------------------------------+</span><br><span class="line">17 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mysql<ul>
+<li>数据库用户权限表，记录所有数据库、表能执行那些操作.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show tables;</span><br><span class="line">+---------------------------+</span><br><span class="line">| Tables_in_mysql           |</span><br><span class="line">+---------------------------+</span><br><span class="line">| columns_priv              |</span><br><span class="line">| db                        |</span><br><span class="line">| event                     |</span><br><span class="line">| func                      |</span><br><span class="line">| general_log               |</span><br><span class="line">| help_category             |</span><br><span class="line">| help_keyword              |</span><br><span class="line">| help_relation             |</span><br><span class="line">| help_topic                |</span><br><span class="line">| host                      |</span><br><span class="line">| ndb_binlog_index          |</span><br><span class="line">| plugin                    |</span><br><span class="line">| proc                      |</span><br><span class="line">| procs_priv                |</span><br><span class="line">| proxies_priv              |</span><br><span class="line">| servers                   |</span><br><span class="line">| slow_log                  |</span><br><span class="line">| tables_priv               |</span><br><span class="line">| time_zone                 |</span><br><span class="line">| time_zone_leap_second     |</span><br><span class="line">| time_zone_name            |</span><br><span class="line">| time_zone_transition      |</span><br><span class="line">| time_zone_transition_type |</span><br><span class="line">| user                      |</span><br><span class="line">+---------------------------+</span><br><span class="line">24 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x04-数据库查询操作"><a href="#0x04-数据库查询操作" class="headerlink" title="0x04 数据库查询操作"></a>0x04 数据库查询操作</h3><ul>
+<li><p>查询数据库中所有库名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_concat(schema_name) from information_schema.schemata;</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| group_concat(schema_name)                                                   |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">| information_schema,mag,mysql,performance_schema,study,test,ultrax,w3cschool |</span><br><span class="line">+-----------------------------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据库中所有表名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---------------------------------------------------------------------------+</span><br><span class="line">| group_concat(table_name)</span><br><span class="line">---------------------------------------------------------------------------+</span><br><span class="line">| CHARACTER_SETS,COLLATIONS,COLLATION_CHARACTER_SET_APPLICABILITY,COLUMNS,COLUMN_PRIVILEGES,ENGINES,EVENTS,FILES,GLOBAL_STATUS,GLOBAL_VARIABLES,KEY_COLUMN_USAGE,PARAMETERS,PARTITIONS,PLUGINS,PROCESSLIST,PROFILING,REFERENTIAL_CONSTRAINTS,ROUTINES,SCHEMATA,SCHEMA_PRIVILEGES,SESSION_STATUS,SESSION_VARIABLES,STATISTICS,TABLES,TABLESPACES,TABLE_CONSTRAINTS,TABLE_PRIVILEGES,TRIGGERS,USER_PRIVILEGES,VIEWS,INNODB_BUFFER_PAGE,INNODB_TRX,INNODB_BUFFER_POOL_STATS,INNODB_LOCK_WAITS,INNODB_CMPMEM,INNODB_CMP,INNODB_LOCKS,INNODB_CMPMEM_RESET,INNODB_CMP_RESET,INNODB_BUFFER_PAGE_LRU,mag,columns_priv,db,event,func,general_log,help_category,help_keyword,help_relation,help_topic,host,ndb_binlog_index,plugin,proc,procs_priv,proxies_priv,servers,slow_log,tables_priv,time_zone,time_zone_leap_second,time_zone_name,time_zone_transition,time_zone_transition_type,user,cond_instances,events_waits_current,events_waits_history,events_waits_history_long,events_waits_summary_by_instance,events_waits_summary_by_thread_by_event_name,events_wait |</span><br><span class="line">----------------------------------------------------------</span><br><span class="line">1 row in set, 1 warning (0.01 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询mag库下所有表（库名可用十六进制转换）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_concat(table_name) from information_schema.tables where table_schema&#x3D;0x6D6167;</span><br><span class="line">+--------------------------+</span><br><span class="line">| group_concat(table_name) |</span><br><span class="line">+--------------------------+</span><br><span class="line">| mag                      |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select group_concat(table_name) from information_schema.tables where table_schema&#x3D;&#39;mag&#39;;</span><br><span class="line">+--------------------------+</span><br><span class="line">| group_concat(table_name) |</span><br><span class="line">+--------------------------+</span><br><span class="line">| mag                      |</span><br><span class="line">+--------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据库下表中所有列</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select group_concat(column_name) from information_schema.columns where table_name&#x3D;&#39;mag&#39;;</span><br><span class="line">+---------------------------+</span><br><span class="line">| group_concat(column_name) |</span><br><span class="line">+---------------------------+</span><br><span class="line">| id,name,content           |</span><br><span class="line">+---------------------------+</span><br><span class="line">1 row in set (0.02 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询表中所有内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select id,name,content from mag;</span><br><span class="line">+----+----------+---------------------+</span><br><span class="line">| id | name     | content             |</span><br><span class="line">+----+----------+---------------------+</span><br><span class="line">|  1 | admin    | dsadsa              |</span><br><span class="line">|  2 | 信安之路 | 小白成长计划        |</span><br><span class="line">|  3 | Time     | 好好学习，天天向上! |</span><br><span class="line">+----+----------+---------------------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据库当前用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select user();</span><br><span class="line">+----------------+</span><br><span class="line">| user()         |</span><br><span class="line">+----------------+</span><br><span class="line">| root@localhost |</span><br><span class="line">+----------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据库当前数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select database();</span><br><span class="line">+------------+</span><br><span class="line">| database() |</span><br><span class="line">+------------+</span><br><span class="line">| mag        |</span><br><span class="line">+------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据库当前版本信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select version();</span><br><span class="line">+-----------+</span><br><span class="line">| version() |</span><br><span class="line">+-----------+</span><br><span class="line">| 5.5.40    |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure></li>
+<li><p>查询数据库当前存放绝对路径</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @@datadir;</span><br><span class="line">+-------------------------+</span><br><span class="line">| @@datadir               |</span><br><span class="line">+-------------------------+</span><br><span class="line">| D:\phpStudy\MySQL\data\ |</span><br><span class="line">+-------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>查询数据库中用户hash<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select user,password from mysql.user;</span><br><span class="line">+------+-------------------------------------------+</span><br><span class="line">| user | password                                  |</span><br><span class="line">+------+-------------------------------------------+</span><br><span class="line">| root | *81F5E21E35407D884A6CD4A731AEBFB6AF209E1B |</span><br><span class="line">| root | *81F5E21E35407D884A6CD4A731AEBFB6AF209E1B |</span><br><span class="line">| time | *F050209D4168D5A2E90C044C5EAF99A0F91E9F2B |</span><br><span class="line">| zara | *08F7D6C84224646B57BDF66A6480F337F403F10C |</span><br><span class="line">+------+-------------------------------------------+</span><br><span class="line">4 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="0x05-hashcat爆破hash值"><a href="#0x05-hashcat爆破hash值" class="headerlink" title="0x05 hashcat爆破hash值"></a>0x05 hashcat爆破hash值</h3><ul>
+<li>hashcat几种攻击模式<ul>
+<li>Straight<ul>
+<li>给定一个字典，hashcat会逐行读取字典中的内容，计算每行的hash值，于目标hash值相比较<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用方法</span><br><span class="line">hashcat -a 0 -m 400 example400.hash(hash值) example.dict(字典)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Combination<ul>
+<li>组合两个密码字典的内容，hashcat进行组合匹配来比较<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">使用方法</span><br><span class="line">hashcat -m 0 -a 1 hash.txt dict1.txt dict2.txt</span><br><span class="line">相关参数</span><br><span class="line">  -j, --rule-left</span><br><span class="line">  -k, --rule-right</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Mask Attack<ul>
+<li>mask是字符串，由若干个占位符组成,“?|”是一个占位符,其中的“?”是关键字，用于修饰其后的“l”，“?l”合起来表示一个字符集合，除“?l”外，还可以有“?u”、“?d”、“?h”、“?H”、“?s”、“?a”和“?b”，代表的字符集合如下表所<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">?	Charset</span><br><span class="line">l	abcdefghijklmnopqrstuvwxyz</span><br><span class="line">u	ABCDEFGHIJKLMNOPQRSTUVWXYZ</span><br><span class="line">d	0123456789</span><br><span class="line">h	0123456789abcdef</span><br><span class="line">H	0123456789ABCDEF</span><br><span class="line">s	! “#$%&amp;&#39;()*+,-.&#x2F;:;&lt;&#x3D;&gt;?@[\]^_&#96;~&#123;|&#125;</span><br><span class="line">a	?l?u?d?s</span><br><span class="line">b	0x00 – 0xff</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>hash值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">| root | *81F5E21E35407D884A6CD4A731AEBFB6AF209E1B |</span><br><span class="line">| time | *F050209D4168D5A2E90C044C5EAF99A0F91E9F2B</span><br></pre></td></tr></table></figure>
+
+<p>命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.\hashcat64.exe -a 0 -m 300 --force F050209D4168D5A2E90C044C5EAF99A0F91E9F2B .\1.dict -o 2.txt</span><br></pre></td></tr></table></figure>
+<p>本来是爆破成功的，但是忘记截图了。。。现在重新跑提示不支持。。测试半天失败。<br><img src="https://i.imgur.com/TcggXWK.png" alt=""><br>不过刚刚把爆破成功的问题打开了，所以这边直接截图爆破成功的文本文件,作为成功结果….<br><img src="https://i.imgur.com/CFLVQBG.png" alt=""></p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong>
+              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2019/08/18/Mysql%E7%B3%BB%E7%BB%9F%E8%A1%A8%E5%AD%A6%E4%B9%A0/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/08/30/Mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%87%BD%E6%95%B0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Mysql数据库函数
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/08/16/zico2%E9%9D%B6%E6%9C%BA%E5%AE%9E%E6%88%98/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">zico2靶机实战</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: '',
+        app_key: '',
+        path: window.location.pathname,
+        notify: false,
+        verify: false,
+        avatar: 'monsterid',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2015-2021
+        <i class="ri-heart-fill heart_icon"></i> John Doe
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
+        <span class="division">|</span>
+        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/suibi">随笔</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Subtitle -->
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
+      startDelay: 0,
+      typeSpeed: 200,
+      loop: true,
+      backSpeed: 100,
+      showCursor: true
+    });
+  } catch (err) {
+    console.log(err)
+  }
+</script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+
+<script src="/js/clickLove.js"></script>
+
+
+<!-- ClickBoom -->
+
+
+<script src="/js/clickBoom.js"></script>
+
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
