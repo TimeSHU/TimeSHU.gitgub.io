@@ -1558,10 +1558,8 @@
   <entry>
     <title>Image图片库漏洞总结</title>
     <url>/2020/08/18/Image%E5%9B%BE%E7%89%87%E5%BA%93%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yay18u2j31hc0u04gu.jpg" alt="81"></p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0z6cszlhj30zk0m8109.jpg" alt="32"></p>
 <a id="more"></a>
-
-
 
 <h3 id="0x00"><a href="#0x00" class="headerlink" title="0x00"></a>0x00</h3><p>最近phpstudy爆出Nginx解析漏洞，由于nginx默认配置存在错误配置，导致任意文件都可以解析为php代码。</p>
 <p>漏洞原理可参考此链接：<a href="https://www.cnblogs.com/yang34/p/13653893.html" target="_blank" rel="noopener">https://www.cnblogs.com/yang34/p/13653893.html</a></p>
