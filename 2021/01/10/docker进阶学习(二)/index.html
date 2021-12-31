@@ -1,125 +1,167 @@
-<!DOCTYPE html>
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>docker进阶学习(二) | Time'Blog</title><meta name="keywords" content="Compose"><meta name="author" content="Time"><meta name="copyright" content="Time"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="article">
+<meta property="og:title" content="docker进阶学习(二)">
+<meta property="og:url" content="https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/index.html">
+<meta property="og:site_name" content="Time&#39;Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-01-09T18:06:39.000Z">
+<meta property="article:modified_time" content="2021-01-25T18:27:43.632Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="Compose">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'docker进阶学习(二)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-01-26 02:27:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
 
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
 
-<html lang="zh-CN">
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
 
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
 
-<head>
-  <meta charset="utf-8" />
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
     
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>
-    docker进阶学习(二) |  Time
-  </title>
-  <meta name="generator" content="hexo-theme-ayer">
-  
-  <link rel="shortcut icon" href="/favicon.ico" />
-  
-  
-<link rel="stylesheet" href="/dist/main.css">
-
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
-
-  
-<link rel="stylesheet" href="/css/custom.css">
-
-  
-  
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-  
-  
-
-  
-
-</head>
-
-</html>
-
-<body>
-  
-  <canvas width="1777" height="841" style="position: fixed; left: 0px; top: 0px; z-index: 999; pointer-events: none;"></canvas>
-  
-  <div id="app">
-    <main class="content on">
-      <section class="outer">
-  <article id="post-docker进阶学习(二)" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
     
-    <header class="article-header">
-       
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  docker进阶学习(二)
-</h1>
- 
-
-    </header>
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
     
-
-    
-    <div class="article-meta">
-      <a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/" class="article-date">
-  <time datetime="2021-01-09T18:06:39.000Z" itemprop="datePublished">2021-01-10</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/docker/">docker</a>
-  </div>
-
-      
-      
-<div class="word_count">
-    <span class="post-time">
-        <span class="post-meta-item-icon">
-            <i class="ri-quill-pen-line"></i>
-            <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">702</span>
-        </span>
-    </span>
-
-    <span class="post-time">
-        &nbsp; | &nbsp;
-        <span class="post-meta-item-icon">
-            <i class="ri-book-open-line"></i>
-            <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">3 分钟</span>
-        </span>
-    </span>
-</div>
-
-      
-    </div>
-    
-
-    
-    
-    <div class="tocbot"></div>
-
-
-
-
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-
-      
-      <p><img src="../img/27.jpg" alt="30"></p>
-<a id="more"></a>
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Time'Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">docker进阶学习(二)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-01-09T18:06:39.000Z" title="发表于 2021-01-10 02:06:39">2021-01-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-01-25T18:27:43.632Z" title="更新于 2021-01-26 02:27:43">2021-01-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/docker/">docker</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="docker进阶学习(二)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="../img/27.jpg" alt="30"></p>
+<span id="more"></span>
 
 <h1 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h1><ol>
 <li>DockerFile 单个容器  手动运行。</li>
 <li>Docker Compose 定义多个容器，高效管理。</li>
 </ol>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -L https:&#x2F;&#x2F;get.daocloud.io&#x2F;docker&#x2F;compose&#x2F;releases&#x2F;download&#x2F;1.25.5&#x2F;docker-compose-&#96;uname -s&#96;-&#96;uname -m&#96; &gt; &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">curl -L https://get.daocloud.io/docker/compose/releases/download/1.25.5/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose</span><br></pre></td></tr></tbody></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod a+x &#x2F;usr&#x2F;local&#x2F;bin&#x2F;docker-compose</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">chmod a+x /usr/local/bin/docker-compose</span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41f6p09j316o0tiwmc.jpg" alt="image-20210110023952336"></p>
 <h2 id="官方demo"><a href="#官方demo" class="headerlink" title="官方demo"></a>官方demo</h2><ol>
@@ -127,18 +169,15 @@
 <li><code>cd compose</code></li>
 <li>创建<code>app.py</code>，写入以下代码</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">cache = redis.Redis(host=<span class="string">'redis'</span>, port=<span class="number">6379</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_hit_count</span><span class="params">()</span>:</span></span><br><span class="line">    retries = <span class="number">5</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> cache.incr(<span class="string">'hits'</span>)</span><br><span class="line">        <span class="keyword">except</span> redis.exceptions.ConnectionError <span class="keyword">as</span> exc:</span><br><span class="line">            <span class="keyword">if</span> retries == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">raise</span> exc</span><br><span class="line">            retries -= <span class="number">1</span></span><br><span class="line">            time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></span><br><span class="line">    count = get_hit_count()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World! I have been seen &#123;&#125; times.\n'</span>.format(count)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> redis</span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">cache = redis.Redis(host=<span class="string">'redis'</span>, port=<span class="number">6379</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_hit_count</span>():</span></span><br><span class="line">    retries = <span class="number">5</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> cache.incr(<span class="string">'hits'</span>)</span><br><span class="line">        <span class="keyword">except</span> redis.exceptions.ConnectionError <span class="keyword">as</span> exc:</span><br><span class="line">            <span class="keyword">if</span> retries == <span class="number">0</span>:</span><br><span class="line">                <span class="keyword">raise</span> exc</span><br><span class="line">            retries -= <span class="number">1</span></span><br><span class="line">            time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span>():</span></span><br><span class="line">    count = get_hit_count()</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Hello World! I have been seen {} times.\n'</span>.<span class="built_in">format</span>(count)</span><br></pre></td></tr></tbody></table></figure>
 
 <ol start="4">
 <li><p>创建<code>requirements.txt</code> ，写入需要用到的python库</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">flask</span><br><span class="line">redis</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">flask</span><br><span class="line">redis</span><br></pre></td></tr></tbody></table></figure></li>
 <li><p>创建``DockerFile`</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM python:3.7-alpine</span><br><span class="line">WORKDIR &#x2F;code</span><br><span class="line">ENV FLASK_APP&#x3D;app.py</span><br><span class="line">ENV FLASK_RUN_HOST&#x3D;0.0.0.0</span><br><span class="line">RUN apk add --no-cache gcc musl-dev linux-headers</span><br><span class="line">COPY requirements.txt requirements.txt</span><br><span class="line">RUN pip install -r requirements.txt</span><br><span class="line">EXPOSE 5000</span><br><span class="line">COPY . .</span><br><span class="line">CMD [&quot;flask&quot;, &quot;run&quot;]</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">FROM python:3.7-alpine</span><br><span class="line">WORKDIR /code</span><br><span class="line">ENV FLASK_APP=app.py</span><br><span class="line">ENV FLASK_RUN_HOST=0.0.0.0</span><br><span class="line">RUN apk add --no-cache gcc musl-dev linux-headers</span><br><span class="line">COPY requirements.txt requirements.txt</span><br><span class="line">RUN pip install -r requirements.txt</span><br><span class="line">EXPOSE 5000</span><br><span class="line">COPY . .</span><br><span class="line">CMD ["flask", "run"]</span><br></pre></td></tr></tbody></table></figure></li>
 <li><p>创建``docker-compose.yml`</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.3"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"5000:5000"</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">"redis:alpine"</span></span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">"3.3"</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">"5000:5000"</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">"redis:alpine"</span></span><br></pre></td></tr></tbody></table></figure></li>
 <li><p><code>docker-compose up</code> 启动成功</p>
 </li>
 </ol>
@@ -149,7 +188,7 @@
 <p>所有服务都在同一个网络下，并都可使用域名访问</p>
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41dq36jj31ba0u0qa6.jpg" alt="image-20210110032102626"></p>
 <h2 id="yaml规则"><a href="#yaml规则" class="headerlink" title="yaml规则"></a>yaml规则</h2><p>docker-compose.yml</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#核心配置services</span><br><span class="line">version:		#版本信息,对应docker版本，往下兼容</span><br><span class="line">services:		#服务，核心</span><br><span class="line">	服务1:web</span><br><span class="line">		#服务配置</span><br><span class="line">	服务2:redis</span><br><span class="line">		#服务配置</span><br><span class="line">	服务3:network</span><br><span class="line">		#服务配置</span><br><span class="line">	服务4:depends_on		#重要，服务启动依赖，按照依赖来启动服务</span><br><span class="line">		......</span><br><span class="line">#其他配置</span><br><span class="line">volumes:	#卷挂载</span><br><span class="line">networks:	#网络配置</span><br><span class="line">configs:	#配置信息</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">#核心配置services</span><br><span class="line">version:		#版本信息,对应docker版本，往下兼容</span><br><span class="line">services:		#服务，核心</span><br><span class="line">	服务1:web</span><br><span class="line">		#服务配置</span><br><span class="line">	服务2:redis</span><br><span class="line">		#服务配置</span><br><span class="line">	服务3:network</span><br><span class="line">		#服务配置</span><br><span class="line">	服务4:depends_on		#重要，服务启动依赖，按照依赖来启动服务</span><br><span class="line">		......</span><br><span class="line">#其他配置</span><br><span class="line">volumes:	#卷挂载</span><br><span class="line">networks:	#网络配置</span><br><span class="line">configs:	#配置信息</span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41cswz7j314a0liwg2.jpg" alt="image-20210110033222947"></p>
 <h2 id="一键部署WP博客"><a href="#一键部署WP博客" class="headerlink" title="一键部署WP博客"></a>一键部署WP博客</h2><ol>
@@ -157,581 +196,71 @@
 <li><code>cd mywordpress</code></li>
 <li>编写<code>yaml</code>文件</li>
 </ol>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.3'</span>															<span class="comment">#版本信息</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span>																		<span class="comment">#服务</span></span><br><span class="line">   <span class="attr">db:</span>																			<span class="comment">#数据库服务</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">mysql:5.7</span>												<span class="comment">#数据库镜像为mysql:5.7版本</span></span><br><span class="line">     <span class="attr">volumes:</span>																<span class="comment">#挂载卷目录</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#数据库配置</span></span><br><span class="line">       <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">somewordpress</span>		<span class="comment">#数据库root密码</span></span><br><span class="line">       <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span>						<span class="comment">#数据库命令</span></span><br><span class="line">       <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span>								<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span>						<span class="comment">#数据库密码</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">wordpress:</span>																<span class="comment">#博客</span></span><br><span class="line">     <span class="attr">depends_on:</span>														<span class="comment">#依赖环境，依赖于db，先启动db，在启动博客</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">wordpress:latest</span>								<span class="comment">#博客镜像</span></span><br><span class="line">     <span class="attr">ports:</span>																	</span><br><span class="line">       <span class="bullet">-</span> <span class="string">"80:80"</span>													<span class="comment">#端口映射。主机端口:容器端口</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#环境配置</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span>						<span class="comment">#数据库连接</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span>					<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span>			<span class="comment">#数据库密码</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span>					<span class="comment">#数据库名称</span></span><br><span class="line"><span class="attr">volumes:</span>																		<span class="comment">#卷挂载</span></span><br><span class="line">    <span class="attr">db_data:</span> <span class="string">&#123;&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'3.3'</span>															<span class="comment">#版本信息</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span>																		<span class="comment">#服务</span></span><br><span class="line">   <span class="attr">db:</span>																			<span class="comment">#数据库服务</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">mysql:5.7</span>												<span class="comment">#数据库镜像为mysql:5.7版本</span></span><br><span class="line">     <span class="attr">volumes:</span>																<span class="comment">#挂载卷目录</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db_data:/var/lib/mysql</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#数据库配置</span></span><br><span class="line">       <span class="attr">MYSQL_ROOT_PASSWORD:</span> <span class="string">somewordpress</span>		<span class="comment">#数据库root密码</span></span><br><span class="line">       <span class="attr">MYSQL_DATABASE:</span> <span class="string">wordpress</span>						<span class="comment">#数据库命令</span></span><br><span class="line">       <span class="attr">MYSQL_USER:</span> <span class="string">wordpress</span>								<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">MYSQL_PASSWORD:</span> <span class="string">wordpress</span>						<span class="comment">#数据库密码</span></span><br><span class="line"></span><br><span class="line">   <span class="attr">wordpress:</span>																<span class="comment">#博客</span></span><br><span class="line">     <span class="attr">depends_on:</span>														<span class="comment">#依赖环境，依赖于db，先启动db，在启动博客</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">wordpress:latest</span>								<span class="comment">#博客镜像</span></span><br><span class="line">     <span class="attr">ports:</span>																	</span><br><span class="line">       <span class="bullet">-</span> <span class="string">"80:80"</span>													<span class="comment">#端口映射。主机端口:容器端口</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span>												<span class="comment">#重启服务：总是重启服务</span></span><br><span class="line">     <span class="attr">environment:</span>														<span class="comment">#环境配置</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_HOST:</span> <span class="string">db:3306</span>						<span class="comment">#数据库连接</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_USER:</span> <span class="string">wordpress</span>					<span class="comment">#数据库账户</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_PASSWORD:</span> <span class="string">wordpress</span>			<span class="comment">#数据库密码</span></span><br><span class="line">       <span class="attr">WORDPRESS_DB_NAME:</span> <span class="string">wordpress</span>					<span class="comment">#数据库名称</span></span><br><span class="line"><span class="attr">volumes:</span>																		<span class="comment">#卷挂载</span></span><br><span class="line">    <span class="attr">db_data:</span> {}</span><br></pre></td></tr></tbody></table></figure>
 
 <p>后台启动</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41eov57j315w0u0qdo.jpg" alt="image-20210110035547264"></p>
 <p>搭建成功</p>
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41ci2o9j30zf0u0q78.jpg" alt="image-20210110035627009"></p>
 <p>停止服务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose down   #必须在环境的目录下才可停止</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker-compose down   #必须在环境的目录下才可停止</span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmi41d9fhuj313q0bkdio.jpg" alt="image-20210110035746136"></p>
 <blockquote>
-<p>docker-compose官方文档地址：<a href="https://docs.docker.com/compose/compose-file/compose-file-v3/#restart" target="_blank" rel="noopener">https://docs.docker.com/compose/compose-file/compose-file-v3/#restart</a></p>
+<p>docker-compose官方文档地址：<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/compose-file/compose-file-v3/#restart">https://docs.docker.com/compose/compose-file/compose-file-v3/#restart</a></p>
 </blockquote>
 <h2 id="实战搭建s2-061漏洞环境"><a href="#实战搭建s2-061漏洞环境" class="headerlink" title="实战搭建s2-061漏洞环境"></a>实战搭建s2-061漏洞环境</h2><p>上篇文章中，我们使用了Dockerfile搭建漏洞环境，本文中还是沿用上文中的Dockerfile文件，然后来编写yaml文件，来一键启动s2-061环境</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">version: &quot;3&quot;</span><br><span class="line">services:</span><br><span class="line">  s2-061:</span><br><span class="line">    build: .</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;8099:8080&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">version: "3"</span><br><span class="line">services:</span><br><span class="line">  s2-061:</span><br><span class="line">    build: .</span><br><span class="line">    ports:</span><br><span class="line">      - "8099:8080"</span><br></pre></td></tr></tbody></table></figure>
 
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmg75m8vnj315m0u0tpi.jpg" alt="image-20210113224236587"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Time</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/">https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://TimeSHU.github.io" target="_blank">Time'Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Compose/">Compose</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%89)/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">docker进阶学习(三)</div></div></a></div><div class="next-post pull-right"><a href="/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">docker入门学习(二)</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker-Compose"><span class="toc-number">1.</span> <span class="toc-text">Docker Compose</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%98%E6%96%B9demo"><span class="toc-number">1.2.</span> <span class="toc-text">官方demo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#yaml%E8%A7%84%E5%88%99"><span class="toc-number">1.3.</span> <span class="toc-text">yaml规则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%94%AE%E9%83%A8%E7%BD%B2WP%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.4.</span> <span class="toc-text">一键部署WP博客</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E6%88%98%E6%90%AD%E5%BB%BAs2-061%E6%BC%8F%E6%B4%9E%E7%8E%AF%E5%A2%83"><span class="toc-number">1.5.</span> <span class="toc-text">实战搭建s2-061漏洞环境</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Time</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://timeshu.github.io">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
 
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-        <div class="declare">
-          <ul class="post-copyright">
-            <li>
-              <i class="ri-copyright-line"></i>
-              <strong>版权声明： </strong>
-              本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
-            </li>
-          </ul>
-        </div>
-        
-    <footer class="article-footer">
-      
-          
-<div class="share-btn">
-      <span class="share-sns share-outer">
-        <i class="ri-share-forward-line"></i>
-        分享
-      </span>
-      <div class="share-wrap">
-        <i class="arrow"></i>
-        <div class="share-icons">
-          
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="ri-weibo-fill"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="ri-wechat-fill"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="ri-qq-fill"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="ri-douban-line"></i>
-          </a>
-          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a> -->
-          
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="ri-facebook-circle-fill"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="ri-twitter-fill"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="ri-google-fill"></i>
-          </a>
-        </div>
-      </div>
-</div>
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: 'f9747805353fd614960f',
+      clientSecret: '9f70c0f4a81ad3fd83762da983d2bc3255f29c26',
+      repo: 'timeshu.github.io',
+      owner: 'Time',
+      admin: ['Time'],
+      id: '02e1604d924699fbba32f7f9d42a6f25',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    },null))
 
-<div class="wx-share-modal">
-    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://timeshu.github.io/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div id="share-mask"></div>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Compose/" rel="tag">Compose</a></li></ul>
-
-
-    </footer>
-
-  </div>
-
-  
-  
-  <nav class="article-nav">
-    
-      <a href="/2021/01/10/docker%E8%BF%9B%E9%98%B6%E5%AD%A6%E4%B9%A0(%E4%B8%89)/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            docker进阶学习(三)
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">docker入门学习(二)</div>
-      </a>
-    
-  </nav>
-
-
-  
-
-  
-  
-<!-- valine评论 -->
-<div id="vcomments-box">
-    <div id="vcomments">
-    </div>
-</div>
-<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
-<script>
-    new Valine({
-        el: '#vcomments',
-        app_id: '',
-        app_key: '',
-        path: window.location.pathname,
-        notify: false,
-        verify: false,
-        avatar: 'monsterid',
-        placeholder: '给我的文章加点评论吧~',
-        recordIP: true
-    });
-    const infoEle = document.querySelector('#vcomments .info');
-    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
-        infoEle.childNodes.forEach(function (item) {
-            item.parentNode.removeChild(item);
-        });
-    }
-</script>
-<style>
-    #vcomments-box {
-        padding: 5px 30px;
-    }
-
-    @media screen and (max-width: 800px) {
-        #vcomments-box {
-            padding: 5px 0px;
-        }
-    }
-
-    #vcomments-box #vcomments {
-        background-color: #fff;
-    }
-
-    .v .vlist .vcard .vh {
-        padding-right: 20px;
-    }
-
-    .v .vlist .vcard {
-        padding-left: 10px;
-    }
-</style>
-
-  
-
-  
-  
-  
-  
-  
-
-</article>
-</section>
-      <footer class="footer">
-  <div class="outer">
-    <ul>
-      <li>
-        Copyrights &copy;
-        2015-2021
-        <i class="ri-heart-fill heart_icon"></i> John Doe
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        
-        由 <a href="https://hexo.io" target="_blank">Hexo</a> 强力驱动
-        <span class="division">|</span>
-        主题 - <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
-        
-      </li>
-    </ul>
-    <ul>
-      <li>
-        
-        
-        <span>
-  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
-  <span class="division">|</span>
-  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
-</span>
-        
-      </li>
-    </ul>
-    <ul>
-      
-    </ul>
-    <ul>
-      <li>
-        <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s4.cnzz.com/z_stat.php?id=1278951134&amp;web_id=1278951134'></script>
-        
-      </li>
-    </ul>
-  </div>
-</footer>
-      <div class="float_btns">
-        <div class="totop" id="totop">
-  <i class="ri-arrow-up-line"></i>
-</div>
-
-<div class="todark" id="todark">
-  <i class="ri-moon-line"></i>
-</div>
-
-      </div>
-    </main>
-    <aside class="sidebar on">
-      <button class="navbar-toggle"></button>
-<nav class="navbar">
-  
-  <div class="logo">
-    <a href="/"><img src="/images/ayer-side.svg" alt="Time"></a>
-  </div>
-  
-  <ul class="nav nav-main">
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/">主页</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/archives">归档</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/categories">分类</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/tags">标签</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/suibi">随笔</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/about">关于我</a>
-    </li>
-    
-  </ul>
-</nav>
-<nav class="navbar navbar-bottom">
-  <ul class="nav">
-    <li class="nav-item">
-      
-      <a class="nav-item-link nav-item-search"  title="搜索">
-        <i class="ri-search-line"></i>
-      </a>
-      
-      
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
-        <i class="ri-rss-line"></i>
-      </a>
-      
-    </li>
-  </ul>
-</nav>
-<div class="search-form-wrap">
-  <div class="local-search local-search-plugin">
-  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
-  <div id="local-search-result" class="local-search-result"></div>
-</div>
-</div>
-    </aside>
-    <script>
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        document.querySelector('.content').classList.remove('on');
-        document.querySelector('.sidebar').classList.remove('on');
-      }
-    </script>
-    <div id="mask"></div>
-
-<!-- #reward -->
-<div id="reward">
-  <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i></p>
-  <div class="reward-box">
-    
-    
-  </div>
-</div>
-    
-<script src="/js/jquery-2.0.3.min.js"></script>
-
-
-<script src="/js/lazyload.min.js"></script>
-
-<!-- Subtitle -->
-
-<script>
-  try {
-    var typed = new Typed("#subtitle", {
-      strings: ['生死看淡，不服就干', '只要学不死，就往死里学', '坚持总会胜利，不死终会出头'],
-      startDelay: 0,
-      typeSpeed: 200,
-      loop: true,
-      backSpeed: 100,
-      showCursor: true
-    });
-  } catch (err) {
-    console.log(err)
+    gitalk.render('gitalk-container')
   }
-</script>
 
-<!-- Tocbot -->
-
-
-<script src="/js/tocbot.min.js"></script>
-
-<script>
-  tocbot.init({
-    tocSelector: '.tocbot',
-    contentSelector: '.article-entry',
-    headingSelector: 'h1, h2, h3, h4, h5, h6',
-    hasInnerContainers: true,
-    scrollSmooth: true,
-    scrollContainer: 'main',
-    positionFixedSelector: '.tocbot',
-    positionFixedClass: 'is-position-fixed',
-    fixedSidebarOffset: 'auto'
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
-<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
-
-<script src="/dist/main.js"></script>
-
-<!-- ImageViewer -->
-
-<!-- Root element of PhotoSwipe. Must have class pswp. -->
-<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe. 
-         It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-        <!-- Container that holds slides. 
-            PhotoSwipe keeps only 3 of them in the DOM to save memory.
-            Don't modify these 3 pswp__item elements, data is added later on. -->
-        <div class="pswp__container">
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-            <div class="pswp__item"></div>
-        </div>
-
-        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-        <div class="pswp__ui pswp__ui--hidden">
-
-            <div class="pswp__top-bar">
-
-                <!--  Controls are self-explanatory. Order can be changed. -->
-
-                <div class="pswp__counter"></div>
-
-                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
-
-                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-                <!-- element will get class pswp__preloader--active when preloader is running -->
-                <div class="pswp__preloader">
-                    <div class="pswp__preloader__icn">
-                        <div class="pswp__preloader__cut">
-                            <div class="pswp__preloader__donut"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                <div class="pswp__share-tooltip"></div>
-            </div>
-
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
-            </button>
-
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
-            </button>
-
-            <div class="pswp__caption">
-                <div class="pswp__caption__center"></div>
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
-
-<script>
-    function viewer_init() {
-        let pswpElement = document.querySelectorAll('.pswp')[0];
-        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
-
-        $imgArr.forEach(($em, i) => {
-            $em.onclick = () => {
-                // slider展开状态
-                // todo: 这样不好，后面改成状态
-                if (document.querySelector('.left-col.show')) return
-                let items = []
-                $imgArr.forEach(($em2, i2) => {
-                    let img = $em2.getAttribute('data-idx', i2)
-                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
-                    let title = $em2.getAttribute('alt')
-                    // 获得原图尺寸
-                    const image = new Image()
-                    image.src = src
-                    items.push({
-                        src: src,
-                        w: image.width || $em2.width,
-                        h: image.height || $em2.height,
-                        title: title
-                    })
-                })
-                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
-                    index: parseInt(i)
-                });
-                gallery.init()
-            }
-        })
-    }
-    viewer_init()
-</script>
-
-<!-- MathJax -->
-
-<!-- Katex -->
-
-<!-- busuanzi  -->
-
-
-<script src="/js/busuanzi-2.3.pure.min.js"></script>
-
-
-<!-- ClickLove -->
-
-
-<script src="/js/clickLove.js"></script>
-
-
-<!-- ClickBoom -->
-
-
-<script src="/js/clickBoom.js"></script>
-
-
-<!-- CodeCopy -->
-
-
-<link rel="stylesheet" href="/css/clipboard.css">
-
-<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-<script>
-  function wait(callback, seconds) {
-    var timelag = null;
-    timelag = window.setTimeout(callback, seconds);
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
   }
-  !function (e, t, a) {
-    var initCopyCode = function(){
-      var copyHtml = '';
-      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
-      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
-      copyHtml += '</button>';
-      $(".highlight .code pre").before(copyHtml);
-      $(".article pre code").before(copyHtml);
-      var clipboard = new ClipboardJS('.btn-copy', {
-        target: function(trigger) {
-          return trigger.nextElementSibling;
-        }
-      });
-      clipboard.on('success', function(e) {
-        let $btn = $(e.trigger);
-        $btn.addClass('copied');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-checkbox-circle-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPIED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-checkbox-circle-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-      clipboard.on('error', function(e) {
-        e.clearSelection();
-        let $btn = $(e.trigger);
-        $btn.addClass('copy-failed');
-        let $icon = $($btn.find('i'));
-        $icon.removeClass('ri-file-copy-2-line');
-        $icon.addClass('ri-time-line');
-        let $span = $($btn.find('span'));
-        $span[0].innerText = 'COPY FAILED';
-        
-        wait(function () { // 等待两秒钟后恢复
-          $icon.removeClass('ri-time-line');
-          $icon.addClass('ri-file-copy-2-line');
-          $span[0].innerText = 'COPY';
-        }, 2000);
-      });
-    }
-    initCopyCode();
-  }(window, document);
-</script>
+}
 
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
 
-
-    
-    <div id="music">
-    
-    
-    
-    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=27896818&auto=1&height=32"></iframe>
-</div>
-
-<style>
-    #music {
-        position: fixed;
-        right: 15px;
-        bottom: 0;
-        z-index: 998;
-    }
-</style>
-    
-  </div>
-</body>
-
-</html>
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
