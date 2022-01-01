@@ -1251,18 +1251,6 @@
       </categories>
   </entry>
   <entry>
-    <title>docker封装wordpressSMTP密码重置漏洞环境</title>
-    <url>/2021/01/23/SMTP%E5%AF%86%E7%A0%81%E9%87%8D%E7%BD%AE%E6%BC%8F%E6%B4%9E%E7%8E%AF%E5%A2%83/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hgdxohhj30zk0m8109.jpg" alt="30"></p>
-]]></content>
-      <categories>
-        <category>docker</category>
-      </categories>
-      <tags>
-        <tag>环境搭建</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>docker入门学习(一)</title>
     <url>/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%B8%80)/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hh0ugg7j31c00u0k07.jpg" alt="30"></p>
