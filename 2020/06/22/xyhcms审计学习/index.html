@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>xyhcms审计学习 | Time'Blog</title><meta name="keywords" content="学习笔记"><meta name="author" content="Time"><meta name="copyright" content="Time"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="article">
+<meta property="og:title" content="xyhcms审计学习">
+<meta property="og:url" content="https://timeshu.github.io/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Time&#39;Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-06-22T14:21:26.000Z">
+<meta property="article:modified_time" content="2021-01-25T18:25:45.803Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timeshu.github.io/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?https://hm.baidu.com/hm.js?5dd9b277051da31b80703896f0394cce";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xyhcms审计学习',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-01-26 02:25:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">33</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">22</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Time'Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">xyhcms审计学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-06-22T14:21:26.000Z" title="发表于 2020-06-22 22:21:26">2020-06-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-01-25T18:25:45.803Z" title="更新于 2021-01-26 02:25:45">2021-01-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="xyhcms审计学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gg1fkbbv1pj31c00u0qae.jpg" alt="86"></p>
+<span id="more"></span>
+
+<h3 id="0x00-CMS核心目录"><a href="#0x00-CMS核心目录" class="headerlink" title="0x00 CMS核心目录"></a>0x00 CMS核心目录</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">网站使用框架：Thinkphp</span><br><span class="line">App		应用目录</span><br><span class="line">data	网站上传配置、编辑器目录</span><br><span class="line">include	网站配置调式目录</span><br><span class="line">install	安装目录</span><br><span class="line">public	公共目录</span><br><span class="line">uploads	上传目录</span><br></pre></td></tr></tbody></table></figure>
+
+<p>环境：</p>
+<p>CMS：XYHCMS V3.5</p>
+<p>PHP：5.6</p>
+<p>MYSQL：5.7.26</p>
+<h3 id="0x01-后台任意文件上传"><a href="#0x01-后台任意文件上传" class="headerlink" title="0x01 后台任意文件上传"></a>0x01 后台任意文件上传</h3><h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>登录后台，有一个可修改网站配置的选项</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi315arn9oj317a0qw0wr.jpg" alt="image-20200825141459656"></p>
+<p>当在允许附件类型或是允许图片类型处添加php后，可直接上传webshell获取权限。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi31bceb6wj317h0nlgny.jpg" alt="image-20200825142048017"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi31e7v46fj30sy0ncjte.jpg" alt="image-20200825142334095"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi31gv5urtj31c60u0to5.jpg" alt="image-20200825142606065"></p>
+<h4 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>网站设置——&gt;App/controller/SystemController.class.php/194行 site函数</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">site</span>(<span class="params"></span>) </span>{</span><br><span class="line">		<span class="keyword">if</span> (IS_POST) {</span><br><span class="line"></span><br><span class="line">			<span class="variable">$data</span> = I(<span class="string">'config'</span>, <span class="keyword">array</span>(), <span class="string">'trim'</span>);<span class="comment">//获取网站配置信息</span></span><br><span class="line">            <span class="comment">//遍历网站配置项是否存在<span class="meta">&lt;?php</span>字符串，如果存在字符串使用空字符串替换掉</span></span><br><span class="line">			<span class="keyword">foreach</span> (<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$val</span>) {</span><br><span class="line">				<span class="keyword">if</span> (stripos(<span class="variable">$val</span>, <span class="string">'&lt;?php'</span>) !== <span class="literal">false</span>) {</span><br><span class="line">                    <span class="comment">//问题点，由于此处匹配的是<span class="meta">&lt;?php</span>，未匹配php，所以在允许上传的后缀中可以添加php。</span></span><br><span class="line">					<span class="variable">$data</span>[<span class="variable">$key</span>] = preg_replace(<span class="string">'/&lt;\?php(.+?)\?&gt;/i'</span>, <span class="string">''</span>, <span class="variable">$val</span>);</span><br><span class="line">				}</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>] = strtoupper(<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>]);<span class="comment">//设置全大写</span></span><br><span class="line">			<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>] = str_replace(<span class="keyword">array</span>(<span class="string">'，'</span>, <span class="string">'Ｘ'</span>), <span class="keyword">array</span>(<span class="string">','</span>, <span class="string">'X'</span>), <span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>]);<span class="comment">//将中文逗号替换为英文逗号</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>])) {</span><br><span class="line">				<span class="keyword">$this</span>-&gt;error(<span class="string">'缩略图组尺寸不能为空'</span>);</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="variable">$data</span>[<span class="string">'CFG_IMAGE_WATER_FILE'</span>])) {</span><br><span class="line">				<span class="variable">$img_ext</span> = pathinfo(<span class="variable">$data</span>[<span class="string">'CFG_IMAGE_WATER_FILE'</span>], PATHINFO_EXTENSION);<span class="comment">//获取路径信息</span></span><br><span class="line">				<span class="variable">$img_ext</span> = strtolower(<span class="variable">$img_ext</span>);</span><br><span class="line">				<span class="keyword">if</span> (!in_array(<span class="variable">$img_ext</span>, <span class="keyword">array</span>(<span class="string">'jpg'</span>, <span class="string">'gif'</span>, <span class="string">'png'</span>, <span class="string">'jpeg'</span>))) {<span class="comment">//此处判断文件类型，如果不是则提示用户重新上传</span></span><br><span class="line">					<span class="keyword">$this</span>-&gt;error(<span class="string">'水印图片文件不是图片格式！请重新上传！'</span>);</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				}</span><br><span class="line"></span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="comment">//</span></span><br><span class="line">			<span class="keyword">foreach</span> (<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>) {</span><br><span class="line">				<span class="variable">$ret</span> = M(<span class="string">'config'</span>)-&gt;where(<span class="keyword">array</span>(<span class="string">'name'</span> =&gt; <span class="variable">$k</span>))-&gt;save(<span class="keyword">array</span>(<span class="string">'s_value'</span> =&gt; <span class="variable">$v</span>));</span><br><span class="line">			}</span><br><span class="line">			<span class="keyword">if</span> (<span class="variable">$ret</span> !== <span class="literal">false</span>) {</span><br><span class="line">				F(<span class="string">'config/site'</span>, <span class="literal">null</span>);</span><br><span class="line">				<span class="keyword">$this</span>-&gt;success(<span class="string">'修改成功'</span>, U(<span class="string">'System/site'</span>));</span><br><span class="line"></span><br><span class="line">			} <span class="keyword">else</span> {</span><br><span class="line"></span><br><span class="line">				<span class="keyword">$this</span>-&gt;error(<span class="string">'修改失败！'</span>);</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="keyword">exit</span>();</span><br><span class="line">		}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>添加水印图片——&gt; App/Manage/Controller/PublicController.class.php/67行 upload函数</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload</span>(<span class="params"><span class="variable">$img_flag</span> = <span class="number">0</span></span>) </span>{</span><br><span class="line">	header(<span class="string">"Content-Type:text/html; charset=utf-8"</span>); <span class="comment">//不然返回中文乱码</span></span><br><span class="line">	<span class="variable">$result</span>   = <span class="keyword">array</span>(<span class="string">'state'</span> =&gt; <span class="string">'失败'</span>, <span class="string">'url'</span> =&gt; <span class="string">''</span>, <span class="string">'name'</span> =&gt; <span class="string">''</span>, <span class="string">'original'</span> =&gt; <span class="string">''</span>);</span><br><span class="line">	<span class="variable">$sub_path</span> = I(<span class="string">'post.sfile'</span>, <span class="string">''</span>, <span class="string">'trim,htmlspecialchars'</span>); <span class="comment">//判断其他子目录</span></span><br><span class="line"></span><br><span class="line">	<span class="variable">$img_flag</span> = <span class="keyword">empty</span>(<span class="variable">$img_flag</span>) ? <span class="number">0</span> : <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	</span><br><span class="line">	<span class="variable">$yun_upload</span>    = <span class="keyword">new</span> \Common\Lib\YunUpload(<span class="variable">$img_flag</span>, <span class="variable">$sub_path</span>);</span><br><span class="line">	<span class="variable">$upload_result</span> = <span class="variable">$yun_upload</span>-&gt;upload();<span class="comment">//此处调用了上传功能,根据此函数</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$upload_result</span>[<span class="string">'status'</span>]) {</span><br><span class="line">		<span class="variable">$result</span>[<span class="string">'state'</span>] = <span class="string">'SUCCESS'</span>;</span><br><span class="line">		<span class="variable">$result</span>[<span class="string">'info'</span>]  = <span class="variable">$upload_result</span>[<span class="string">'data'</span>];</span><br><span class="line">	} <span class="keyword">else</span> {</span><br><span class="line">		<span class="variable">$result</span>[<span class="string">'state'</span>] = <span class="variable">$upload_result</span>[<span class="string">'info'</span>];</span><br><span class="line">	}</span><br><span class="line">	<span class="keyword">echo</span> json_encode(<span class="variable">$result</span>);</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>App/Common/lib/YunUpload.class.php/ 62行 upload函数</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload</span>(<span class="params"></span>) </span>{</span><br><span class="line">		<span class="variable">$result</span> = <span class="keyword">array</span>(<span class="string">'status'</span> =&gt; <span class="number">0</span>, <span class="string">'info'</span> =&gt; <span class="string">''</span>, <span class="string">'data'</span> =&gt; <span class="keyword">array</span>());</span><br><span class="line">		<span class="comment">//文件上传地址提交给他，并且上传完成之后返回一个信息，让其写入数据库</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$_FILES</span>)) {</span><br><span class="line">			<span class="variable">$result</span>[<span class="string">'info'</span>] = <span class="string">'必须选择上传文件'</span>;<span class="comment">//如果未获取到参数，提示用户上传</span></span><br><span class="line">			<span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">		} <span class="keyword">else</span> {</span><br><span class="line"></span><br><span class="line">			<span class="variable">$info</span> = <span class="keyword">$this</span>-&gt;_upload(); <span class="comment">//获取图片信息</span></span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$info</span>) &amp;&amp; is_array(<span class="variable">$info</span>)) {</span><br><span class="line">				<span class="comment">//写入数据库的自定义c方法</span></span><br><span class="line">				<span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;_saveDate(<span class="variable">$info</span>)) {</span><br><span class="line">					<span class="comment">//echo '上传入库失败';</span></span><br><span class="line">					<span class="variable">$result</span>[<span class="string">'status'</span>] = <span class="number">0</span>;</span><br><span class="line">					<span class="variable">$result</span>[<span class="string">'info'</span>]   = <span class="string">'上传入库失败'</span>;</span><br><span class="line">					<span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">				}</span><br><span class="line"></span><br><span class="line">				<span class="comment">//数组索引转为数字</span></span><br><span class="line">				<span class="variable">$new_info</span> = <span class="keyword">array</span>();</span><br><span class="line">				<span class="keyword">foreach</span> (<span class="variable">$info</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>) {</span><br><span class="line"></span><br><span class="line">					<span class="variable">$v</span>[<span class="string">'url'</span>] = get_url_path(C(<span class="string">'CFG_UPLOAD_ROOTPATH'</span>)) . <span class="variable">$v</span>[<span class="string">'savepath'</span>] . <span class="variable">$v</span>[<span class="string">'savename'</span>];</span><br><span class="line">					<span class="comment">//是否有缩略图</span></span><br><span class="line">					<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;thumFlag) {</span><br><span class="line">						<span class="comment">//读取缩略图配置信息</span></span><br><span class="line">						<span class="variable">$imgtbSize</span> = C(<span class="string">'CFG_IMGTHUMB_SIZE'</span>); <span class="comment">//配置缩略图第一个参数</span></span><br><span class="line">						<span class="variable">$imgTSize</span>  = explode(<span class="string">'X'</span>, <span class="variable">$imgtbSize</span>[<span class="number">0</span>]);</span><br><span class="line">						<span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="variable">$imgTSize</span>)) {</span><br><span class="line">							<span class="variable">$v</span>[<span class="string">'turl'</span>] = get_picture(<span class="variable">$v</span>[<span class="string">'url'</span>], <span class="variable">$imgTSize</span>[<span class="number">0</span>], <span class="variable">$imgTSize</span>[<span class="number">1</span>]);</span><br><span class="line">						}</span><br><span class="line">					}</span><br><span class="line">					<span class="variable">$new_info</span>[] = <span class="variable">$v</span>;</span><br><span class="line">				}</span><br><span class="line"></span><br><span class="line">				<span class="variable">$result</span>[<span class="string">'status'</span>] = <span class="number">1</span>;</span><br><span class="line">				<span class="variable">$result</span>[<span class="string">'info'</span>]   = <span class="string">'上传成功'</span>;</span><br><span class="line">				<span class="variable">$result</span>[<span class="string">'data'</span>]   = <span class="variable">$new_info</span>;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line"></span><br><span class="line">			} <span class="keyword">else</span> {</span><br><span class="line">				<span class="variable">$result</span>[<span class="string">'info'</span>] = <span class="string">'失败:'</span> . <span class="variable">$info</span>;</span><br><span class="line">				<span class="keyword">return</span> <span class="variable">$result</span>;</span><br><span class="line">			}</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">	}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>App/Common/lib/YunUpload.class.php/  231行 _upload函数  对比上传后缀名是否在网站配置中</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">_upload</span>(<span class="params"></span>) </span>{</span><br><span class="line">	<span class="variable">$ext</span> = <span class="string">''</span>; <span class="comment">//原文件后缀</span></span><br><span class="line">	<span class="keyword">foreach</span> (<span class="variable">$_FILES</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$v</span>) {<span class="comment">//获取文件后缀名</span></span><br><span class="line">		<span class="variable">$strtemp</span> = explode(<span class="string">'.'</span>, <span class="variable">$v</span>[<span class="string">'name'</span>]);</span><br><span class="line">		<span class="variable">$ext</span>     = end(<span class="variable">$strtemp</span>); <span class="comment">//获取文件后缀，或$ext = end(explode('.', $_FILES['fileupload']['name']));</span></span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	<span class="variable">$upload</span> = <span class="keyword">new</span> \Think\Upload(); <span class="comment">//new Upload($config)</span></span><br><span class="line">	<span class="comment">//修配置项</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;autoSub  = <span class="literal">true</span>; <span class="comment">//是否使用子目录保存图片</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;subType  = <span class="string">'date'</span>; <span class="comment">//子目录保存规则</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;subName  = <span class="keyword">array</span>(<span class="string">'date'</span>, <span class="string">'Ymd'</span>);</span><br><span class="line">	<span class="variable">$upload</span>-&gt;maxSize  = get_upload_maxsize(); <span class="comment">//设置上传文件大小</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;exts     = <span class="keyword">$this</span>-&gt;allowType; <span class="comment">//设置上传文件类型</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;rootPath = <span class="keyword">$this</span>-&gt;rootPath; <span class="comment">//上传根路径</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;savePath = <span class="keyword">$this</span>-&gt;subDirectory; <span class="comment">//上传（子）目录</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;saveName = <span class="keyword">array</span>(<span class="string">'uniqid'</span>, <span class="string">''</span>); <span class="comment">//上传文件命名规则</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;replace  = <span class="literal">true</span>; <span class="comment">//存在同名是否覆盖</span></span><br><span class="line">	<span class="variable">$upload</span>-&gt;callback = <span class="literal">false</span>; <span class="comment">//检测文件是否存在回调函数，如果存在返回文件信息数组</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$info</span> = <span class="variable">$upload</span>-&gt;upload()) {</span><br><span class="line"></span><br><span class="line">		<span class="comment">//判断是添加水印--有缩略的才添加水印</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;thumFlag) {</span><br><span class="line">			<span class="keyword">$this</span>-&gt;_doWater(<span class="variable">$info</span>);</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="comment">//是否有缩略图</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;thumFlag) {</span><br><span class="line">			<span class="keyword">$this</span>-&gt;_doThum(<span class="variable">$info</span>);</span><br><span class="line">		}</span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$info</span>;</span><br><span class="line"></span><br><span class="line">	} <span class="keyword">else</span> {</span><br><span class="line"></span><br><span class="line">		<span class="comment">//$str = array('err' =&gt;1 ,'msg' =&gt; $upload-&gt;getError() );</span></span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$upload</span>-&gt;getError();</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>当程序执行到75行时，程序new了 yunupload类，并调用了上传功能。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi35sprsehj30mr0lf77m.jpg" alt="image-20200825165551625"></p>
+<p>跳转到YunUpload类中的upload函数，判断是否获取到图片信息，然后调用_upload函数对比图片信息是否与配置文件中一致</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi364p6qetj30m00mygol.jpg" alt="image-20200825170724575"></p>
+<p>遍历获取到上传文件的文件名以及后缀名，程序会将后缀名和allowType数组进行对比，发现后缀名是允许类型，程序会正常执行</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi36a5tywoj30o10of76z.jpg" alt="image-20200825171239967"></p>
+<p>当YunUpload类中的upload函数执行完成后，返回上传成功后的文件地址。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi36ibibk7j30mb0mlq69.jpg" alt="image-20200825172030067"></p>
+<p>程序返回Public类的upload函数执行最后流程，结束后，添加水印图片整个流程结束，webshell上传成功。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi36lmgrimj30zf0pj40v.jpg" alt="image-20200825172340988"> </p>
+<p>回到网站设置App/controller/SystemController.class.php  site函数</p>
+<p>当执行到遍历代码时，程序会将网站配置所有项全部遍历查找是否存在&lt;?php字符串</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi36rye2tbj30t80pz43o.jpg" alt="image-20200825172945671"></p>
+<p>当执行到215行时，此处做了一个水印图片后缀过滤，网站获取到的是php后缀，所以此处对比不成功，网站报错提示</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi36uohmlpj30w60q2dkw.jpg" alt="image-20200825173222671"></p>
+<p>但是由于200行处正则处未正确匹配字符串，导致可上传文件，webshell已上传成功，所以此处无法保存不影响漏洞点。</p>
+<h3 id="0x02-后台代码执行"><a href="#0x02-后台代码执行" class="headerlink" title="0x02 后台代码执行"></a>0x02 后台代码执行</h3><h4 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Payload:</span><br><span class="line">	&lt;? phpinfo(); ?&gt;</span><br><span class="line">	&lt;?=phpinfo();?&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi37dsmhpcj31aq0pwgow.jpg" alt="image-20200825175045437"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi37e2tqi1j314e0cbn3m.jpg" alt="image-20200825175101573"></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi37e7zm32j315z0rwgsy.jpg" alt="image-20200825175109704"></p>
+<h4 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>网站设置——&gt;App/controller/SystemController.class.php/194行 site函数</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">site</span>(<span class="params"></span>) </span>{</span><br><span class="line">		<span class="keyword">if</span> (IS_POST) {</span><br><span class="line"></span><br><span class="line">			<span class="variable">$data</span> = I(<span class="string">'config'</span>, <span class="keyword">array</span>(), <span class="string">'trim'</span>);<span class="comment">//获取网站配置信息</span></span><br><span class="line">            <span class="comment">//遍历网站配置项是否存在<span class="meta">&lt;?php</span>字符串，如果存在字符串使用空字符串替换掉</span></span><br><span class="line">			<span class="keyword">foreach</span> (<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$val</span>) {</span><br><span class="line">				<span class="keyword">if</span> (stripos(<span class="variable">$val</span>, <span class="string">'&lt;?php'</span>) !== <span class="literal">false</span>) {</span><br><span class="line">                    <span class="comment">//问题点，由于此处匹配的是<span class="meta">&lt;?php</span>，使用短标签或其他风格写入php代码，访问生成的site文件即可</span></span><br><span class="line">					<span class="variable">$data</span>[<span class="variable">$key</span>] = preg_replace(<span class="string">'/&lt;\?php(.+?)\?&gt;/i'</span>, <span class="string">''</span>, <span class="variable">$val</span>);</span><br><span class="line">				}</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>] = strtoupper(<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>]);<span class="comment">//设置全大写</span></span><br><span class="line">			<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>] = str_replace(<span class="keyword">array</span>(<span class="string">'，'</span>, <span class="string">'Ｘ'</span>), <span class="keyword">array</span>(<span class="string">','</span>, <span class="string">'X'</span>), <span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>]);<span class="comment">//将中文逗号替换为英文逗号</span></span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$data</span>[<span class="string">'CFG_IMGTHUMB_SIZE'</span>])) {</span><br><span class="line">				<span class="keyword">$this</span>-&gt;error(<span class="string">'缩略图组尺寸不能为空'</span>);</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="variable">$data</span>[<span class="string">'CFG_IMAGE_WATER_FILE'</span>])) {</span><br><span class="line">				<span class="variable">$img_ext</span> = pathinfo(<span class="variable">$data</span>[<span class="string">'CFG_IMAGE_WATER_FILE'</span>], PATHINFO_EXTENSION);<span class="comment">//获取路径信息</span></span><br><span class="line">				<span class="variable">$img_ext</span> = strtolower(<span class="variable">$img_ext</span>);</span><br><span class="line">				<span class="keyword">if</span> (!in_array(<span class="variable">$img_ext</span>, <span class="keyword">array</span>(<span class="string">'jpg'</span>, <span class="string">'gif'</span>, <span class="string">'png'</span>, <span class="string">'jpeg'</span>))) {<span class="comment">//此处判断文件类型，如果不是则提示用户重新上传</span></span><br><span class="line">					<span class="keyword">$this</span>-&gt;error(<span class="string">'水印图片文件不是图片格式！请重新上传！'</span>);</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				}</span><br><span class="line"></span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="comment">//</span></span><br><span class="line">			<span class="keyword">foreach</span> (<span class="variable">$data</span> <span class="keyword">as</span> <span class="variable">$k</span> =&gt; <span class="variable">$v</span>) {</span><br><span class="line">				<span class="variable">$ret</span> = M(<span class="string">'config'</span>)-&gt;where(<span class="keyword">array</span>(<span class="string">'name'</span> =&gt; <span class="variable">$k</span>))-&gt;save(<span class="keyword">array</span>(<span class="string">'s_value'</span> =&gt; <span class="variable">$v</span>));</span><br><span class="line">			}</span><br><span class="line">			<span class="keyword">if</span> (<span class="variable">$ret</span> !== <span class="literal">false</span>) {</span><br><span class="line">				F(<span class="string">'config/site'</span>, <span class="literal">null</span>);</span><br><span class="line">				<span class="keyword">$this</span>-&gt;success(<span class="string">'修改成功'</span>, U(<span class="string">'System/site'</span>));</span><br><span class="line"></span><br><span class="line">			} <span class="keyword">else</span> {</span><br><span class="line"></span><br><span class="line">				<span class="keyword">$this</span>-&gt;error(<span class="string">'修改失败！'</span>);</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="keyword">exit</span>();</span><br><span class="line">		}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>遍历匹配是否存在<!--?php字符串 而此处使用<?  ?-->绕过</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi37q028y7j30q90mgadq.jpg" alt="image-20200825180228538"> </p>
+<p>遍历完成后，执行到209行后，跳到222行执行，此处会将所有的参数及参数值遍历后存入数据库并且写入config/site文件中保存</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi37tz9oxzj30os0r0afe.jpg" alt="image-20200825180617642"></p>
+<p>而site文件后缀是php,导致代码执行。</p>
+<h3 id="0x03-后台任意文件删除"><a href="#0x03-后台任意文件删除" class="headerlink" title="0x03 后台任意文件删除"></a>0x03 后台任意文件删除</h3><h4 id="漏洞利用-2"><a href="#漏洞利用-2" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>漏洞点在删除数据库文件备份，抓包</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi4a2k0q78j31mc0u0wlz.jpg" alt="image-20200826160916538"></p>
+<p>由于未做目录限制，导致可跨目录删除任意文件。可删除install.lock文件来重置网站程序。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi4ab97kp0j31na0u0qox.jpg" alt="image-20200826161740066"></p>
+<h4 id="漏洞分析-2"><a href="#漏洞分析-2" class="headerlink" title="漏洞分析"></a>漏洞分析</h4><p>数据库备份-&gt;App/manage/controller/databasecontroller.class.php/ 293行 delSqlFiles函数</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delSqlFiles</span>(<span class="params"></span>) </span>{</span><br><span class="line"></span><br><span class="line">		<span class="variable">$id</span>        = I(<span class="string">'id'</span>, <span class="number">0</span>, <span class="string">'intval'</span>);<span class="comment">//过滤ID参数</span></span><br><span class="line">		<span class="variable">$batchFlag</span> = I(<span class="string">'get.batchFlag'</span>, <span class="number">0</span>, <span class="string">'intval'</span>);<span class="comment">//过滤GET传参</span></span><br><span class="line">		<span class="comment">//批量删除</span></span><br><span class="line">		<span class="keyword">if</span> (<span class="variable">$batchFlag</span>) {</span><br><span class="line">			<span class="variable">$files</span> = I(<span class="string">'key'</span>, <span class="keyword">array</span>());</span><br><span class="line">		} <span class="keyword">else</span> {</span><br><span class="line">			<span class="variable">$files</span>[] = I(<span class="string">'sqlfilename'</span>, <span class="string">''</span>);<span class="comment">//删除单个</span></span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">empty</span>(<span class="variable">$files</span>)) {</span><br><span class="line">			<span class="keyword">$this</span>-&gt;error(<span class="string">'请选择要删除的sql文件'</span>);</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		<span class="keyword">foreach</span> (<span class="variable">$files</span> <span class="keyword">as</span> <span class="variable">$file</span>) {<span class="comment">//遍历删除</span></span><br><span class="line">            <span class="comment">//此处将需要删除的文件直接带入到了unlink函数，且未做危险字符过滤，导致用户可跨目录删除文件</span></span><br><span class="line">			unlink(<span class="keyword">$this</span>-&gt;getDbPath() . <span class="string">'/'</span> . <span class="variable">$file</span>);</span><br><span class="line">		}</span><br><span class="line">		<span class="keyword">$this</span>-&gt;success(<span class="string">"已删除："</span> . implode(<span class="string">","</span>, <span class="variable">$files</span>), U(<span class="string">'Database/restore'</span>));</span><br><span class="line"></span><br><span class="line">	}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi4az7l4iaj30ra0lw0vp.jpg" alt="image-20200826164041349"></p>
+<p>最后成功删除license.txt</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Time</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timeshu.github.io/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/">https://timeshu.github.io/2020/06/22/xyhcms%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://TimeSHU.github.io" target="_blank">Time'Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/06/23/NoSql%E6%95%B0%E6%8D%AE%E5%BA%93getShell%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2020/06/14/xray%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">xray基本方法</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/06/01/mkcms%E6%B3%A8%E5%85%A5%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/" title="mkcms注入审计学习"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-01</div><div class="title">mkcms注入审计学习</div></div></a></div><div><a href="/2020/08/10/xycms%E5%AE%A1%E8%AE%A1/" title="xycms审计"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-08-10</div><div class="title">xycms审计</div></div></a></div><div><a href="/2020/06/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5%E8%AF%AD%E5%8F%A5%E6%94%B6%E9%9B%86%E5%8F%8A%E5%AD%A6%E4%B9%A0/" title="数据库注入语句收集及学习"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-03</div><div class="title">数据库注入语句收集及学习</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-CMS%E6%A0%B8%E5%BF%83%E7%9B%AE%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">0x00 CMS核心目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-%E5%90%8E%E5%8F%B0%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">2.</span> <span class="toc-text">0x01 后台任意文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">2.2.</span> <span class="toc-text">漏洞分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-%E5%90%8E%E5%8F%B0%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C"><span class="toc-number">3.</span> <span class="toc-text">0x02 后台代码执行</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-1"><span class="toc-number">3.1.</span> <span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-1"><span class="toc-number">3.2.</span> <span class="toc-text">漏洞分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-%E5%90%8E%E5%8F%B0%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E5%88%A0%E9%99%A4"><span class="toc-number">4.</span> <span class="toc-text">0x03 后台任意文件删除</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-2"><span class="toc-number">4.1.</span> <span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90-2"><span class="toc-number">4.2.</span> <span class="toc-text">漏洞分析</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Time</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://timeshu.github.io">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '7296bb0c658f7e8397b9',
+      clientSecret: 'f7701c96a690160dfb9a85fcc00e6ce7bc03a971',
+      repo: 'blog-comments',
+      owner: 'TimeSHU',
+      admin: ['TimeSHU'],
+      id: '9667abdf21a0fa84d147b5675d938cf5',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
