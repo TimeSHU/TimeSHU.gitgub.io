@@ -6338,27 +6338,27 @@
 
 
 <p>Tomcat 配置 </p>
-<p><img src="image-20220223111431081.png" alt="image-20220223111431081"></p>
-<p><img src="image-20220223111506567.png" alt="image-20220223111506567"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y2el4dj20th0k3gnc.jpg" alt="image-20220223111431081"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xpvcuwj21460u0djs.jpg" alt="image-20220223111506567"></p>
 <p>启动，安装CMS</p>
-<p><img src="image-20220223111541647.png" alt="image-20220223111541647"></p>
-<p><img src="image-20220223111620934.png" alt="image-20220223111620934"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y48sbxj20la0ckaaw.jpg" alt="image-20220223111541647"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xvsjujj20dj036jr8.jpg" alt="image-20220223111620934"></p>
 <p>重启容器</p>
-<p><img src="image-20220223111711602.png" alt="image-20220223111711602"></p>
-<p><img src="image-20220223111733755.png" alt="image-20220223111733755"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xuumxpj216z0qadjf.jpg" alt="image-20220223111711602"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xsi15vj219h0mqac6.jpg" alt="image-20220223111733755"></p>
 <p>安装成功！</p>
 <h1 id="0X02-SQL注入"><a href="#0X02-SQL注入" class="headerlink" title="0X02 SQL注入"></a>0X02 SQL注入</h1><h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/system/SystemGenerateController.java</p>
 <p>47 行处，语句直接获取，未经过任何过滤</p>
-<p><img src="image-20220304202202119.png" alt="image-20220304202202119"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y3qi8bj21700o4aby.jpg" alt="image-20220304202202119"></p>
 <p>跟进 update</p>
-<p><img src="image-20220304202643069.png" alt="image-20220304202643069"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y117vpj21940kwtaq.jpg" alt="image-20220304202643069"></p>
 <p>此处获取数据库资源连接，然后传送sql语句</p>
-<p><img src="image-20220304205517351.png" alt="image-20220304205517351"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xxq5hzj21rg0mw0wv.jpg" alt="image-20220304205517351"></p>
 <p>跟进</p>
-<p><img src="image-20220304210111880.png" alt="image-20220304210111880"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xt8pu6j21dy0u0qad.jpg" alt="image-20220304210111880"></p>
 <p>pst.executeUpdate 执行了 sql 语句</p>
 <p>而这个对象方法只允许执行 insert、update、delete及DLL。</p>
-<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：系统设置-代码生成-增加<br><img src="image-20220304224121725.png" alt="image-20220304224121725"></p>
+<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：系统设置-代码生成-增加<br><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y1ylglj20yv0jxdht.jpg" alt="image-20220304224121725"></p>
 <p>payload</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">update of_cms_ad set ad_id=(updatexml(1,concat(0x7e,(select user())),0))</span><br></pre></td></tr></tbody></table></figure>
 
@@ -6366,52 +6366,52 @@
 
 <h1 id="0X03-目录遍历"><a href="#0X03-目录遍历" class="headerlink" title="0X03 目录遍历"></a>0X03 目录遍历</h1><h2 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-master/ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/cms/TemplateController.java</p>
 <p>28 行 </p>
-<p><img src="image-20220306050902862.png" alt="image-20220306050902862"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xu1ty0j21460u0djs.jpg" alt="image-20220306050902862"></p>
 <p>getPara 无过滤，且整段代码中也没有对 <code>/ ../ ./</code> 做限制</p>
-<p><img src="image-20220306051726251.png" alt="image-20220306051726251"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xpi6s8j21460u0djs.jpg" alt="image-20220306051726251"></p>
 <p>46 行 获取模板路径和当前传入的路径，new 一个 File 对象， pathFile.listFiles 列出当前目录、文件</p>
-<p><img src="image-20220306052447157.png" alt="image-20220306052447157"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xra718j21650u0gvd.jpg" alt="image-20220306052447157"></p>
 <p>65 行</p>
-<p><img src="image-20220306052630935.png" alt="image-20220306052630935"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xve1a4j21xx0u0jws.jpg" alt="image-20220306052630935"></p>
 <p>此处表明，只显示 html、xml、css、js 文件中的内容。</p>
 <h2 id="漏洞验证-1"><a href="#漏洞验证-1" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：模板设置-模板文件=模板资源</p>
-<p><img src="image-20220306052951479.png" alt="image-20220306052951479"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xrjjyej20my0oagmm.jpg" alt="image-20220306052951479"></p>
 <p>payload</p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">localhost:8080/ofcms_admin_war/admin/cms/template/getTemplates.html?dir=../../../../../../../../../</span><br></pre></td></tr></tbody></table></figure>
 
-<p><img src="image-20220306053044061.png" alt="image-20220306053044061"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xzb3v7j21c40u0dmm.jpg" alt="image-20220306053044061"></p>
 <h1 id="0X04-文件上传"><a href="#0X04-文件上传" class="headerlink" title="0X04 文件上传"></a>0X04 文件上传</h1><p>漏洞原理同上，由于未对文件后缀名进行过滤及校验目录，导致可通过写入文件方式上传 jsp 目录文件，并保存至网站任意目录下。</p>
 <h2 id="漏洞分析-2"><a href="#漏洞分析-2" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-master/ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/cms/TemplateController.java</p>
 <p>108 行</p>
-<p><img src="image-20220306071238079.png" alt="image-20220306071238079"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xynqhkj21zx0u00z4.jpg" alt="image-20220306071238079"></p>
 <p> SystemUtile.getSiteTemplatePath() 获取当前目录</p>
-<p><img src="image-20220306071830412.png" alt="image-20220306071830412"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y1iscpj22c00u0ahb.jpg" alt="image-20220306071830412"></p>
 <p> dirName 目录名，此处因未做过滤，可以穿越到其他目录</p>
 <p>fileName 文件名，也是没有做过滤，所以可直接修改文件名为 jsp 或 jspx</p>
-<p><img src="image-20220306072158954.png" alt="image-20220306072158954"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xul8dtj22c50u0wld.jpg" alt="image-20220306072158954"></p>
 <p> fileContent 将内容中的&lt;&gt;实体化。。。</p>
-<p><img src="image-20220306072313951.png" alt="image-20220306072313951"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y341ftj22ie0tg111.jpg" alt="image-20220306072313951"></p>
 <p>此处写入文件内容，并保存到我们指定的位置。</p>
 <p>漏洞原理，就是没有经过过滤。</p>
 <h2 id="漏洞验证-2"><a href="#漏洞验证-2" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：模板设置-模板资源</p>
-<p><img src="image-20220306073318796.png" alt="image-20220306073318796"></p>
-<p>抓包修改<br><img src="image-20220306073421253.png" alt="image-20220306073421253"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y4ul83j21wl0u0ae2.jpg" alt="image-20220306073318796"></p>
+<p>抓包修改<br><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xyby3cj21gd0u0jze.jpg" alt="image-20220306073421253"></p>
 <p>上传成功</p>
-<p><img src="image-20220306073438968.png" alt="image-20220306073438968"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xw7x8cj21940awwfd.jpg" alt="image-20220306073438968"></p>
 <h1 id="0X05-SSTI-模板注入"><a href="#0X05-SSTI-模板注入" class="headerlink" title="0X05 SSTI 模板注入"></a>0X05 SSTI 模板注入</h1><p>挖坑先，具体原理没咋研究过，但是可插入特殊的语句，模板解析可执行命令</p>
-<p><img src="image-20220306075147055.png" alt="image-20220306075147055"></p>
-<p><img src="image-20220306075157316.png" alt="image-20220306075157316"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xs4dnlj21wn0u0794.jpg" alt="image-20220306075147055"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y5e0joj22la0owndj.jpg" alt="image-20220306075157316"></p>
 <p>payload </p>
 <figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;#assign ex="freemarker.template.utility.Execute"?new()&gt; </span><br><span class="line">${ ex("ifconfig") }</span><br></pre></td></tr></tbody></table></figure>
 
 
 
 <h1 id="0x06-CSRF"><a href="#0x06-CSRF" class="headerlink" title="0x06 CSRF"></a>0x06 CSRF</h1><p>前端 ofcms-admin/src/main/webapp/WEB-INF/page/admin/cms/template/index.html 代码中，未发现 CSRF-Token，存在漏洞</p>
-<p><img src="image-20220306075619210.png" alt="image-20220306075619210"></p>
-<p><img src="image-20220306075808058.png" alt="image-20220306075808058"></p>
-<p><img src="image-20220306075820775.png" alt="image-20220306075820775"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002y0ab9zj21fq0u0q7w.jpg" alt="image-20220306075619210"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xwvjcwj21by0u0q9p.jpg" alt="image-20220306075808058"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xq1q77j20o70idt9v.jpg" alt="image-20220306075820775"></p>
 <p>上传成功</p>
-<p><img src="image-20220306075831693.png" alt="image-20220306075831693"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h002xqm9zzj21bc0c83zi.jpg" alt="image-20220306075831693"></p>
 ]]></content>
       <categories>
         <category>代码审计</category>
@@ -6904,6 +6904,23 @@
 <p>代码无任何过滤，获取要删除的文件名，<code>deleteDirectory</code> 执行删除</p>
 <h2 id="漏洞验证-5"><a href="#漏洞验证-5" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p><img src="image-20220207082431099.png" alt="image-20220207082431099"></p>
 <p>修改为 <code>../1</code> ， 成功删除<br><img src="image-20220207082729105.png" alt="image-20220207082729105"></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java代码审计-RBAC管理系统</title>
+    <url>/2022/03/06/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-RBAC%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-环境搭建"><a href="#0X01-环境搭建" class="headerlink" title="0X01 环境搭建"></a>0X01 环境搭建</h1><p>gitee下载地址：<a href="https://gitee.com/witmy/my-springsecurity-plus">https://gitee.com/witmy/my-springsecurity-plus</a></p>
+<p>导入 IEDA 项目后，自动根据 pox.xml 下载依赖包</p>
+<p>注意：需要在 settings–plugins 中搜索并安装 lombok 插件，不然会报错</p>
+<p><img src="image-20220306130452835.png" alt="image-20220306130452835"></p>
+<p>创建 rbac 空数据库，导入 sql 文件</p>
+<p><img src="image-20220306130554338.png" alt="image-20220306130554338"></p>
 ]]></content>
       <categories>
         <category>代码审计</category>
